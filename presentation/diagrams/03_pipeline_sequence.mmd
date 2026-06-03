@@ -1,0 +1,36 @@
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+sequenceDiagram
+    actor Operator
+    participant Git as bam-masterdata (git)
+    participant EX as explorer
+    participant RE as extractor
+    participant GA as gap-analyzer
+    actor Reviewer
+    participant MX as masterdata-extender
+    participant NB as notebook-generator
+    participant PA as parser-generator
+
+    Operator->>Git: /bam-sync
+    Git-->>Operator: commit SHA (standard refreshed)
+
+    Operator->>EX: /bam-analyze-prd <prd>
+    EX-->>Operator: CATALOG.md (what exists)
+    Operator->>RE: (same command, step 2)
+    RE-->>Operator: requirements.json (what PRD needs)
+    Operator->>GA: (same command, step 3)
+    GA-->>Operator: gap-report.md (REUSE / EXTEND / CREATE)
+
+    Note over Operator,Reviewer: ⏸ HUMAN REVIEW CHECKPOINT ⏸
+    Reviewer->>Reviewer: verify citations & verdicts
+    Reviewer-->>Operator: approved ✔
+
+    par Generate deliverables
+        Operator->>MX: /bam-generate-types
+        MX-->>Operator: datamodel/*.py (CREATE only)
+    and
+        Operator->>NB: /bam-generate-notebook
+        NB-->>Operator: *_provisioning.ipynb (14 cells)
+    and
+        Operator->>PA: /bam-generate-parser
+        PA-->>Operator: parsers/ package
+    end

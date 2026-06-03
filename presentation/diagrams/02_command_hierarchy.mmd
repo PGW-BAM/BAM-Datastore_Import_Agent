@@ -1,0 +1,30 @@
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'16px'}}}%%
+flowchart TB
+    ROOT["BAM DataStore<br/>slash-commands"]
+
+    ROOT --> SYNC["/bam-sync<br/><i>refresh shared standard</i>"]
+    ROOT --> ANALYZE["/bam-analyze-prd &lt;prd&gt;<br/><i>discover + extract + decide</i>"]
+    ROOT --> IMPROVE["/bam-improve &lt;agent&gt;<br/><i>self-improvement loop</i>"]
+
+    ANALYZE --> GEN["after ⏸ human review"]
+    GEN --> TYPES["/bam-generate-types<br/><i>Python data-model</i>"]
+    GEN --> NB["/bam-generate-notebook<br/><i>one-time DB setup</i>"]
+    GEN --> PARSER["/bam-generate-parser<br/><i>ongoing ingestion</i>"]
+
+    %% which agents each command drives
+    SYNC -.->|git only| G0(["(no agent)"])
+    ANALYZE -.-> AA(["explorer → extractor → gap-analyzer"])
+    TYPES -.-> AT(["masterdata-extender"])
+    NB -.-> AN(["openbis-notebook-generator"])
+    PARSER -.-> AP(["openbis-parser-generator"])
+    IMPROVE -.-> AI(["skill-reviewer → prompt-surgeon"])
+
+    classDef root fill:#0b3d91,color:#fff,stroke:#06245c;
+    classDef cmd fill:#1f6feb,color:#fff,stroke:#0b3d91;
+    classDef gate fill:#d29922,color:#111,stroke:#8a6d11;
+    classDef agent fill:#eef3ff,color:#111,stroke:#1f6feb,stroke-dasharray:4 3;
+
+    class ROOT root;
+    class SYNC,ANALYZE,IMPROVE,TYPES,NB,PARSER cmd;
+    class GEN gate;
+    class G0,AA,AT,AN,AP,AI agent;

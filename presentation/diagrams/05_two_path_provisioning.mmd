@@ -1,0 +1,38 @@
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'16px'}}}%%
+flowchart TB
+    GAP["gap-report.md<br/>+ requirements.json"]
+
+    subgraph SETUP["🏗️ Path A — One-time setup"]
+        direction TB
+        NBGEN["openbis-notebook-generator"]
+        NB["*_provisioning.ipynb<br/>(14 cells, PAT auth)"]
+        DB1["Space / Project / Collection<br/>+ parent specimen objects"]
+        NBGEN --> NB --> DB1
+    end
+
+    subgraph INGEST["🔁 Path B — Ongoing ingestion"]
+        direction TB
+        PAGEN["openbis-parser-generator"]
+        PKG["parsers/ package<br/>(AbstractParser, pyBIS-free)"]
+        DB2["new ExperimentalStep objects<br/>pushed after every experiment"]
+        PAGEN --> PKG --> DB2
+    end
+
+    GAP --> NBGEN
+    GAP --> PAGEN
+
+    DB1 -. "structure must exist first" .-> DB2
+
+    OB[("🗄️ openBIS instance")]
+    DB1 --> OB
+    DB2 --> OB
+
+    classDef gap fill:#f5f5f5,color:#111,stroke:#999;
+    classDef a fill:#1f6feb,color:#fff,stroke:#0b3d91;
+    classDef b fill:#2da44e,color:#fff,stroke:#16632e;
+    classDef db fill:#24292f,color:#fff,stroke:#000;
+
+    class GAP gap;
+    class NBGEN,NB,DB1 a;
+    class PAGEN,PKG,DB2 b;
+    class OB db;

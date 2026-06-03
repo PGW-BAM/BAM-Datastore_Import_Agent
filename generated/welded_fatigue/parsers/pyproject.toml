@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=68", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "welded-fatigue-parser"
+version = "0.1.0"
+description = "AbstractParser scaffold for welded_fatigue workflow (BAM FB7.2) — customize parse() per instrument file format."
+requires-python = ">=3.10"
+dependencies = [
+    "bam-masterdata>=0.5",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

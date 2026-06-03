@@ -1,0 +1,79 @@
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'16px'}}}%%
+flowchart TB
+    PRD["📄 PRD<br/>(BAM_PRD_Workflow_FB72.md)"]
+    STD[("🗄️ bam-masterdata<br/>shared standard")]
+
+    subgraph CMD["🎛️ Commands (orchestration layer)"]
+        direction LR
+        C0["/bam-sync"]
+        C1["/bam-analyze-prd"]
+        C2a["/bam-generate-types"]
+        C2b["/bam-generate-notebook"]
+        C2c["/bam-generate-parser"]
+        C3["/bam-improve"]
+    end
+
+    subgraph PROD["🤖 Production agents (workers)"]
+        direction LR
+        A1["bam-masterdata-explorer"]
+        A2["prd-requirements-extractor"]
+        A3["gap-analyzer"]
+        A4["masterdata-extender"]
+        A5["openbis-notebook-generator"]
+        A6["openbis-parser-generator"]
+    end
+
+    subgraph META["🔁 Meta agents (self-improvement)"]
+        direction LR
+        M1["skill-reviewer"]
+        M2["prompt-surgeon"]
+    end
+
+    subgraph ART["📦 Artifacts (contracts)"]
+        direction LR
+        T1["CATALOG.md"]
+        T2["requirements.json"]
+        T3["gap-report.md"]
+        T4["datamodel/*.py"]
+        T5["*_provisioning.ipynb"]
+        T6["parsers/ package"]
+    end
+
+    REVIEW{{"🧑 HUMAN REVIEW<br/>gap-report checkpoint"}}
+
+    %% sync
+    C0 -->|fetch main| STD
+
+    %% analyze
+    C1 --> A1 --> T1
+    C1 --> A2 --> T2
+    C1 --> A3 --> T3
+    PRD --> A2
+    STD --> A1
+    T1 --> A3
+    T2 --> A3
+    T3 --> REVIEW
+
+    %% generate (after review)
+    REVIEW -->|approved| C2a --> A4 --> T4
+    REVIEW -->|approved| C2b --> A5 --> T5
+    REVIEW -->|approved| C2c --> A6 --> T6
+    T3 --> A4
+    T3 --> A5
+    T3 --> A6
+
+    %% improve loop
+    C3 --> M1 --> M2
+    M2 -.proposes patch.-> PROD
+
+    classDef cmd fill:#1f6feb,color:#fff,stroke:#0b3d91;
+    classDef prod fill:#2da44e,color:#fff,stroke:#16632e;
+    classDef meta fill:#8957e5,color:#fff,stroke:#4b2a8a;
+    classDef art fill:#f5f5f5,color:#111,stroke:#999;
+    classDef human fill:#d29922,color:#111,stroke:#8a6d11;
+
+    class C0,C1,C2a,C2b,C2c,C3 cmd;
+    class A1,A2,A3,A4,A5,A6 prod;
+    class M1,M2 meta;
+    class T1,T2,T3,T4,T5,T6 art;
+    class REVIEW human;

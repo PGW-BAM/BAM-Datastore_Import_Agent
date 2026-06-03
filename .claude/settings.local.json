@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:sissource.ethz.ch)",
+      "WebFetch(domain:pypi.org)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:dust.tt)",
+      "WebFetch(domain:openbis.readthedocs.io)",
+      "WebFetch(domain:x.com)",
+      "WebFetch(domain:aimaker.substack.com)",
+      "WebFetch(domain:community.openbis.ch)",
+      "WebFetch(domain:officechai.com)",
+      "Bash(git:*)",
+      "WebFetch(domain:bamresearch.github.io)",
+      "Bash(python:*)"
+    ]
+  }
+}

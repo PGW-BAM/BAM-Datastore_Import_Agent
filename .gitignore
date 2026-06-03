@@ -1,0 +1,25 @@
+# Karpathy run logs (large; keep structure, not content by default)
+runs/
+!runs/.gitkeep
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Secrets / tokens
+.env
+*.token
+*.pem
+*.key
+openbis_token.txt
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+
+# OS
+.DS_Store
+Thumbs.db

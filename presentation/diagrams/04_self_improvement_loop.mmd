@@ -1,0 +1,31 @@
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'16px'}}}%%
+flowchart LR
+    S1["1 · RUN<br/>execute agent on a task"]
+    S2["2 · PERSIST<br/>capture runs/&lt;ts&gt;/<br/>transcript + output + SHA"]
+    S3["3 · SCORE<br/>skill-reviewer →<br/>review.json (F001…)"]
+    S4["4 · CRITIQUE → DIFF<br/>prompt-surgeon →<br/>proposed.diff + rationale"]
+    S5{{"5 · APPROVE<br/>🧑 human reviews diff"}}
+    S6["6 · APPLY + VERSION<br/>git apply + commit<br/>bump agent version"]
+    S7{"7 · REGRESS<br/>re-run suite<br/>score monotone?"}
+
+    S1 --> S2 --> S3 --> S4 --> S5
+    S5 -->|approved| S6 --> S7
+    S5 -->|rejected| STOP["record rejection.md · stop"]
+    S7 -->|all scores ≥ baseline| DONE["✅ improvement committed"]
+    S7 -->|any score dropped| REVERT["git revert · investigate"]
+    DONE -.->|next iteration| S1
+
+    NOTE["🔒 FROZEN sections never patched:<br/>Allowed APIs · Anti-patterns<br/>(governed by PLAN.md, not run data)<br/>Every hunk MUST cite a failure ID"]
+    S4 -.-> NOTE
+
+    classDef step fill:#8957e5,color:#fff,stroke:#4b2a8a;
+    classDef gate fill:#d29922,color:#111,stroke:#8a6d11;
+    classDef good fill:#2da44e,color:#fff,stroke:#16632e;
+    classDef bad fill:#cf222e,color:#fff,stroke:#82071e;
+    classDef note fill:#fff8e1,color:#111,stroke:#d29922,stroke-dasharray:4 3;
+
+    class S1,S2,S3,S4,S6 step;
+    class S5,S7 gate;
+    class DONE good;
+    class REVERT,STOP bad;
+    class NOTE note;
