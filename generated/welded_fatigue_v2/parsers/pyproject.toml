@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "welded-fatigue-v2-parser"
+version = "0.1.0"
+description = "bam-masterdata parser for the welded fatigue workflow, steps 10-11 (IMC evaluation summary CSV -> <specimen>-TEST update + specimen NEXT_STEP)."
+requires-python = ">=3.10"
+dependencies = [
+    "bam-masterdata",  # needs the class-based parsing API + CollectionType.add(destination=...) (bam-masterdata #332, #376)
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+filterwarnings = [
+    # BAM_OE is an institutional vocabulary; bam-masterdata warns that it is not validated locally.
+    "ignore:The attribute 'bam_oe' uses the institutional vocabulary:UserWarning",
+]

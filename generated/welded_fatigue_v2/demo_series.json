@@ -1,0 +1,384 @@
+{
+ "_note": "DEMO - all values are fictitious and only illustrate the structure. // DEMO - alle Werte sind fiktiv und dienen nur der Veranschaulichung der Struktur.",
+ "space": "FB_72",
+ "project": {
+  "code": "WELDED_FATIGUE",
+  "description": "S-N tests on welded joints (FB 7.2) - flat structure, provisioned by the agent pipeline from BAM_PRD_Workflow_FB72_v2.md//Wöhlerversuche an Schweißverbindungen (FB 7.2) - flache Struktur, von der Agenten-Pipeline aus BAM_PRD_Workflow_FB72_v2.md angelegt"
+ },
+ "collections": [
+  {
+   "code": "SERIES_1_BUTT_WELD",
+   "name": "Series 1 - butt weld (DEMO)",
+   "default_object_type": "SAMPLE.WELDED_FATIGUE_SPECIMEN"
+  },
+  {
+   "code": "SERIES_1_CRUCIFORM_WELD",
+   "name": "Series 1 - cruciform weld (DEMO)",
+   "default_object_type": "SAMPLE.WELDED_FATIGUE_SPECIMEN"
+  }
+ ],
+ "inventory": [
+  {
+   "key": "GOM",
+   "code": "GOM_ATOS_5",
+   "type": "INSTRUMENT",
+   "collection": "/MATERIALS/7_2_EQUIPMENT/INSTRUMENTS",
+   "props": {
+    "$NAME": "ZEISS GOM ATOS 5",
+    "MANUFACTURER": "ZEISS",
+    "DEVICE_MODEL_NAME": "ATOS 5",
+    "DESCRIPTION": "Fringe-projection 3D scanner, GOM Inspect software for weld analysis//Streifenprojektions-3D-Scanner, Nahtanalyse mit GOM-Software"
+   }
+  },
+  {
+   "key": "MICROSCOPE",
+   "code": "DIGITAL_MICROSCOPE_01",
+   "type": "INSTRUMENT",
+   "collection": "/MATERIALS/7_2_EQUIPMENT/INSTRUMENTS",
+   "props": {
+    "$NAME": "Digital microscope//Digitalmikroskop",
+    "DESCRIPTION": "DEMO - model to be completed//DEMO - Modell ergänzen",
+    "MANUFACTURER": "to be completed (DEMO)"
+   }
+  },
+  {
+   "key": "LUXONIS",
+   "code": "LUXONIS_OAK_4D_PRO_CAM",
+   "type": "INSTRUMENT.CAMERA",
+   "collection": "/MATERIALS/7_2_EQUIPMENT/INSTRUMENTS",
+   "props": {
+    "$NAME": "Luxonis OAK-4D-Pro camera system",
+    "MANUFACTURER": "Luxonis",
+    "DEVICE_MODEL_NAME": "OAK-4D-Pro"
+   }
+  },
+  {
+   "key": "MACRO",
+   "code": "MACRO_CAMERA_01",
+   "type": "INSTRUMENT.CAMERA",
+   "collection": "/MATERIALS/7_2_EQUIPMENT/INSTRUMENTS",
+   "props": {
+    "$NAME": "Macro camera//Makro-Kamera",
+    "DESCRIPTION": "DEMO - model to be completed//DEMO - Modell ergänzen",
+    "MANUFACTURER": "to be completed (DEMO)"
+   }
+  },
+  {
+   "key": "IMC",
+   "code": "IMC_AMPLIFIER_01",
+   "type": "INSTRUMENT.MEASURING_AMPLIFIER",
+   "collection": "/MATERIALS/7_2_EQUIPMENT/INSTRUMENTS",
+   "props": {
+    "$NAME": "IMC measuring amplifier//IMC-Messverstärker",
+    "MANUFACTURER": "imc Test & Measurement",
+    "DESCRIPTION": "DEMO - model to be completed//DEMO - Modell ergänzen"
+   }
+  },
+  {
+   "key": "RIG",
+   "code": "SERVOHYDRAULIC_RIG_01",
+   "type": "TESTING_MACHINE",
+   "collection": "/MATERIALS/7_2_EQUIPMENT/TESTING_MACHINES",
+   "props": {
+    "$NAME": "Servo-hydraulic testing machine//Servohydraulische Prüfmaschine",
+    "TESTING_MACHINE_DRIVE_TYPE": "SERVOHYDRAULIC",
+    "TESTING_MACHINE_LOAD_TYPE": "AXIAL",
+    "DESCRIPTION": "DEMO - max. loads are placeholders (100 kN), model to be completed//DEMO - Maximallasten sind Platzhalter (100 kN), Modell ergänzen",
+    "MANUFACTURER": "to be completed (DEMO)",
+    "MAX_LOAD_STATIC_PRIMARY": "100",
+    "MAX_LOAD_DYNAMIC_PRIMARY": "100"
+   }
+  },
+  {
+   "key": "DMS",
+   "code": "DMS_HBM_LY11_6_120",
+   "type": "AUXILIARY_MATERIAL",
+   "collection": "/MATERIALS/7_2_EQUIPMENT/STRAIN_GAUGES",
+   "props": {
+    "$NAME": "Strain gauge HBM LY11-6/120 (120 Ohm)",
+    "MANUFACTURER": "HBM",
+    "AUXILIARY_MATERIAL_TYPE": "STRAIN_GAUGE"
+   }
+  },
+  {
+   "key": "X60",
+   "code": "ADHESIVE_HBM_X60",
+   "type": "AUXILIARY_MATERIAL",
+   "collection": "/MATERIALS/7_2_MATERIALS/CONSUMABLES",
+   "props": {
+    "$NAME": "Adhesive HBM X60//Klebstoff HBM X60",
+    "MANUFACTURER": "HBM",
+    "AUXILIARY_MATERIAL_TYPE": "ADHESIVE"
+   }
+  },
+  {
+   "key": "LUM",
+   "code": "CRACK_LUMINESCENCE_SET",
+   "type": "AUXILIARY_MATERIAL",
+   "collection": "/MATERIALS/7_2_MATERIALS/CONSUMABLES",
+   "props": {
+    "$NAME": "Crack luminescence set//Risslumineszenz-Set",
+    "MANUFACTURER": "MR Chemie GmbH",
+    "AUXILIARY_MATERIAL_TYPE": "CRACK_DETECTION_AGENT"
+   }
+  }
+ ],
+ "sop": {
+  "code": "WORKFLOW_PLAN",
+  "type": "GENERAL_PROTOCOL",
+  "_why": "SOP requires mandatory E-Akte ID/link on the instance; the workflow plan is a method description -> GENERAL_PROTOCOL (REUSE)",
+  "props": {
+   "$NAME": "Workflow plan S-N tests on welded joints//Ablaufplan Wöhlerversuche Schweißverbindungen",
+   "FOR_WHAT": "Where each step of the S-N workflow is documented//Wo jeder Schritt des Wöhler-Ablaufs dokumentiert wird",
+   "PROCEDURE": "@sop_text"
+  }
+ },
+ "step_parents": {
+  "SCAN": [
+   "GOM"
+  ],
+  "TEST": [
+   "DMS",
+   "X60",
+   "LUM",
+   "LUXONIS",
+   "IMC",
+   "RIG"
+  ],
+  "FRACTURE": [
+   "MACRO",
+   "MICROSCOPE"
+  ]
+ },
+ "specimens": [
+  {
+   "code": "S1B-01",
+   "collection": "SERIES_1_BUTT_WELD",
+   "props": {
+    "ALIAS": "19_1",
+    "FATIGUE.MANUFACTURER_DESIGNATION": "BAM_20-19_1_S",
+    "FATIGUE.SOURCE_SHEET": "19",
+    "EXPERIMENTAL_STEP.WELDMENT_TYPE": "WELDING_BUTT_WELD",
+    "FATIGUE.TARGET_QUALITY_LEVEL": "B",
+    "FATIGUE.INITIAL_ANGULAR_DISTORTION": "0.42",
+    "FATIGUE.INITIAL_EDGE_MISALIGNMENT": "0.31",
+    "FATIGUE.WAS_STRAIGHTENED": "false",
+    "FATIGUE.ISO_5817_ANNEX_C_RATING": "B90",
+    "FATIGUE.LOAD_LEVEL": "HIGH",
+    "FATIGUE.TEST_ORDER": "3",
+    "FATIGUE.THICKNESS_POS_1": "10.02",
+    "FATIGUE.THICKNESS_POS_2": "10.05",
+    "FATIGUE.THICKNESS_POS_3": "9.98",
+    "FATIGUE.MEAN_THICKNESS": "10.02",
+    "FATIGUE.WIDTH_POS_1": "50.10",
+    "FATIGUE.WIDTH_POS_2": "50.04",
+    "FATIGUE.WIDTH_POS_3": "50.07",
+    "FATIGUE.MEAN_WIDTH": "50.07",
+    "FATIGUE.NEXT_STEP": "DONE"
+   },
+   "steps": {
+    "SCAN": {
+     "done": true,
+     "start": "2026-08-03 09:00:00"
+    },
+    "TEST": {
+     "done": true,
+     "start": "2026-08-20 08:30:00",
+     "props": {
+      "FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE": "4.0",
+      "FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE": "25.0",
+      "FATIGUE.STRAIN_GAUGE_APPLICATION_TIME": "2026-08-19 14:00:00",
+      "FATIGUE.SAMPLING_FREQUENCY": "100",
+      "FATIGUE.RECORDING_MODE": "PEAK_VALLEY",
+      "FATIGUE.RECORDED_CHANNELS": "Force, DMS1-DMS4",
+      "FATIGUE.PRELOAD_FORCE": "0.0",
+      "FATIGUE.BEACH_MARKS_ACTIVE": "true",
+      "FATIGUE.TERMINATION_REASON": "TOTAL_FRACTURE",
+      "FATIGUE.CYCLES_GROSS": "248310",
+      "FATIGUE.CYCLES_NET": "231900",
+      "FATIGUE.CYCLES_TO_10_PERCENT_STRAIN_GAUGE_DROP": "DMS1: 214000\nDMS2: 219500\nDMS3: -\nDMS4: -"
+     }
+    },
+    "FRACTURE": {
+     "done": true,
+     "start": "2026-08-26 10:00:00"
+    }
+   }
+  },
+  {
+   "code": "S1B-02",
+   "collection": "SERIES_1_BUTT_WELD",
+   "props": {
+    "ALIAS": "19_2",
+    "FATIGUE.SOURCE_SHEET": "19",
+    "EXPERIMENTAL_STEP.WELDMENT_TYPE": "WELDING_BUTT_WELD",
+    "FATIGUE.TARGET_QUALITY_LEVEL": "B",
+    "FATIGUE.INITIAL_ANGULAR_DISTORTION": "1.35",
+    "FATIGUE.INITIAL_EDGE_MISALIGNMENT": "0.58",
+    "FATIGUE.WAS_STRAIGHTENED": "true",
+    "FATIGUE.ANGULAR_DISTORTION_AFTER_STRAIGHTENING": "0.40",
+    "FATIGUE.EDGE_MISALIGNMENT_AFTER_STRAIGHTENING": "0.52",
+    "FATIGUE.ISO_5817_ANNEX_C_RATING": "B90",
+    "FATIGUE.LOAD_LEVEL": "LOW",
+    "FATIGUE.TEST_ORDER": "1",
+    "FATIGUE.MEAN_THICKNESS": "10.01",
+    "FATIGUE.MEAN_WIDTH": "50.02",
+    "FATIGUE.NEXT_STEP": "DONE"
+   },
+   "steps": {
+    "SCAN": {
+     "done": true,
+     "start": "2026-08-03 10:00:00"
+    },
+    "TEST": {
+     "done": true,
+     "start": "2026-08-05 08:00:00",
+     "props": {
+      "FATIGUE.SAMPLING_FREQUENCY": "100",
+      "FATIGUE.RECORDING_MODE": "PEAK_VALLEY",
+      "FATIGUE.PRELOAD_FORCE": "0.0",
+      "FATIGUE.BEACH_MARKS_ACTIVE": "false",
+      "FATIGUE.TERMINATION_REASON": "RUN_OUT",
+      "FATIGUE.CYCLES_GROSS": "10000000",
+      "FATIGUE.CYCLES_NET": "10000000"
+     }
+    },
+    "FRACTURE": null
+   }
+  },
+  {
+   "code": "S1B-03",
+   "collection": "SERIES_1_BUTT_WELD",
+   "props": {
+    "ALIAS": "20_1",
+    "FATIGUE.SOURCE_SHEET": "20",
+    "EXPERIMENTAL_STEP.WELDMENT_TYPE": "WELDING_BUTT_WELD",
+    "FATIGUE.TARGET_QUALITY_LEVEL": "B",
+    "FATIGUE.ISO_5817_ANNEX_C_RATING": "B125",
+    "FATIGUE.LOAD_LEVEL": "MEDIUM",
+    "FATIGUE.TEST_ORDER": "2",
+    "FATIGUE.MEAN_THICKNESS": "9.97",
+    "FATIGUE.MEAN_WIDTH": "49.95",
+    "FATIGUE.NEXT_STEP": "S12_FRACTURE_SURFACE_ANALYSIS"
+   },
+   "steps": {
+    "SCAN": {
+     "done": true,
+     "start": "2026-08-04 09:00:00"
+    },
+    "TEST": {
+     "done": true,
+     "start": "2026-09-01 08:00:00",
+     "props": {
+      "FATIGUE.SAMPLING_FREQUENCY": "100",
+      "FATIGUE.RECORDING_MODE": "PEAK_VALLEY",
+      "FATIGUE.PRELOAD_FORCE": "0.0",
+      "FATIGUE.BEACH_MARKS_ACTIVE": "true",
+      "FATIGUE.TERMINATION_REASON": "CRACK_DETECTED",
+      "FATIGUE.CYCLES_GROSS": "1123400",
+      "FATIGUE.CYCLES_NET": "1052000"
+     }
+    }
+   }
+  },
+  {
+   "code": "S1B-04",
+   "collection": "SERIES_1_BUTT_WELD",
+   "props": {
+    "ALIAS": "20_2",
+    "FATIGUE.SOURCE_SHEET": "20",
+    "EXPERIMENTAL_STEP.WELDMENT_TYPE": "WELDING_BUTT_WELD",
+    "FATIGUE.TARGET_QUALITY_LEVEL": "B",
+    "FATIGUE.ISO_5817_ANNEX_C_RATING": "B90",
+    "FATIGUE.LOAD_LEVEL": "HIGH",
+    "FATIGUE.TEST_ORDER": "4",
+    "FATIGUE.MEAN_THICKNESS": "10.04",
+    "FATIGUE.MEAN_WIDTH": "50.11",
+    "FATIGUE.NEXT_STEP": "S10_CYCLIC_FATIGUE_TEST"
+   },
+   "steps": {
+    "SCAN": {
+     "done": true,
+     "start": "2026-08-04 10:00:00"
+    },
+    "TEST": {
+     "done": false,
+     "start": "2026-10-05 08:00:00",
+     "props": {
+      "FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE": "4.0",
+      "FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE": "25.0",
+      "FATIGUE.SAMPLING_FREQUENCY": "100",
+      "FATIGUE.RECORDING_MODE": "PEAK_VALLEY",
+      "FATIGUE.PRELOAD_FORCE": "0.0",
+      "FATIGUE.BEACH_MARKS_ACTIVE": "true"
+     }
+    }
+   }
+  },
+  {
+   "code": "S1B-05",
+   "collection": "SERIES_1_BUTT_WELD",
+   "props": {
+    "ALIAS": "21_1",
+    "FATIGUE.SOURCE_SHEET": "21",
+    "EXPERIMENTAL_STEP.WELDMENT_TYPE": "WELDING_BUTT_WELD",
+    "FATIGUE.TARGET_QUALITY_LEVEL": "B",
+    "FATIGUE.ISO_5817_ANNEX_C_RATING": "C63",
+    "FATIGUE.LOAD_LEVEL": "MEDIUM",
+    "FATIGUE.TEST_ORDER": "5",
+    "FATIGUE.MEAN_THICKNESS": "10.00",
+    "FATIGUE.MEAN_WIDTH": "50.00",
+    "FATIGUE.NEXT_STEP": "S07_STRAIN_GAUGE_APPLICATION"
+   },
+   "steps": {
+    "SCAN": {
+     "done": true,
+     "start": "2026-08-05 09:00:00"
+    }
+   }
+  },
+  {
+   "code": "S1B-06",
+   "collection": "SERIES_1_BUTT_WELD",
+   "props": {
+    "ALIAS": "21_2",
+    "FATIGUE.SOURCE_SHEET": "21",
+    "EXPERIMENTAL_STEP.WELDMENT_TYPE": "WELDING_BUTT_WELD",
+    "FATIGUE.TARGET_QUALITY_LEVEL": "B",
+    "FATIGUE.INITIAL_ANGULAR_DISTORTION": "0.55",
+    "FATIGUE.INITIAL_EDGE_MISALIGNMENT": "0.20",
+    "FATIGUE.WAS_STRAIGHTENED": "false",
+    "FATIGUE.NEXT_STEP": "S03_3D_SCAN"
+   },
+   "steps": {}
+  },
+  {
+   "code": "S1C-01",
+   "collection": "SERIES_1_CRUCIFORM_WELD",
+   "props": {
+    "ALIAS": "K05_1",
+    "FATIGUE.SOURCE_SHEET": "K05",
+    "EXPERIMENTAL_STEP.WELDMENT_TYPE": "WELDING_CRUCIFORM_WELD",
+    "FATIGUE.TARGET_QUALITY_LEVEL": "C",
+    "FATIGUE.INITIAL_ANGULAR_DISTORTION": "0.80",
+    "FATIGUE.INITIAL_EDGE_MISALIGNMENT": "0.65",
+    "FATIGUE.WAS_STRAIGHTENED": "false",
+    "FATIGUE.WELD_POST_TREATMENT_NOTES": "Weld reinforcement ground flush on side A//Nahtüberhöhung Seite A blechbündig geschliffen",
+    "FATIGUE.NEXT_STEP": "S03_3D_SCAN"
+   },
+   "steps": {}
+  },
+  {
+   "code": "S1C-02",
+   "collection": "SERIES_1_CRUCIFORM_WELD",
+   "props": {
+    "ALIAS": "K05_2",
+    "FATIGUE.SOURCE_SHEET": "K05",
+    "EXPERIMENTAL_STEP.WELDMENT_TYPE": "WELDING_CRUCIFORM_WELD",
+    "FATIGUE.TARGET_QUALITY_LEVEL": "C",
+    "FATIGUE.NEXT_STEP": "S01_PRE_QUALITY_CHECK"
+   },
+   "steps": {}
+  }
+ ]
+}

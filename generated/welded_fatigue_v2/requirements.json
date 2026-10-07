@@ -1,0 +1,253 @@
+{
+  "prd_path": "BAM_PRD_Workflow_FB72_v2.md",
+  "prd_stem": "welded_fatigue_v2",
+  "prd_style": "workflow",
+  "extracted_at": "2026-10-06T00:00:00Z",
+  "predecessor_prd": "BAM_PRD_Workflow_FB72.md",
+  "goals": [
+    "Every specimen traceable from incoming inspection to the fracture surface//Jede Probe von der Eingangsprüfung bis zur Bruchfläche nachvollziehbar",
+    "Per test series, visible at a glance which specimen is in which workflow step and what comes next//Pro Prüfserie auf einen Blick sichtbar, welche Probe in welchem Ablaufschritt steht und was als Nächstes kommt",
+    "Every measured value and every file has a unique location ('what belongs where')//Jeder Messwert und jede Datei hat einen eindeutigen Ort („wo gehört was hin\")",
+    "Data machine-evaluable later (S-N curve from the series table, parser for IMC raw data)//Daten später maschinell auswertbar (Wöhlerlinie aus der Serientabelle, Parser für IMC-Rohdaten)"
+  ],
+  "principles": [
+    {"id": "P1", "name": "Flat object hierarchy//Flache Objekt-Hierarchie", "rule": "Space -> Project -> Collection (= test series) -> Objects. Experimental steps hang directly on the specimen (exactly one parent-child level). No step->step chains. All objects of a series live in the series collection."},
+    {"id": "P2", "name": "Flat type hierarchy//Flache Typ-Hierarchie", "rule": "New types inherit directly from an existing BAM base class; no own intermediate levels. As few new types as possible."},
+    {"id": "P3", "name": "Specimen data on the specimen//Probendaten an die Probe", "rule": "Properties describing the specimen (distortion, geometry, weld rating, load level) are properties of the specimen -> the collection table is the test matrix."},
+    {"id": "P4", "name": "Activities with device/file = experimental step//Tätigkeiten mit Gerät/Datei = Versuchsschritt", "rule": "A separate step object only where device(s), time period, operator and files belong together. Several workflow steps at the same workplace are combined into one object with numbered sections."},
+    {"id": "P5", "name": "Workflow plan visible//Ablaufplan sichtbar", "rule": "Sections carry the step number (e.g. '07 DMS-Applikation'). Every specimen has a 'Next step' field (ordered choice list 01-12 + completed). An SOP object 'Ablaufplan' in the project describes all steps and storage locations."},
+    {"id": "P6", "name": "Reuse-first//Reuse-first", "rule": "Reuse devices, auxiliary materials, standard steps, collection and dataset types from bam-masterdata. Live-existing, non-standardised types are not reused but migrated into the standard."},
+    {"id": "P7", "name": "Lean properties//Lean Properties", "rule": "Tables (load programme, beach marks, measurement series) are files, not properties."},
+    {"id": "P8", "name": "Language per BAM convention//Sprache nach BAM-Konvention", "rule": "Descriptions bilingual \"English//Deutsch\" (no spaces around //); property_label and section names in English as in the rest of bam-masterdata."}
+  ],
+  "subject": {
+    "name": "Welded fatigue specimen//Geschweißte Ermüdungsprobe",
+    "prd_section": "§4",
+    "data_items": [
+      {"label": "Manufacturer designation (original ID)//Herstellerbezeichnung (Original-ID)", "kind": "text", "unit": null, "choices": null, "repeat": 1, "notes": "Identifier"},
+      {"label": "Internal designation//Interne Bezeichnung", "kind": "text", "unit": null, "choices": null, "repeat": 1, "notes": "Identifier"},
+      {"label": "Final series designation//Finale Serienbezeichnung", "kind": "text", "unit": null, "choices": null, "repeat": 1, "notes": "Identifier, e.g. 'S1-01'"},
+      {"label": "Source sheet//Herkunftsblech", "kind": "text", "unit": null, "choices": null, "repeat": 1, "notes": "Identifier. Same data item is also listed in workflow step 05 ('Herkunftsblech (Bias-Vermeidung)')."},
+      {"label": "Weld geometry//Nahtgeometrie", "kind": "choice", "unit": null, "choices": ["Butt weld//Stumpfstoß", "Cruciform weld//Kreuzstoß"], "repeat": 1, "notes": "See domain_decisions: extension of WELDING.WELD_TYPE with BUTT_WELD and CRUCIFORM_WELD."},
+      {"label": "Target quality level according to ISO 5817//Angestrebte Bewertungsgruppe nach ISO 5817", "kind": "choice", "unit": null, "choices": ["B", "C", "D"], "repeat": 1, "notes": "Distinct from the ISO 5817 Annex C rating determined in step 04 (C63, B90, B125)."}
+    ]
+  },
+  "workflow_steps": [
+    {
+      "no": "01",
+      "name": "Pre-quality check of the weld//Vorqualitätsprüfung der Schweißnaht",
+      "prd_section": "§3",
+      "data_items": [
+        {"label": "Initial angular distortion [°]//Winkelverzug initial [°]", "kind": "real", "unit": "°", "choices": null, "repeat": 1, "notes": null},
+        {"label": "Initial edge misalignment [mm]//Kantenversatz initial [mm]", "kind": "real", "unit": "mm", "choices": null, "repeat": 1, "notes": null},
+        {"label": "Was straightened//Wurde gerichtet", "kind": "boolean", "unit": null, "choices": null, "repeat": 1, "notes": "PRD: ja/nein"},
+        {"label": "Angular distortion after straightening [°]//Winkelverzug nach Richten [°]", "kind": "real", "unit": "°", "choices": null, "repeat": 1, "notes": null},
+        {"label": "Edge misalignment after straightening [mm]//Kantenversatz nach Richten [mm]", "kind": "real", "unit": "mm", "choices": null, "repeat": 1, "notes": null},
+        {"label": "Gross weld defects//Grobe Nahtfehler", "kind": "text", "unit": null, "choices": null, "repeat": 1, "notes": "PRD: (Text)"}
+      ],
+      "equipment": [],
+      "files": [
+        {"name": "Specimen photos//Probenfotos", "format": null}
+      ]
+    },
+    {
+      "no": "02",
+      "name": "Chamfering / grinding//Anfasen / Schleifen",
+      "prd_section": "§3",
+      "data_items": [
+        {"label": "Documentation of weld reinforcement treatment / grinding notes//Dokumentation von Nahtüberhöhungs-Bearbeitung / Schleifhinweisen", "kind": "text", "unit": null, "choices": null, "repeat": 1, "notes": "PRD: (Text)"}
+      ],
+      "equipment": [],
+      "files": [
+        {"name": "Post-processing report//Nachbearbeitungsprotokoll", "format": "PDF"}
+      ]
+    },
+    {
+      "no": "03",
+      "name": "3D scan of the specimen//3D-Scan der Probe",
+      "prd_section": "§3",
+      "data_items": [],
+      "equipment": ["ZEISS GOM ATOS 5"],
+      "files": [
+        {"name": "3D scan raw data//3D-Scan-Rohdaten", "format": null}
+      ]
+    },
+    {
+      "no": "04",
+      "name": "Weld analysis (GOM)//Nahtanalyse (GOM)",
+      "prd_section": "§3",
+      "data_items": [
+        {"label": "Quality level according to ISO 5817 Annex C//Bewertungsgruppe nach ISO 5817 Anhang C", "kind": "choice", "unit": null, "choices": ["C63", "B90", "B125"], "repeat": 1, "notes": "Determined rating; distinct from the target quality level (B, C, D) on the specimen (§4)."}
+      ],
+      "equipment": ["GOM software//GOM-Software"],
+      "files": [
+        {"name": "Evaluation export//Auswerte-Export", "format": null}
+      ]
+    },
+    {
+      "no": "05",
+      "name": "Series assignment (randomisation)//Serienzuordnung (Randomisierung)",
+      "prd_section": "§3",
+      "data_items": [
+        {"label": "Assignment to test series//Zuordnung zur Prüfserie", "kind": "object_link", "unit": null, "choices": null, "repeat": 1, "notes": "Target is the test series; per §6 a test series is a Collection."},
+        {"label": "Load level//Lastniveau", "kind": "choice", "unit": null, "choices": ["High//hoch", "Medium//mittel", "Low//niedrig"], "repeat": 1, "notes": null},
+        {"label": "Test order//Prüfreihenfolge", "kind": "integer", "unit": null, "choices": null, "repeat": 1, "notes": "Kind not stated in PRD; integer assumed for an ordinal position."},
+        {"label": "Source sheet (bias avoidance)//Herkunftsblech (Bias-Vermeidung)", "kind": "text", "unit": null, "choices": null, "repeat": 1, "notes": "Same data item as subject 'Source sheet//Herkunftsblech' (§4); listed in both places in the PRD - place only once."}
+      ],
+      "equipment": [],
+      "files": [
+        {"name": "Randomisation script//Randomisierungs-Skript", "format": null}
+      ]
+    },
+    {
+      "no": "06",
+      "name": "Geometry before installation//Geometrie vor Einbau",
+      "prd_section": "§3",
+      "data_items": [
+        {"label": "Thickness [mm]//Dicke [mm]", "kind": "real", "unit": "mm", "choices": null, "repeat": 3, "notes": "PRD: an je 3 Positionen"},
+        {"label": "Width [mm]//Breite [mm]", "kind": "real", "unit": "mm", "choices": null, "repeat": 3, "notes": "PRD: an je 3 Positionen"},
+        {"label": "Mean thickness [mm]//Mittelwert Dicke [mm]", "kind": "real", "unit": "mm", "choices": null, "repeat": 1, "notes": "PRD: 'Mittelwerte [mm]' (plural, of thickness and width) - split into one item per quantity."},
+        {"label": "Mean width [mm]//Mittelwert Breite [mm]", "kind": "real", "unit": "mm", "choices": null, "repeat": 1, "notes": "PRD: 'Mittelwerte [mm]' (plural, of thickness and width) - split into one item per quantity."}
+      ],
+      "equipment": ["Caliper//Messschieber"],
+      "files": []
+    },
+    {
+      "no": "07",
+      "name": "Strain gauge application//DMS-Applikation",
+      "prd_section": "§3",
+      "data_items": [
+        {"label": "Strain gauge distance to weld toe [mm]//DMS-Abstand zum Nahtübergang [mm]", "kind": "real", "unit": "mm", "choices": null, "repeat": 1, "notes": null},
+        {"label": "Strain gauge distance to edge [mm]//DMS-Abstand zum Rand [mm]", "kind": "real", "unit": "mm", "choices": null, "repeat": 1, "notes": null},
+        {"label": "Time of application//Zeitpunkt der Applikation", "kind": "timestamp", "unit": null, "choices": null, "repeat": 1, "notes": null}
+      ],
+      "equipment": [
+        "Strain gauge HBM LY11-6/120//DMS HBM LY11-6/120",
+        "Adhesive HBM X60//Klebstoff HBM X60",
+        "Crack luminescence set (MR Chemie)//Risslumineszenz-Set (MR Chemie)",
+        "Camera system Luxonis OAK-4D-Pro//Kamerasystem Luxonis OAK-4D-Pro"
+      ],
+      "files": [
+        {"name": "Strain gauge position drawing//DMS-Positionszeichnung", "format": null},
+        {"name": "Setup photo//Aufbaufoto", "format": null}
+      ]
+    },
+    {
+      "no": "08",
+      "name": "Measuring amplifier / test rig//Messverstärker / Prüfstand",
+      "prd_section": "§3",
+      "data_items": [
+        {"label": "Sampling frequency [Hz]//Abtastfrequenz [Hz]", "kind": "real", "unit": "Hz", "choices": null, "repeat": 1, "notes": "Numeric kind (real vs integer) not stated in PRD."},
+        {"label": "Recording mode//Aufzeichnungsmodus", "kind": "choice", "unit": null, "choices": ["Full signal//Vollsignal", "Peak counter//Peak-Counter", "Peak-valley//Peak-Valley"], "repeat": 1, "notes": null},
+        {"label": "Recorded channels//Erfasste Kanäle", "kind": "text", "unit": null, "choices": null, "repeat": 1, "notes": "Kind not stated in PRD."}
+      ],
+      "equipment": [
+        "IMC measuring amplifier//IMC-Messverstärker",
+        "Servo-hydraulic testing machine//Servohydraulische Prüfmaschine"
+      ],
+      "files": []
+    },
+    {
+      "no": "09",
+      "name": "Installation stress//Einbaubeanspruchung",
+      "prd_section": "§3",
+      "data_items": [
+        {"label": "Preload force [kN]//Vorspannkraft [kN]", "kind": "real", "unit": "kN", "choices": null, "repeat": 1, "notes": "PRD: '(Biegemoment bei 0,0 kN)' - bending moment at 0.0 kN."}
+      ],
+      "equipment": ["IMC measuring amplifier//IMC-Messverstärker"],
+      "equipment_notes": "PRD lists only 'IMC'; interpreted as the IMC measuring amplifier of step 08.",
+      "files": [
+        {"name": "Bending moment raw data//Biegemoment-Rohdaten", "format": "IMC .raw"}
+      ]
+    },
+    {
+      "no": "10",
+      "name": "Cyclic fatigue test//Zyklischer Ermüdungsversuch",
+      "prd_section": "§3",
+      "data_items": [
+        {"label": "Beach marks (marker loads) active//Rastlinien (Markerlasten) aktiv", "kind": "boolean", "unit": null, "choices": null, "repeat": 1, "notes": null},
+        {"label": "Termination reason//Abbruchgrund", "kind": "choice", "unit": null, "choices": ["Total fracture//Totalbruch", "Crack detected//Riss detektiert", "Run-out (cycle count reached)//Durchläufer (Zyklenzahl erreicht)", "Manual stop//Manueller Stopp"], "repeat": 1, "notes": null}
+      ],
+      "equipment": ["Servo-hydraulic testing machine//Servohydraulische Prüfmaschine"],
+      "equipment_notes": "PRD lists 'Prüfmaschine'; interpreted as the servo-hydraulic testing machine of step 08.",
+      "files": [
+        {"name": "Load programme//Lastprogramm", "format": "Excel"},
+        {"name": "Measurement raw data//Mess-Rohdaten", "format": "IMC .raw"},
+        {"name": "Monitoring images (time-lapse)//Monitoring-Bilder (Zeitraffer)", "format": null}
+      ]
+    },
+    {
+      "no": "11",
+      "name": "Evaluation//Auswertung",
+      "prd_section": "§3",
+      "data_items": [
+        {"label": "Gross number of cycles//Bruttoschwingspielzahl", "kind": "integer", "unit": null, "choices": null, "repeat": 1, "notes": null},
+        {"label": "Net number of cycles//Nettoschwingspielzahl", "kind": "integer", "unit": null, "choices": null, "repeat": 1, "notes": null},
+        {"label": "Cycles to 10 % strain gauge drop per strain gauge//Zyklen bis 10 % DMS-Abfall je DMS", "kind": "text", "unit": null, "choices": null, "repeat": 1, "notes": "PRD: (Text)"}
+      ],
+      "equipment": [],
+      "files": [
+        {"name": "Cleaned measurement data//Bereinigte Messdaten", "format": "CSV/HDF5"},
+        {"name": "Evaluation plots//Auswerteplots", "format": null},
+        {"name": "Conversion script//Konvertierungsskript", "format": null}
+      ]
+    },
+    {
+      "no": "12",
+      "name": "Fracture surface analysis//Bruchflächenanalyse",
+      "prd_section": "§3",
+      "data_items": [],
+      "equipment": [
+        "Macro camera//Makro-Kamera",
+        "Digital microscope//Digitalmikroskop"
+      ],
+      "files": [
+        {"name": "Macro photos//Makrofotos", "format": null},
+        {"name": "Microscope images of crack origin//Mikroskopbilder Rissausgang", "format": null},
+        {"name": "Beach-mark evaluation//Rastlinien-Auswertung", "format": "Excel"}
+      ]
+    }
+  ],
+  "inventory": [
+    {"name": "ZEISS GOM ATOS 5", "kind": "instrument", "used_in_steps": ["03"], "notes": "3D scanner"},
+    {"name": "GOM software//GOM-Software", "kind": "software", "used_in_steps": ["04"], "notes": "Listed in the PRD equipment column but is software, not a device or auxiliary material; kind outside the instrument|testing_machine|auxiliary_material set - placement left to structure-designer."},
+    {"name": "Caliper//Messschieber", "kind": "instrument", "used_in_steps": ["06"], "notes": null},
+    {"name": "Strain gauge HBM LY11-6/120//DMS HBM LY11-6/120", "kind": "auxiliary_material", "used_in_steps": ["07"], "notes": "§5: no project-specific catalog type for strain gauges."},
+    {"name": "Adhesive HBM X60//Klebstoff HBM X60", "kind": "auxiliary_material", "used_in_steps": ["07"], "notes": "§5: no project-specific catalog type for adhesives."},
+    {"name": "Crack luminescence set (MR Chemie)//Risslumineszenz-Set (MR Chemie)", "kind": "auxiliary_material", "used_in_steps": ["07"], "notes": null},
+    {"name": "Camera system Luxonis OAK-4D-Pro//Kamerasystem Luxonis OAK-4D-Pro", "kind": "instrument", "used_in_steps": ["07"], "notes": null},
+    {"name": "IMC measuring amplifier//IMC-Messverstärker", "kind": "instrument", "used_in_steps": ["08", "09"], "notes": "Step 09 lists it as 'IMC'."},
+    {"name": "Servo-hydraulic testing machine//Servohydraulische Prüfmaschine", "kind": "testing_machine", "used_in_steps": ["08", "10"], "notes": "Step 10 lists it as 'Prüfmaschine'."},
+    {"name": "Macro camera//Makro-Kamera", "kind": "instrument", "used_in_steps": ["12"], "notes": null},
+    {"name": "Digital microscope//Digitalmikroskop", "kind": "instrument", "used_in_steps": ["12"], "notes": null}
+  ],
+  "series": {
+    "definition": "One test series = one Collection (e.g. 'Serie 1 – Stumpfstoß', 'Serie 1 – Kreuzstoß')//Eine Prüfserie = eine Collection (z. B. „Serie 1 – Stumpfstoß\", „Serie 1 – Kreuzstoß\")",
+    "prd_section": "§6",
+    "table_columns": [
+      "Series designation//Serienbezeichnung",
+      "Weld geometry//Nahtgeometrie",
+      "Load level//Lastniveau",
+      "Test order//Prüfreihenfolge",
+      "Quality level//Bewertungsgruppe",
+      "Next step//Nächster Schritt",
+      "Number of cycles//Schwingspielzahl",
+      "Termination reason//Abbruchgrund"
+    ],
+    "notes": "PRD: '(Letztere über den Versuchsschritt)' - the latter columns (number of cycles, termination reason) come via the experimental step. 'Bewertungsgruppe' does not specify whether the target (§4) or the Annex C rating (step 04) is meant."
+  },
+  "domain_decisions": [
+    {"topic": "weld geometry vocabulary", "decision": "Extend the existing BAM vocabulary WELDING.WELD_TYPE with BUTT_WELD 'Butt weld//Stumpfstoß' and CRUCIFORM_WELD 'Cruciform weld//Kreuzstoß'", "prd_section": "§4"},
+    {"topic": "inventory linking", "decision": "Devices and auxiliary materials are created once in the inventory and linked as parents of experimental steps (not as free text)", "prd_section": "§5"},
+    {"topic": "no project catalog types", "decision": "No project-specific catalog types for strain gauges or adhesives", "prd_section": "§5"},
+    {"topic": "test series", "decision": "One test series = one Collection; the collection table shows the per-specimen columns listed in series.table_columns", "prd_section": "§6"},
+    {"topic": "next step field", "decision": "Every specimen has a 'Next step//Nächster Schritt' field: ordered choice list 01-12 + completed", "prd_section": "§2 P5"},
+    {"topic": "workflow plan SOP", "decision": "One SOP object 'Ablaufplan' (workflow plan) in the project describes all steps and storage locations; sections carry the step number (e.g. '07 DMS-Applikation')", "prd_section": "§2 P5"}
+  ],
+  "deliverables": [
+    "generated/<stem>/requirements.json and gap-report.md (REUSE / EXTEND / CREATE / LIVE-ONLY)",
+    "generated/<stem>/datamodel/ - PR-ready bam-masterdata classes only for CREATE; EXTEND as PR instructions",
+    "Provisioning on the dev1 training instance (masterdata + demo series), notebook for repetition",
+    "Parser scaffold for steps 10/11 (IMC raw data -> experimental step)"
+  ]
+}

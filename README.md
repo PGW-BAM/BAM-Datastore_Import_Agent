@@ -2,14 +2,33 @@
 
 A reusable Claude Code agent + command architecture for BAM FB 7.2 and other BAM groups.
 
+## Current state (06.10.2026)
+
+Showcase for FB 7.2 (S-N tests on welded joints) re-run end-to-end with a **flat** structure:
+
+| Artefact | Path |
+|---|---|
+| PRD v2 (workflow + principles) | `BAM_PRD_Workflow_FB72_v2.md` |
+| Catalog of the standard (script) | `generated/CATALOG.md`, `generated/catalog.json` |
+| Live inventory of dev1 (read-only) | `generated/live/dev1_inventory.md` |
+| Requirements → design → gap report | `generated/welded_fatigue_v2/{requirements.json, design.md, gap-report.md}` |
+| PR-ready classes + spec | `generated/welded_fatigue_v2/datamodel/`, `spec.json` |
+| Provisioned on dev1 | `/FB_72/WELDED_FATIGUE` (demo series, fictitious values) via `tools/openbis_apply.js`, `tools/openbis_demo.js` |
+| Notebook / parser | `notebooks/welded_fatigue_v2_provisioning.ipynb`, `generated/welded_fatigue_v2/parsers/` |
+| Talk (10 min) | `presentation/00_Vortrag_10min.md`, `presentation/06_Befunde_und_Entscheidungen.md` |
+| Cleanup of the legacy model | `generated/welded_fatigue_v2/CLEANUP_dev1.md` |
+
+The v1 run (`BAM_PRD_Workflow_FB72.md`, `generated/welded_fatigue/`, `shipping/`) is kept for comparison.
+
 ## What it does
 
 Drop a Markdown PRD into this folder. The pipeline:
-1. Catalogs all existing types in `bam-masterdata` (ObjectTypes, Vocabularies, ExperimentalSteps)
-2. Extracts required entities from the PRD
-3. Produces a **gap report**: what to REUSE, what to EXTEND, what to CREATE (new)
-4. Generates Python extension modules (PR-ready for `BAMresearch/bam-masterdata`) only for genuine gaps
-5. Emits a Jupyter notebook that provisions your Collection + child Objects + Datasets in openBIS 20.10.12.5
+1. Catalogs all existing types in `bam-masterdata` with a deterministic script (`tools/build_catalog.py`)
+2. Inventories the target openBIS instance read-only (what is already there?)
+3. Extracts the workflow from the PRD and designs a **flat** structure (`structure-designer`)
+4. Produces a **gap report** against both sources: REUSE / EXTEND / CREATE / LIVE-ONLY
+5. Generates Python extension modules (PR-ready for `BAMresearch/bam-masterdata`) only for genuine gaps — import-tested
+6. Applies missing masterdata + object layout idempotently (dry run first), and emits notebook + parser for operators
 
 ## Prerequisites
 

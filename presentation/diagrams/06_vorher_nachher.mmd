@@ -1,0 +1,27 @@
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    subgraph VORHER["Vorher (dev1, Juni 2026): Kette, 13 Objekte / Probe, 12 Ebenen"]
+        direction TB
+        P0["Probe S1-0<br/>TEST_SPECIMEN"] --> V1["01 PRE_QUALITY_CHECK"] --> V2["02 CHAMFERING_GRINDING"] --> V3["03 SPECIMEN_RECORDING"] --> V4["04 WELD_ANALYSIS"] --> V5["05 SERIES_ASSIGNMENT"] --> V6["06 TEST_SETUP_GEOMETRY"]
+        V6 --> V7["07 MONITORING_APPLICATION"] --> V8["08 AMPLIFIER_SETTINGS"] --> V9["09 INSTALLATION_STRESS"] --> V10["10 CYCLIC_FATIGUE_TEST"] --> V11["11 DATA_EVALUATION"] --> V12["12 FRACTURE_SURFACE"]
+    end
+
+    subgraph NACHHER["Nachher (Agenten-Pipeline): flach, 4 Objekte / Probe, 1 Ebene"]
+        direction TB
+        S["Probe S1B-01 · SAMPLE.WELDED_FATIGUE_SPECIMEN<br/>Next step · 01 Pre-quality check · 02 Chamfering<br/>04 Weld analysis · 05 Series assignment · 06 Geometry"]
+        S --> SC["S1B-01-SCAN<br/>EXPERIMENTAL_STEP (03-04)"]
+        S --> TE["S1B-01-TEST<br/>CYCLIC_FATIGUE_TEST<br/>07 · 08 · 09 · 10 · 11"]
+        S --> FR["S1B-01-FRACTURE<br/>EXPERIMENTAL_STEP (12)"]
+        GOM(["GOM ATOS 5"]) -.Eltern.-> SC
+        RIG(["Prüfmaschine · IMC · DMS · X60 · Luxonis · Risslum."]) -.Eltern.-> TE
+        CAM(["Makro-Kamera · Mikroskop"]) -.Eltern.-> FR
+    end
+
+    VORHER ~~~ NACHHER
+
+    classDef old fill:#f8d7da,stroke:#a33,color:#111;
+    classDef new fill:#d4edda,stroke:#2a7,color:#111;
+    classDef inv fill:#e8eefc,stroke:#46c,color:#111;
+    class P0,V1,V2,V3,V4,V5,V6,V7,V8,V9,V10,V11,V12 old;
+    class S,SC,TE,FR new;
+    class GOM,RIG,CAM inv;

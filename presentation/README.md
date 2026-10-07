@@ -13,6 +13,9 @@ onboarding, and architecture reviews.
 
 | File | Audience | Use it for |
 |---|---|---|
+| `00_Vortrag_10min.md` | **Vortrag FB 7.2 (DE)** | Folienplan 10 min (4 min Versuche, 6 min Lösung) mit Kernaussagen, Bildern, Quellen |
+| `06_Befunde_und_Entscheidungen.md` | Vortrag / Rückfragen (DE) | Was die Agenten gefunden haben, wer was entschieden hat, offene Punkte |
+| `screenshots/` | Folien | Vorher/Nachher aus dev1 (06.10.2026) |
 | `01_Executive_Overview.md` | Management / non-technical | The "why" + one-paragraph pitch + slide bullets |
 | `02_Agent_Roles.md` | Architects / leads | High-level table: each agent's role, inputs, outputs, guardrails |
 | `03_Command_Hierarchy.md` | Operators / users | What each `/command` does and in which order to run them |
@@ -37,12 +40,16 @@ All diagrams live in `diagrams/` as `.mmd` (Mermaid) files. To export PNG/SVG fo
 | `diagrams/03_pipeline_sequence.mmd` | Sequence diagram of one full PRD run |
 | `diagrams/04_self_improvement_loop.mmd` | The Karpathy 7-step improvement loop |
 | `diagrams/05_two_path_provisioning.mmd` | Notebook (setup) vs Parser (ingestion) split |
+| `diagrams/06_vorher_nachher.mmd` | 12er-Kette vs. flache Struktur (Folie 7) |
+| `diagrams/07_ablauf_12_schritte.mmd` | 12 Ablaufschritte → Sektion bzw. Kind-Objekt (Folie 3) |
 
 ---
 
 ## 30-second summary
 
-- **8 specialised agents**, each doing exactly one job, with a locked tool allowlist.
+- **9 specialised agents + 4 deterministic scripts**: scripts count/verify/apply, agents understand/design/decide.
+- **Two sources of truth checked**: the standard (`bam-masterdata`) *and* the live openBIS instance → REUSE / EXTEND / CREATE / **LIVE-ONLY**.
+- **Flat by design**: FB 7.2 S-N workflow = specimen + 3 step objects (depth 1) instead of a 12-level chain.
 - **6 slash-commands** that orchestrate those agents into a repeatable pipeline.
 - **1 self-improvement skill** that lets the system critique and patch its own agents from real run data.
 - **Reuse-first principle**: never recreate a data type that already exists in `bam-masterdata`; classify everything as **REUSE / EXTEND / CREATE** and only generate code for genuine gaps.

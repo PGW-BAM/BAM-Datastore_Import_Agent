@@ -1,0 +1,53 @@
+WORKFLOW PLAN - S-N tests on welded joints (FB 7.2)
+ABLAUFPLAN - Wöhlerversuche an Schweißverbindungen (FB 7.2)
+
+Structure: series = collection; per specimen: specimen object + children SCAN (03-04), TEST (07-11), FRACTURE (12).
+Struktur: Serie = Collection; pro Probe: Probenobjekt + Kinder SCAN (03-04), TEST (07-11), BRUCH (12). Keine weiteren Ebenen.
+Field 'Next step' on each specimen shows what comes next. / Feld 'Next step' an jeder Probe zeigt den nächsten Schritt.
+
+[00] Subject (identity)
+     where/wo: Probe S1x-NN > Section 'General Information + Specimen identification'
+[01] Pre-quality check of the weld
+     where/wo: Probe S1x-NN > Section '01 Pre-quality check'
+     files/Dateien: Specimen photos
+[02] Chamfering / grinding
+     where/wo: Probe S1x-NN > Section '02 Chamfering / grinding'
+     files/Dateien: Post-processing report
+[03] 3D scan of the specimen
+     where/wo: <Probe>-SCAN (EXPERIMENTAL_STEP)
+     equipment/Geräte: ZEISS GOM ATOS 5 (parent)
+     files/Dateien: 3D scan raw data
+[04] Weld analysis (GOM)
+     where/wo: Probe S1x-NN (rating) + <Probe>-SCAN (files) > Section '04 Weld analysis'
+     equipment/Geräte: GOM software (text in SCAN step)
+     files/Dateien: Evaluation export
+[05] Series assignment (randomisation)
+     where/wo: Probe S1x-NN + collection membership > Section '05 Series assignment'
+     files/Dateien: Randomisation script (collection)
+[06] Geometry before installation
+     where/wo: Probe S1x-NN > Section '06 Geometry before installation'
+     equipment/Geräte: Caliper (no inventory object/link; named in SOP only)
+[07] Strain gauge application
+     where/wo: <Probe>-TEST > Section '07 Strain gauge application'
+     equipment/Geräte: Strain gauge, Adhesive, Crack luminescence set, Luxonis OAK-4D-Pro
+     files/Dateien: Strain gauge position drawing, Setup photo
+[08] Measuring amplifier / test rig
+     where/wo: <Probe>-TEST > Section '08 Measuring amplifier / test rig'
+     equipment/Geräte: IMC measuring amplifier, Servo-hydraulic testing machine
+[09] Installation stress
+     where/wo: <Probe>-TEST > Section '09 Installation stress'
+     equipment/Geräte: IMC measuring amplifier (same link as 08)
+     files/Dateien: Bending moment raw data
+[10] Cyclic fatigue test
+     where/wo: <Probe>-TEST > Section '10 Cyclic fatigue test'
+     equipment/Geräte: Servo-hydraulic testing machine (same link as 08)
+     files/Dateien: Load programme, Measurement raw data, Monitoring images
+[11] Evaluation
+     where/wo: <Probe>-TEST > Section '11 Evaluation'
+     files/Dateien: Cleaned measurement data, Evaluation plots, Conversion script
+[12] Fracture surface analysis
+     where/wo: <Probe>-FRACTURE (EXPERIMENTAL_STEP)
+     equipment/Geräte: Macro camera, Digital microscope
+     files/Dateien: Macro photos, Microscope images of crack origin, Beach-mark evaluation
+[P5] Workflow status
+     where/wo: Probe S1x-NN > Section 'Workflow status'

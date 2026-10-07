@@ -5,7 +5,7 @@
 > The BAM DataStore agent system automates the most error-prone part of research-data
 > management: translating a written experiment specification (a **PRD**) into the
 > **data-model code and ingestion tooling** that a lab's **openBIS** database needs.
-> It does this with a team of eight specialised AI agents, each performing a single
+> It does this with a team of nine specialised AI agents plus deterministic scripts, each performing a single
 > well-defined step, coordinated by simple slash-commands. A hard "reuse-first" rule
 > ensures the system **never duplicates** data types that already exist in the shared
 > `bam-masterdata` standard — it reuses, minimally extends, or only creates what is
@@ -86,8 +86,10 @@ The result: tooling that **gets measurably better over time**, with a full audit
 
 ## Headline numbers for a title slide
 
-- **8** specialised agents
+- **9** specialised agents + **4** deterministic scripts
+- **2** sources checked: standard (`bam-masterdata`) + live openBIS instance
+- FB 7.2 showcase: **13 → 4** objects per specimen, link depth **12 → 1**, new types **16 → 2**, new dataset types **17 → 0**
 - **6** orchestration commands
 - **1** self-improvement loop (7 disciplined steps)
-- **3** classification verdicts that prevent data duplication (REUSE / EXTEND / CREATE)
+- **4** classification verdicts that prevent data duplication (REUSE / EXTEND / CREATE / LIVE-ONLY)
 - **0** hardcoded credentials, **0** invented citations — guardrails enforced by design

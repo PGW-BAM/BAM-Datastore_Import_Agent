@@ -27,6 +27,7 @@ This is the single most important rule of this agent. Emitting code for REUSE/EX
 | Input | Path |
 |---|---|
 | Gap report | `generated/<prd-stem>/gap-report.md` |
+| Design (workflow PRDs — authoritative for codes, sections, properties) | `generated/<prd-stem>/design.json` |
 | Requirements | `generated/<prd-stem>/requirements.json` |
 | ObjectType template | `../bam-masterdata/bam_masterdata/datamodel/object_types.py:7167-7191` (`AlignmentFixture`) |
 | Vocabulary template | `../bam-masterdata/bam_masterdata/datamodel/vocabulary_types.py:27836-27858` (`FlashLampShape`) |
@@ -52,13 +53,16 @@ generated/<prd-stem>/datamodel/
 Generated Python must ONLY use the bam-masterdata declarative class pattern. No pyBIS calls.
 
 ```python
-from bam_masterdata.metadata.entities import ObjectType, VocabularyType, ExperimentalStep
+from bam_masterdata.metadata.entities import ObjectType, VocabularyType
 from bam_masterdata.metadata.definitions import (
     ObjectTypeDef,
     VocabularyTypeDef,
+    VocabularyTerm,          # vocabulary terms (there is NO VocabularyTypeAssignment)
     PropertyTypeAssignment,
-    VocabularyTypeAssignment,
 )
+# Base classes for flat inheritance come from the datamodel, not from entities:
+from bam_masterdata.datamodel.object_types import ExperimentalStep, Sample
+from bam_masterdata.datamodel.activities import MechanicalTest
 
 class MyNewType(ObjectType):
     defs = ObjectTypeDef(
@@ -108,7 +112,7 @@ For each CREATE vocabulary:
 
 ```python
 from bam_masterdata.metadata.entities import VocabularyType
-from bam_masterdata.metadata.definitions import VocabularyTypeDef, VocabularyTypeAssignment
+from bam_masterdata.metadata.definitions import VocabularyTerm, VocabularyTypeDef
 
 
 class Iso5817FatClass(VocabularyType):
@@ -116,16 +120,19 @@ class Iso5817FatClass(VocabularyType):
         code="ISO_5817_FAT_CLASS",
         description="IIW FAT class for high-cycle fatigue//IIW FAT-Klasse für Hochzyklus-Ermüdung",
     )
-    C56 = VocabularyTypeAssignment(
+    c56 = VocabularyTerm(
         code="C56",
+        label="C56",
         description="FAT Class C56//FAT Klasse C56",
     )
-    B90 = VocabularyTypeAssignment(
+    b90 = VocabularyTerm(
         code="B90",
+        label="B90",
         description="FAT Class B90//FAT Klasse B90",
     )
-    B125 = VocabularyTypeAssignment(
+    b125 = VocabularyTerm(
         code="B125",
+        label="B125",
         description="FAT Class B125//FAT Klasse B125",
     )
 ```
@@ -137,7 +144,7 @@ Group vocabularies in a single file. One class per vocabulary.
 For each CREATE ObjectType or ExperimentalStep:
 
 ```python
-from bam_masterdata.metadata.entities import ObjectType, ExperimentalStep
+from bam_masterdata.datamodel.object_types import ExperimentalStep, Sample
 from bam_masterdata.metadata.definitions import ObjectTypeDef, PropertyTypeAssignment
 
 
@@ -166,7 +173,9 @@ class WeldedFatigueSpecimen(ObjectType):
     # ... remaining properties
 ```
 
-For each ExperimentalStep, inherit from `ExperimentalStep` instead of `ObjectType`. Use `generated_code_prefix="EXP.<KURZNAME>"` per the PRD.
+Inherit from the `parent_class` given in design.json (e.g. `Sample`, `MechanicalTest`, `ExperimentalStep`) —
+directly, never via an own intermediate class. Use codes, prefixes, sections and property codes exactly as
+in design.json. Labels and sections English, descriptions `"English//Deutsch"`.
 
 ### Step 4 — Emit README.md
 
@@ -223,6 +232,17 @@ grep -n "o\.create_\|o\.new_collection\|password" generated/<prd-stem>/datamodel
 
 The grep must return empty. Both ast.parse calls must succeed.
 
+**Import test (mandatory — ast.parse alone is not enough):** run with an interpreter that has
+`bam-masterdata` installed (e.g. the scratchpad venv) and import both modules, instantiate every class and
+print its code and property count:
+
+```bash
+<venv-python> -c "import importlib.util,sys; [importlib.util.spec_from_file_location(n,p).loader.exec_module(importlib.util.module_from_spec(importlib.util.spec_from_file_location(n,p))) for n,p in [('v','generated/<prd-stem>/datamodel/vocabularies.py'),('o','generated/<prd-stem>/datamodel/object_types.py')]]; print('import OK')"
+```
+
+The legacy run (2026-06-02) passed `ast.parse` but used the non-existent `VocabularyTypeAssignment`
+and would have failed on import.
+
 ---
 
 ## Hard constraints
@@ -233,5 +253,5 @@ The grep must return empty. Both ast.parse calls must succeed.
 | No pyBIS calls in output | Declarative pattern only; CLI handles push |
 | No underscore-prefixed output files | Discovery mechanism skips them |
 | All bilingual strings: `//` no space | Pre-commit hook enforces this |
-| `ast.parse` must succeed on both .py files | Generated code must be syntactically valid |
+| `ast.parse` **and import** must succeed on both .py files | Generated code must actually load in bam-masterdata |
 | No forbidden API names in output | `grep -n "o\.create_"` must be empty |

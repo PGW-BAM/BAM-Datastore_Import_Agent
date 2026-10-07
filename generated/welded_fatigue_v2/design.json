@@ -1,0 +1,1509 @@
+{
+  "prd_stem": "welded_fatigue_v2",
+  "catalog_sha": "d7a871be8c6aa934af2bf77357d30d8a5d689d92",
+  "catalog_commit_date": "2026-10-05 13:43:38 +0200",
+  "designed_at": "2026-10-06T00:00:00Z",
+  "inputs": {
+    "requirements": "generated/welded_fatigue_v2/requirements.json",
+    "catalog": "generated/catalog.json",
+    "live_inventory": "generated/live/dev1_inventory.md"
+  },
+  "user_decisions_applied": [
+    "decision 1",
+    "decision 2",
+    "decision 3",
+    "decision 4",
+    "decision 5",
+    "decision 6",
+    "decision 7",
+    "decision 8",
+    "decision 9",
+    "decision 10"
+  ],
+  "object_types": [
+    {
+      "class_name": "WeldedFatigueSpecimen",
+      "code": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+      "parent_class": "Sample",
+      "parent_ref": "bam_masterdata/datamodel/object_types.py:3005",
+      "generated_code_prefix": "SAM.WFS",
+      "description": "Welded specimen for cyclic fatigue testing (butt or cruciform weld)//Geschweißte Probe für zyklische Ermüdungsversuche (Stumpf- oder Kreuzstoß)",
+      "covers_steps": [
+        "subject",
+        "01",
+        "02",
+        "04",
+        "05",
+        "06"
+      ],
+      "section_order": [
+        "Workflow status",
+        "General Information",
+        "Specimen identification",
+        "01 Pre-quality check",
+        "02 Chamfering / grinding",
+        "04 Weld analysis",
+        "05 Series assignment",
+        "06 Geometry before installation",
+        "Properties",
+        "BAM Information",
+        "Additional Information",
+        "Comments"
+      ],
+      "inherited_property_usage": [
+        {
+          "data_item": "Final series designation//Finale Serienbezeichnung",
+          "code": "$NAME",
+          "section": "General Information",
+          "source": "PRD §4 subject",
+          "justification": "The series designation (e.g. 'S1B-01') is the specimen's display name; no new property."
+        },
+        {
+          "data_item": "Internal designation//Interne Bezeichnung",
+          "code": "ALIAS",
+          "section": "General Information",
+          "source": "PRD §4 subject",
+          "justification": "Inherited Sample property 'Alternative Name' holds the internal BAM designation (resolution Q4); no new property."
+        }
+      ],
+      "properties": [
+        {
+          "attr": "next_step",
+          "code": "FATIGUE.NEXT_STEP",
+          "data_type": "CONTROLLEDVOCABULARY",
+          "property_label": "Next step",
+          "description": "Next workflow step to be carried out on this specimen//Nächster durchzuführender Ablaufschritt an dieser Probe",
+          "section": "Workflow status",
+          "mandatory": false,
+          "vocabulary_code": "WELDED_FATIGUE_WORKFLOW_STEP",
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §2 P5 / domain_decisions 'next step field' (principle-required, not a PRD data item)"
+        },
+        {
+          "attr": "manufacturer_designation",
+          "code": "FATIGUE.MANUFACTURER_DESIGNATION",
+          "data_type": "VARCHAR",
+          "property_label": "Manufacturer designation (original ID)",
+          "description": "Original specimen identifier assigned by the manufacturer//Originale Probenkennung des Herstellers",
+          "section": "Specimen identification",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §4 subject",
+          "note": "Internal designation uses the inherited ALIAS (resolution Q4), so the manufacturer ID gets its own property."
+        },
+        {
+          "attr": "source_sheet",
+          "code": "FATIGUE.SOURCE_SHEET",
+          "data_type": "VARCHAR",
+          "property_label": "Source sheet",
+          "description": "Plate/sheet the specimen was cut from; used to avoid bias in the series randomisation//Blech, aus dem die Probe entnommen wurde; dient der Bias-Vermeidung bei der Randomisierung",
+          "section": "Specimen identification",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §4 subject + §3 step 05 (same data item, placed once)"
+        },
+        {
+          "attr": "weld_type",
+          "code": "EXPERIMENTAL_STEP.WELDMENT_TYPE",
+          "data_type": "CONTROLLEDVOCABULARY",
+          "property_label": "Type of weld",
+          "description": "Type of weldment made//Art der Schweißverbindung",
+          "section": "Specimen identification",
+          "mandatory": false,
+          "vocabulary_code": "WELDING.WELD_TYPE",
+          "object_code": null,
+          "reuse_property": "EXPERIMENTAL_STEP.WELDMENT_TYPE (Weldment, bam_masterdata/datamodel/welding/object_types.py:409)",
+          "source": "PRD §4 subject 'Weld geometry'",
+          "note": "Existing PropertyType bound to WELDING.WELD_TYPE (decision 2); label/description are fixed by the PropertyType. Kept reuse-first (resolution Q3)."
+        },
+        {
+          "attr": "target_quality_level",
+          "code": "FATIGUE.TARGET_QUALITY_LEVEL",
+          "data_type": "CONTROLLEDVOCABULARY",
+          "property_label": "Target quality level (ISO 5817)",
+          "description": "Quality level according to ISO 5817 the specimen was manufactured for//Angestrebte Bewertungsgruppe nach ISO 5817, für die die Probe gefertigt wurde",
+          "section": "Specimen identification",
+          "mandatory": false,
+          "vocabulary_code": "WELDING.ISO_5817_QUALITY_LEVEL",
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §4 subject"
+        },
+        {
+          "attr": "initial_angular_distortion",
+          "code": "FATIGUE.INITIAL_ANGULAR_DISTORTION",
+          "data_type": "REAL",
+          "property_label": "Initial angular distortion [°]",
+          "description": "Angular distortion measured at incoming inspection [°]//Winkelverzug bei der Eingangsprüfung [°]",
+          "section": "01 Pre-quality check",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 01"
+        },
+        {
+          "attr": "initial_edge_misalignment",
+          "code": "FATIGUE.INITIAL_EDGE_MISALIGNMENT",
+          "data_type": "REAL",
+          "property_label": "Initial edge misalignment [mm]",
+          "description": "Edge misalignment measured at incoming inspection [mm]//Kantenversatz bei der Eingangsprüfung [mm]",
+          "section": "01 Pre-quality check",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 01"
+        },
+        {
+          "attr": "was_straightened",
+          "code": "FATIGUE.WAS_STRAIGHTENED",
+          "data_type": "BOOLEAN",
+          "property_label": "Was straightened",
+          "description": "Specimen was straightened after the pre-quality check//Probe wurde nach der Vorqualitätsprüfung gerichtet",
+          "section": "01 Pre-quality check",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 01"
+        },
+        {
+          "attr": "angular_distortion_after_straightening",
+          "code": "FATIGUE.ANGULAR_DISTORTION_AFTER_STRAIGHTENING",
+          "data_type": "REAL",
+          "property_label": "Angular distortion after straightening [°]",
+          "description": "Angular distortion after straightening [°]//Winkelverzug nach dem Richten [°]",
+          "section": "01 Pre-quality check",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 01"
+        },
+        {
+          "attr": "edge_misalignment_after_straightening",
+          "code": "FATIGUE.EDGE_MISALIGNMENT_AFTER_STRAIGHTENING",
+          "data_type": "REAL",
+          "property_label": "Edge misalignment after straightening [mm]",
+          "description": "Edge misalignment after straightening [mm]//Kantenversatz nach dem Richten [mm]",
+          "section": "01 Pre-quality check",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 01"
+        },
+        {
+          "attr": "defect_description",
+          "code": "DEFECT_DESCRIPTION",
+          "data_type": "MULTILINE_VARCHAR",
+          "property_label": "Defect description",
+          "description": "Defect Description//Beschreibung der Defekte",
+          "section": "01 Pre-quality check",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": "DEFECT_DESCRIPTION (Named, bam_masterdata/datamodel/object_types.py:7429)",
+          "source": "PRD §3 step 01 'Gross weld defects'",
+          "note": "Free-text description of gross weld defects; data type and meaning match the existing PropertyType."
+        },
+        {
+          "attr": "weld_post_treatment_notes",
+          "code": "FATIGUE.WELD_POST_TREATMENT_NOTES",
+          "data_type": "MULTILINE_VARCHAR",
+          "property_label": "Weld reinforcement treatment / grinding notes",
+          "description": "Documentation of weld reinforcement treatment and grinding//Dokumentation der Nahtüberhöhungs-Bearbeitung und Schleifhinweise",
+          "section": "02 Chamfering / grinding",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 02"
+        },
+        {
+          "attr": "iso_5817_annex_c_rating",
+          "code": "FATIGUE.ISO_5817_ANNEX_C_RATING",
+          "data_type": "CONTROLLEDVOCABULARY",
+          "property_label": "Quality level ISO 5817 Annex C",
+          "description": "Quality level determined by the GOM weld analysis according to ISO 5817 Annex C//Mit der GOM-Nahtanalyse ermittelte Bewertungsgruppe nach ISO 5817 Anhang C",
+          "section": "04 Weld analysis",
+          "mandatory": false,
+          "vocabulary_code": "WELDING.ISO_5817_ANNEX_C_RATING",
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 04"
+        },
+        {
+          "attr": "load_level",
+          "code": "FATIGUE.LOAD_LEVEL",
+          "data_type": "CONTROLLEDVOCABULARY",
+          "property_label": "Load level",
+          "description": "Load level the specimen is assigned to within the series//Lastniveau, dem die Probe in der Serie zugeordnet ist",
+          "section": "05 Series assignment",
+          "mandatory": false,
+          "vocabulary_code": "FATIGUE.LOAD_LEVEL",
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 05"
+        },
+        {
+          "attr": "test_order",
+          "code": "FATIGUE.TEST_ORDER",
+          "data_type": "INTEGER",
+          "property_label": "Test order",
+          "description": "Position of the specimen in the randomised test sequence//Position der Probe in der randomisierten Prüfreihenfolge",
+          "section": "05 Series assignment",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 05 (INTEGER per decision 7)"
+        },
+        {
+          "attr": "thickness_pos_1",
+          "code": "FATIGUE.THICKNESS_POS_1",
+          "data_type": "REAL",
+          "property_label": "Thickness position 1 [mm]",
+          "description": "Thickness measured at position 1 before installation [mm]//Dicke an Position 1 vor Einbau [mm]",
+          "section": "06 Geometry before installation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 06 (repeat 3)"
+        },
+        {
+          "attr": "thickness_pos_2",
+          "code": "FATIGUE.THICKNESS_POS_2",
+          "data_type": "REAL",
+          "property_label": "Thickness position 2 [mm]",
+          "description": "Thickness measured at position 2 before installation [mm]//Dicke an Position 2 vor Einbau [mm]",
+          "section": "06 Geometry before installation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 06 (repeat 3)"
+        },
+        {
+          "attr": "thickness_pos_3",
+          "code": "FATIGUE.THICKNESS_POS_3",
+          "data_type": "REAL",
+          "property_label": "Thickness position 3 [mm]",
+          "description": "Thickness measured at position 3 before installation [mm]//Dicke an Position 3 vor Einbau [mm]",
+          "section": "06 Geometry before installation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 06 (repeat 3)"
+        },
+        {
+          "attr": "width_pos_1",
+          "code": "FATIGUE.WIDTH_POS_1",
+          "data_type": "REAL",
+          "property_label": "Width position 1 [mm]",
+          "description": "Width measured at position 1 before installation [mm]//Breite an Position 1 vor Einbau [mm]",
+          "section": "06 Geometry before installation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 06 (repeat 3)"
+        },
+        {
+          "attr": "width_pos_2",
+          "code": "FATIGUE.WIDTH_POS_2",
+          "data_type": "REAL",
+          "property_label": "Width position 2 [mm]",
+          "description": "Width measured at position 2 before installation [mm]//Breite an Position 2 vor Einbau [mm]",
+          "section": "06 Geometry before installation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 06 (repeat 3)"
+        },
+        {
+          "attr": "width_pos_3",
+          "code": "FATIGUE.WIDTH_POS_3",
+          "data_type": "REAL",
+          "property_label": "Width position 3 [mm]",
+          "description": "Width measured at position 3 before installation [mm]//Breite an Position 3 vor Einbau [mm]",
+          "section": "06 Geometry before installation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 06 (repeat 3)"
+        },
+        {
+          "attr": "mean_thickness",
+          "code": "FATIGUE.MEAN_THICKNESS",
+          "data_type": "REAL",
+          "property_label": "Mean thickness [mm]",
+          "description": "Mean of the three thickness measurements [mm]//Mittelwert der drei Dickenmessungen [mm]",
+          "section": "06 Geometry before installation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 06"
+        },
+        {
+          "attr": "mean_width",
+          "code": "FATIGUE.MEAN_WIDTH",
+          "data_type": "REAL",
+          "property_label": "Mean width [mm]",
+          "description": "Mean of the three width measurements [mm]//Mittelwert der drei Breitenmessungen [mm]",
+          "section": "06 Geometry before installation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 06"
+        }
+      ]
+    },
+    {
+      "class_name": "CyclicFatigueTest",
+      "code": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+      "parent_class": "MechanicalTest",
+      "parent_ref": "bam_masterdata/datamodel/activities.py:2196",
+      "generated_code_prefix": "EXP.MECH.CYC_FAT",
+      "generated_code_prefix_note": "Kept as confirmed; follows sibling CreepTest ('EXP.MECH.CREEP'), not the parent's 'EXP.MECH_TEST'.",
+      "description": "Cyclic fatigue test of a welded specimen incl. strain gauge application, measurement chain, installation and evaluation//Zyklischer Ermüdungsversuch an einer geschweißten Probe inkl. DMS-Applikation, Messkette, Einbau und Auswertung",
+      "covers_steps": [
+        "07",
+        "08",
+        "09",
+        "10",
+        "11"
+      ],
+      "section_order": [
+        "General Information",
+        "07 Strain gauge application",
+        "08 Measuring amplifier / test rig",
+        "09 Installation stress",
+        "10 Cyclic fatigue test",
+        "11 Evaluation",
+        "Experimental Details",
+        "References",
+        "Additional Information",
+        "Comments"
+      ],
+      "inherited_property_usage": [
+        {
+          "data_item": null,
+          "code": "OPERATOR / START_DATE / END_DATE / FINISHED_FLAG / NOTES",
+          "section": "General Information",
+          "justification": "Provided by ExperimentalStep; used as-is for the whole 07-11 session. Not mapped to any PRD data item."
+        }
+      ],
+      "properties": [
+        {
+          "attr": "strain_gauge_distance_to_weld_toe",
+          "code": "FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE",
+          "data_type": "REAL",
+          "property_label": "Strain gauge distance to weld toe [mm]",
+          "description": "Distance between strain gauge and weld toe [mm]//Abstand des DMS zum Nahtübergang [mm]",
+          "section": "07 Strain gauge application",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 07"
+        },
+        {
+          "attr": "strain_gauge_distance_to_edge",
+          "code": "FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE",
+          "data_type": "REAL",
+          "property_label": "Strain gauge distance to edge [mm]",
+          "description": "Distance between strain gauge and specimen edge [mm]//Abstand des DMS zum Probenrand [mm]",
+          "section": "07 Strain gauge application",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 07"
+        },
+        {
+          "attr": "strain_gauge_application_time",
+          "code": "FATIGUE.STRAIN_GAUGE_APPLICATION_TIME",
+          "data_type": "TIMESTAMP",
+          "property_label": "Time of strain gauge application",
+          "description": "Date and time the strain gauges were applied//Zeitpunkt der DMS-Applikation",
+          "section": "07 Strain gauge application",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 07",
+          "note": "START_DATE (inherited) not reused: it spans the whole merged object 07-11 and is reserved for the step start (parser of steps 10/11 may fill START_DATE/END_DATE from IMC raw data); the application time matters on its own (adhesive curing)."
+        },
+        {
+          "attr": "sampling_frequency",
+          "code": "FATIGUE.SAMPLING_FREQUENCY",
+          "data_type": "INTEGER",
+          "property_label": "Sampling frequency [Hz]",
+          "description": "Sampling frequency of the measuring amplifier [Hz]//Abtastfrequenz des Messverstärkers [Hz]",
+          "section": "08 Measuring amplifier / test rig",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 08 (INTEGER per decision 7; requirements.json had 'real')"
+        },
+        {
+          "attr": "recording_mode",
+          "code": "FATIGUE.RECORDING_MODE",
+          "data_type": "CONTROLLEDVOCABULARY",
+          "property_label": "Recording mode",
+          "description": "Data recording mode of the measuring amplifier//Aufzeichnungsmodus des Messverstärkers",
+          "section": "08 Measuring amplifier / test rig",
+          "mandatory": false,
+          "vocabulary_code": "FATIGUE.RECORDING_MODE",
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 08"
+        },
+        {
+          "attr": "recorded_channels",
+          "code": "FATIGUE.RECORDED_CHANNELS",
+          "data_type": "VARCHAR",
+          "property_label": "Recorded channels",
+          "description": "Channels recorded by the measuring amplifier//Vom Messverstärker erfasste Kanäle",
+          "section": "08 Measuring amplifier / test rig",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 08"
+        },
+        {
+          "attr": "preload_force",
+          "code": "FATIGUE.PRELOAD_FORCE",
+          "data_type": "REAL",
+          "property_label": "Preload force [kN]",
+          "description": "Preload force during installation (bending moment at 0.0 kN) [kN]//Vorspannkraft beim Einbau (Biegemoment bei 0,0 kN) [kN]",
+          "section": "09 Installation stress",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 09",
+          "note": "CREEP_TEST_PRELOAD (CreepTest) not reused: creep-test domain code without fixed unit."
+        },
+        {
+          "attr": "beach_marks_active",
+          "code": "FATIGUE.BEACH_MARKS_ACTIVE",
+          "data_type": "BOOLEAN",
+          "property_label": "Beach marks (marker loads) active",
+          "description": "Marker loads for beach marks were applied during the test//Markerlasten für Rastlinien waren während des Versuchs aktiv",
+          "section": "10 Cyclic fatigue test",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 10"
+        },
+        {
+          "attr": "termination_reason",
+          "code": "FATIGUE.TERMINATION_REASON",
+          "data_type": "CONTROLLEDVOCABULARY",
+          "property_label": "Termination reason",
+          "description": "Reason the cyclic fatigue test was terminated//Grund für den Abbruch des zyklischen Ermüdungsversuchs",
+          "section": "10 Cyclic fatigue test",
+          "mandatory": false,
+          "vocabulary_code": "FATIGUE.TERMINATION_REASON",
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 10",
+          "note": "CREEP_TEST_END_OF_TEST_CRITERIUM terms do not cover the choices."
+        },
+        {
+          "attr": "cycles_gross",
+          "code": "FATIGUE.CYCLES_GROSS",
+          "data_type": "INTEGER",
+          "property_label": "Gross number of cycles",
+          "description": "Gross number of load cycles including marker loads//Bruttoschwingspielzahl inklusive Markerlasten",
+          "section": "11 Evaluation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 11",
+          "note": "FINAL_CYCLES (FcgStep) is REAL - data type mismatch."
+        },
+        {
+          "attr": "cycles_net",
+          "code": "FATIGUE.CYCLES_NET",
+          "data_type": "INTEGER",
+          "property_label": "Net number of cycles",
+          "description": "Net number of load cycles//Nettoschwingspielzahl",
+          "section": "11 Evaluation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 11"
+        },
+        {
+          "attr": "cycles_to_10_percent_strain_gauge_drop",
+          "code": "FATIGUE.CYCLES_TO_10_PERCENT_STRAIN_GAUGE_DROP",
+          "data_type": "MULTILINE_VARCHAR",
+          "property_label": "Cycles to 10 % strain gauge drop per strain gauge",
+          "description": "Number of cycles until a 10 % signal drop, listed per strain gauge//Zyklen bis 10 % DMS-Abfall, je DMS aufgelistet",
+          "section": "11 Evaluation",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3 step 11 (kind text)"
+        }
+      ]
+    }
+  ],
+  "vocabularies": [
+    {
+      "class_name": "WeldedFatigueWorkflowStep",
+      "code": "WELDED_FATIGUE_WORKFLOW_STEP",
+      "description": "Ordered workflow steps of the welded fatigue test programme//Geordnete Ablaufschritte des Schweißnaht-Ermüdungsprogramms",
+      "terms": [
+        {
+          "code": "S01_PRE_QUALITY_CHECK",
+          "label": "01 Pre-quality check",
+          "description": "Pre-quality check of the weld//Vorqualitätsprüfung der Schweißnaht"
+        },
+        {
+          "code": "S02_CHAMFERING_GRINDING",
+          "label": "02 Chamfering / grinding",
+          "description": "Chamfering / grinding//Anfasen / Schleifen"
+        },
+        {
+          "code": "S03_3D_SCAN",
+          "label": "03 3D scan",
+          "description": "3D scan of the specimen//3D-Scan der Probe"
+        },
+        {
+          "code": "S04_WELD_ANALYSIS",
+          "label": "04 Weld analysis",
+          "description": "Weld analysis (GOM)//Nahtanalyse (GOM)"
+        },
+        {
+          "code": "S05_SERIES_ASSIGNMENT",
+          "label": "05 Series assignment",
+          "description": "Series assignment (randomisation)//Serienzuordnung (Randomisierung)"
+        },
+        {
+          "code": "S06_GEOMETRY_BEFORE_INSTALLATION",
+          "label": "06 Geometry before installation",
+          "description": "Geometry before installation//Geometrie vor Einbau"
+        },
+        {
+          "code": "S07_STRAIN_GAUGE_APPLICATION",
+          "label": "07 Strain gauge application",
+          "description": "Strain gauge application//DMS-Applikation"
+        },
+        {
+          "code": "S08_MEASURING_AMPLIFIER_TEST_RIG",
+          "label": "08 Measuring amplifier / test rig",
+          "description": "Measuring amplifier / test rig//Messverstärker / Prüfstand"
+        },
+        {
+          "code": "S09_INSTALLATION_STRESS",
+          "label": "09 Installation stress",
+          "description": "Installation stress//Einbaubeanspruchung"
+        },
+        {
+          "code": "S10_CYCLIC_FATIGUE_TEST",
+          "label": "10 Cyclic fatigue test",
+          "description": "Cyclic fatigue test//Zyklischer Ermüdungsversuch"
+        },
+        {
+          "code": "S11_EVALUATION",
+          "label": "11 Evaluation",
+          "description": "Evaluation//Auswertung"
+        },
+        {
+          "code": "S12_FRACTURE_SURFACE_ANALYSIS",
+          "label": "12 Fracture surface analysis",
+          "description": "Fracture surface analysis//Bruchflächenanalyse"
+        },
+        {
+          "code": "DONE",
+          "label": "Done",
+          "description": "All workflow steps completed//Alle Ablaufschritte abgeschlossen"
+        }
+      ],
+      "existing": null,
+      "decision_ref": "decision 9; PRD §2 P5"
+    },
+    {
+      "class_name": "Iso5817QualityLevel",
+      "code": "WELDING.ISO_5817_QUALITY_LEVEL",
+      "description": "Quality levels for imperfections according to ISO 5817//Bewertungsgruppen für Unregelmäßigkeiten nach ISO 5817",
+      "terms": [
+        {
+          "code": "B",
+          "label": "B",
+          "description": "Quality level B (stringent)//Bewertungsgruppe B (hoch)"
+        },
+        {
+          "code": "C",
+          "label": "C",
+          "description": "Quality level C (intermediate)//Bewertungsgruppe C (mittel)"
+        },
+        {
+          "code": "D",
+          "label": "D",
+          "description": "Quality level D (moderate)//Bewertungsgruppe D (niedrig)"
+        }
+      ],
+      "existing": null,
+      "decision_ref": "decision 3",
+      "justification": "Two vocabularies instead of one: target level (B/C/D) and Annex C rating (C63/B90/B125) are different value domains; one shared list would allow invalid values on each property (e.g. target 'B125', rating 'D') and makes the series table ambiguous. WELDING. namespace because both are generic welding-standard lists (like WELDING.WELD_TYPE) and avoid the live-only codes ISO_5817_CLASS / WELD_ANALYSIS_RATING."
+    },
+    {
+      "class_name": "Iso5817AnnexCRating",
+      "code": "WELDING.ISO_5817_ANNEX_C_RATING",
+      "description": "Quality levels for fatigue-loaded structures according to ISO 5817 Annex C//Bewertungsgruppen für schwingend beanspruchte Konstruktionen nach ISO 5817 Anhang C",
+      "terms": [
+        {
+          "code": "C63",
+          "label": "C63",
+          "description": "Quality level C63 according to ISO 5817 Annex C//Bewertungsgruppe C63 nach ISO 5817 Anhang C"
+        },
+        {
+          "code": "B90",
+          "label": "B90",
+          "description": "Quality level B90 according to ISO 5817 Annex C//Bewertungsgruppe B90 nach ISO 5817 Anhang C"
+        },
+        {
+          "code": "B125",
+          "label": "B125",
+          "description": "Quality level B125 according to ISO 5817 Annex C//Bewertungsgruppe B125 nach ISO 5817 Anhang C"
+        }
+      ],
+      "existing": null,
+      "decision_ref": "decision 3 (C63, not legacy C56)"
+    },
+    {
+      "class_name": "FatigueLoadLevel",
+      "code": "FATIGUE.LOAD_LEVEL",
+      "description": "Load level of a specimen within a fatigue test series//Lastniveau einer Probe innerhalb einer Ermüdungsprüfserie",
+      "terms": [
+        {
+          "code": "HIGH",
+          "label": "High",
+          "description": "High load level//Hohes Lastniveau"
+        },
+        {
+          "code": "MEDIUM",
+          "label": "Medium",
+          "description": "Medium load level//Mittleres Lastniveau"
+        },
+        {
+          "code": "LOW",
+          "label": "Low",
+          "description": "Low load level//Niedriges Lastniveau"
+        }
+      ],
+      "existing": null,
+      "decision_ref": null
+    },
+    {
+      "class_name": "FatigueRecordingMode",
+      "code": "FATIGUE.RECORDING_MODE",
+      "description": "Data recording mode of the measuring amplifier in fatigue tests//Aufzeichnungsmodus des Messverstärkers in Ermüdungsversuchen",
+      "terms": [
+        {
+          "code": "FULL_SIGNAL",
+          "label": "Full signal",
+          "description": "Full signal recorded//Vollsignal aufgezeichnet"
+        },
+        {
+          "code": "PEAK_COUNTER",
+          "label": "Peak counter",
+          "description": "Peak counter//Peak-Counter"
+        },
+        {
+          "code": "PEAK_VALLEY",
+          "label": "Peak-valley",
+          "description": "Peak and valley values recorded//Peak-Valley-Werte aufgezeichnet"
+        }
+      ],
+      "existing": null,
+      "decision_ref": null
+    },
+    {
+      "class_name": "FatigueTerminationReason",
+      "code": "FATIGUE.TERMINATION_REASON",
+      "description": "Reason for terminating a fatigue test//Grund für den Abbruch eines Ermüdungsversuchs",
+      "terms": [
+        {
+          "code": "TOTAL_FRACTURE",
+          "label": "Total fracture",
+          "description": "Total fracture of the specimen//Totalbruch der Probe"
+        },
+        {
+          "code": "CRACK_DETECTED",
+          "label": "Crack detected",
+          "description": "Crack detected//Riss detektiert"
+        },
+        {
+          "code": "RUN_OUT",
+          "label": "Run-out",
+          "description": "Run-out, cycle limit reached//Durchläufer, Zyklenzahl erreicht"
+        },
+        {
+          "code": "MANUAL_STOP",
+          "label": "Manual stop",
+          "description": "Test stopped manually//Versuch manuell gestoppt"
+        }
+      ],
+      "existing": null,
+      "decision_ref": null
+    },
+    {
+      "class_name": "WeldType",
+      "code": "WELDING.WELD_TYPE",
+      "description": "Types of welds//Arten von Schweißverbindungen",
+      "terms": [
+        {
+          "code": "WELDING_BUTT_WELD",
+          "label": "butt weld",
+          "description": "Butt weld//Stumpfstoß"
+        },
+        {
+          "code": "WELDING_CRUCIFORM_WELD",
+          "label": "cruciform weld",
+          "description": "Cruciform weld//Kreuzstoß"
+        }
+      ],
+      "existing": "bam_masterdata/datamodel/welding/vocabularies.py:38",
+      "extension_only": true,
+      "decision_ref": "decision 2 / domain_decisions 'weld geometry vocabulary'",
+      "note": "Only the two added terms are listed. Existing terms use the prefix 'WELDING_' (e.g. WELDING_FILLET_WELD); new terms follow that convention (resolution Q2)."
+    },
+    {
+      "class_name": "AuxiliaryMaterialType",
+      "code": "AUXILIARY_MATERIAL_TYPE",
+      "description": "Auxiliary Material Types//Hilfsstofftyp",
+      "terms": [
+        {
+          "code": "STRAIN_GAUGE",
+          "label": "Strain gauge",
+          "description": "Strain gauge//Dehnungsmessstreifen"
+        },
+        {
+          "code": "CRACK_DETECTION_AGENT",
+          "label": "Crack detection agent",
+          "description": "Crack detection agent (e.g. crack luminescence)//Rissprüfmittel (z. B. Risslumineszenz)"
+        }
+      ],
+      "existing": "bam_masterdata/datamodel/vocabulary_types.py:252",
+      "extension_only": true,
+      "decision_ref": "decision 6; PRD §5 (no project catalog types for strain gauges/adhesives)",
+      "note": "ADHESIVE already exists (term at vocabulary_types.py:264) and is used for HBM X60."
+    }
+  ],
+  "reused_types": [
+    {
+      "code": "EXPERIMENTAL_STEP",
+      "ref": "bam_masterdata/datamodel/object_types.py:235",
+      "used_as": "S1B-01-SCAN",
+      "role": "Steps 03-04 '3D scan & weld analysis': scan with ZEISS GOM ATOS 5 (parent); weld analysis in GOM software (software, no inventory object - name/version recorded as text in EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION). The resulting Annex C rating is stored on the specimen (section '04 Weld analysis')."
+    },
+    {
+      "code": "EXPERIMENTAL_STEP",
+      "ref": "bam_masterdata/datamodel/object_types.py:235",
+      "used_as": "S1B-01-FRACTURE",
+      "role": "Step 12 'Fracture surface analysis': macro camera + digital microscope as parents; files only, no own data items."
+    },
+    {
+      "code": "SAMPLE",
+      "ref": "bam_masterdata/datamodel/object_types.py:3005",
+      "role": "Base class of the specimen type"
+    },
+    {
+      "code": "EXPERIMENTAL_STEP.MECHANICAL_TEST",
+      "ref": "bam_masterdata/datamodel/activities.py:2196",
+      "role": "Base class of the cyclic fatigue test type (missing on dev1; openBIS has no inheritance, so the child type can be created anyway)"
+    },
+    {
+      "code": "INSTRUMENT",
+      "ref": "bam_masterdata/datamodel/object_types.py:1370",
+      "role": "ZEISS GOM ATOS 5, digital microscope (no closer catalog type; LASER_LINE_SCANNER does not fit a fringe-projection scanner)"
+    },
+    {
+      "code": "INSTRUMENT.CAMERA",
+      "ref": "bam_masterdata/datamodel/instruments.py:1221",
+      "role": "Luxonis OAK-4D-Pro, macro camera"
+    },
+    {
+      "code": "INSTRUMENT.MEASURING_AMPLIFIER",
+      "ref": "bam_masterdata/datamodel/instruments.py:631",
+      "role": "IMC measuring amplifier"
+    },
+    {
+      "code": "TESTING_MACHINE",
+      "ref": "bam_masterdata/datamodel/object_types.py:1604",
+      "role": "Servo-hydraulic testing machine (TESTING_MACHINE_DRIVE_TYPE = SERVOHYDRAULIC)"
+    },
+    {
+      "code": "AUXILIARY_MATERIAL",
+      "ref": "bam_masterdata/datamodel/object_types.py:1175",
+      "role": "Strain gauge, adhesive, crack luminescence set"
+    },
+    {
+      "code": "SOP",
+      "ref": "bam_masterdata/datamodel/object_types.py:2868",
+      "role": "WORKFLOW_PLAN object in the project (step->location table in DESCRIPTION)"
+    },
+    {
+      "code": "COLLECTION",
+      "ref": "bam_masterdata/datamodel/collection_types.py:8",
+      "role": "One collection per test series, $DEFAULT_OBJECT_TYPE = SAMPLE.WELDED_FATIGUE_SPECIMEN"
+    }
+  ],
+  "inventory_links": [
+    {
+      "inventory": "ZEISS GOM ATOS 5",
+      "type_code": "INSTRUMENT",
+      "parent_of": "SCAN step",
+      "used_in_steps": [
+        "03"
+      ]
+    },
+    {
+      "inventory": "Strain gauge HBM LY11-6/120//DMS HBM LY11-6/120",
+      "type_code": "AUXILIARY_MATERIAL",
+      "parent_of": "TEST step",
+      "used_in_steps": [
+        "07"
+      ],
+      "AUXILIARY_MATERIAL_TYPE": "STRAIN_GAUGE (new term)"
+    },
+    {
+      "inventory": "Adhesive HBM X60//Klebstoff HBM X60",
+      "type_code": "AUXILIARY_MATERIAL",
+      "parent_of": "TEST step",
+      "used_in_steps": [
+        "07"
+      ],
+      "AUXILIARY_MATERIAL_TYPE": "ADHESIVE (existing)"
+    },
+    {
+      "inventory": "Crack luminescence set (MR Chemie)//Risslumineszenz-Set (MR Chemie)",
+      "type_code": "AUXILIARY_MATERIAL",
+      "parent_of": "TEST step",
+      "used_in_steps": [
+        "07"
+      ],
+      "AUXILIARY_MATERIAL_TYPE": "CRACK_DETECTION_AGENT (new term)"
+    },
+    {
+      "inventory": "Camera system Luxonis OAK-4D-Pro//Kamerasystem Luxonis OAK-4D-Pro",
+      "type_code": "INSTRUMENT.CAMERA",
+      "parent_of": "TEST step",
+      "used_in_steps": [
+        "07"
+      ]
+    },
+    {
+      "inventory": "IMC measuring amplifier//IMC-Messverstärker",
+      "type_code": "INSTRUMENT.MEASURING_AMPLIFIER",
+      "parent_of": "TEST step",
+      "used_in_steps": [
+        "08",
+        "09"
+      ]
+    },
+    {
+      "inventory": "Servo-hydraulic testing machine//Servohydraulische Prüfmaschine",
+      "type_code": "TESTING_MACHINE",
+      "parent_of": "TEST step",
+      "used_in_steps": [
+        "08",
+        "10"
+      ],
+      "TESTING_MACHINE_DRIVE_TYPE": "SERVOHYDRAULIC (existing)"
+    },
+    {
+      "inventory": "Macro camera//Makro-Kamera",
+      "type_code": "INSTRUMENT.CAMERA",
+      "parent_of": "FRACTURE step",
+      "used_in_steps": [
+        "12"
+      ]
+    },
+    {
+      "inventory": "Digital microscope//Digitalmikroskop",
+      "type_code": "INSTRUMENT",
+      "parent_of": "FRACTURE step",
+      "used_in_steps": [
+        "12"
+      ]
+    }
+  ],
+  "non_inventory_equipment": [
+    {
+      "equipment": "GOM software//GOM-Software",
+      "placement": "text in SCAN step (EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION) and in the SOP",
+      "decision_ref": "decision 5"
+    },
+    {
+      "equipment": "Caliper//Messschieber",
+      "placement": "no inventory object and no parent link; named in the SOP WORKFLOW_PLAN and in step_location_map step 06",
+      "decision_ref": "resolution Q5"
+    }
+  ],
+  "layout": {
+    "space": "/FB_72",
+    "project": "/FB_72/WELDED_FATIGUE",
+    "collections": [
+      {
+        "code": "SERIES_1_BUTT_WELD",
+        "type": "COLLECTION",
+        "$NAME": "Series 1 - butt weld",
+        "$DEFAULT_OBJECT_TYPE": "SAMPLE.WELDED_FATIGUE_SPECIMEN"
+      },
+      {
+        "code": "SERIES_1_CRUCIFORM_WELD",
+        "type": "COLLECTION",
+        "$NAME": "Series 1 - cruciform weld",
+        "$DEFAULT_OBJECT_TYPE": "SAMPLE.WELDED_FATIGUE_SPECIMEN"
+      }
+    ],
+    "project_objects": [
+      {
+        "code": "WORKFLOW_PLAN",
+        "type": "SOP",
+        "$NAME": "Workflow plan",
+        "content": "step_location_map rendered as table in DESCRIPTION"
+      }
+    ],
+    "inventory_locations": "Inventory objects created once in /MATERIALS (e.g. existing collections 7_2_EQUIPMENT / 7_2_MATERIALS), re-created with standard types instead of the live INSTRUMENT_DUMMY / CONSUMABLE_TYPE / STRAIN_GAUGE_TYPE objects.",
+    "code_scheme": {
+      "SERIES_1_BUTT_WELD": {
+        "specimen": "S1B-NN (zero-padded, S1B-01 ...)",
+        "steps": [
+          "S1B-NN-SCAN",
+          "S1B-NN-TEST",
+          "S1B-NN-FRACTURE"
+        ]
+      },
+      "SERIES_1_CRUCIFORM_WELD": {
+        "specimen": "S1C-NN (zero-padded, S1C-01 ...)",
+        "steps": [
+          "S1C-NN-SCAN",
+          "S1C-NN-TEST",
+          "S1C-NN-FRACTURE"
+        ]
+      },
+      "reason": "Codes must be unique per space/project; the weld-type letter (B/C) separates the two series of series 1 and avoids the legacy codes S1-n in /FB_72 (resolution Q1)."
+    },
+    "per_specimen_example_series": "SERIES_1_BUTT_WELD (cruciform: replace S1B by S1C)",
+    "per_specimen": [
+      {
+        "code_pattern": "S1B-01",
+        "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+        "name_pattern": "S1B-01",
+        "collection": "series collection",
+        "parents": []
+      },
+      {
+        "code_pattern": "S1B-01-SCAN",
+        "type": "EXPERIMENTAL_STEP",
+        "name_pattern": "S1B-01 3D scan & weld analysis",
+        "collection": "series collection",
+        "parents": [
+          "S1B-01 (specimen)",
+          "ZEISS GOM ATOS 5"
+        ],
+        "covers_steps": [
+          "03",
+          "04"
+        ]
+      },
+      {
+        "code_pattern": "S1B-01-TEST",
+        "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+        "name_pattern": "S1B-01 Cyclic fatigue test",
+        "collection": "series collection",
+        "parents": [
+          "S1B-01 (specimen)",
+          "Strain gauge HBM LY11-6/120",
+          "Adhesive HBM X60",
+          "Crack luminescence set",
+          "Luxonis OAK-4D-Pro",
+          "IMC measuring amplifier",
+          "Servo-hydraulic testing machine"
+        ],
+        "covers_steps": [
+          "07",
+          "08",
+          "09",
+          "10",
+          "11"
+        ]
+      },
+      {
+        "code_pattern": "S1B-01-FRACTURE",
+        "type": "EXPERIMENTAL_STEP",
+        "name_pattern": "S1B-01 Fracture surface analysis",
+        "collection": "series collection",
+        "parents": [
+          "S1B-01 (specimen)",
+          "Macro camera",
+          "Digital microscope"
+        ],
+        "covers_steps": [
+          "12"
+        ]
+      }
+    ],
+    "link_rules": "Steps are children of the specimen only (depth 1); inventory objects are parents of steps; no step->step links; no OBJECT properties to inventory.",
+    "series_table": [
+      {
+        "column": "Series designation//Serienbezeichnung",
+        "source": "specimen $NAME"
+      },
+      {
+        "column": "Weld geometry//Nahtgeometrie",
+        "source": "specimen EXPERIMENTAL_STEP.WELDMENT_TYPE"
+      },
+      {
+        "column": "Load level//Lastniveau",
+        "source": "specimen FATIGUE.LOAD_LEVEL"
+      },
+      {
+        "column": "Test order//Prüfreihenfolge",
+        "source": "specimen FATIGUE.TEST_ORDER"
+      },
+      {
+        "column": "Quality level//Bewertungsgruppe",
+        "source": "specimen FATIGUE.ISO_5817_ANNEX_C_RATING (+ FATIGUE.TARGET_QUALITY_LEVEL as extra column)"
+      },
+      {
+        "column": "Next step//Nächster Schritt",
+        "source": "specimen FATIGUE.NEXT_STEP"
+      },
+      {
+        "column": "Number of cycles//Schwingspielzahl",
+        "source": "TEST step FATIGUE.CYCLES_GROSS / FATIGUE.CYCLES_NET (TEST objects live in the same collection)"
+      },
+      {
+        "column": "Termination reason//Abbruchgrund",
+        "source": "TEST step FATIGUE.TERMINATION_REASON"
+      }
+    ]
+  },
+  "dataset_mapping": [
+    {
+      "file": "Specimen photos//Probenfotos",
+      "step": "01",
+      "attach_to": "specimen",
+      "dataset_type": "RAW_DATA",
+      "reason": "photos as recorded"
+    },
+    {
+      "file": "Post-processing report//Nachbearbeitungsprotokoll (PDF)",
+      "step": "02",
+      "attach_to": "specimen",
+      "dataset_type": "ATTACHMENT",
+      "reason": "document"
+    },
+    {
+      "file": "3D scan raw data//3D-Scan-Rohdaten",
+      "step": "03",
+      "attach_to": "SCAN step",
+      "dataset_type": "RAW_DATA",
+      "reason": "instrument raw data"
+    },
+    {
+      "file": "Evaluation export//Auswerte-Export",
+      "step": "04",
+      "attach_to": "SCAN step",
+      "dataset_type": "ANALYZED_DATA",
+      "reason": "GOM evaluation result"
+    },
+    {
+      "file": "Randomisation script//Randomisierungs-Skript",
+      "step": "05",
+      "attach_to": "collection",
+      "dataset_type": "SOURCE_CODE",
+      "reason": "one script per series"
+    },
+    {
+      "file": "Strain gauge position drawing//DMS-Positionszeichnung",
+      "step": "07",
+      "attach_to": "TEST step",
+      "dataset_type": "ATTACHMENT",
+      "reason": "drawing/document"
+    },
+    {
+      "file": "Setup photo//Aufbaufoto",
+      "step": "07",
+      "attach_to": "TEST step",
+      "dataset_type": "RAW_DATA",
+      "reason": "photo as recorded"
+    },
+    {
+      "file": "Bending moment raw data//Biegemoment-Rohdaten (IMC .raw)",
+      "step": "09",
+      "attach_to": "TEST step",
+      "dataset_type": "RAW_DATA",
+      "reason": "amplifier raw data"
+    },
+    {
+      "file": "Load programme//Lastprogramm (Excel)",
+      "step": "10",
+      "attach_to": "TEST step",
+      "dataset_type": "MEASUREMENT_PROTOCOL_FILE",
+      "reason": "test definition used with the test software"
+    },
+    {
+      "file": "Measurement raw data//Mess-Rohdaten (IMC .raw)",
+      "step": "10",
+      "attach_to": "TEST step",
+      "dataset_type": "RAW_DATA",
+      "reason": "amplifier raw data (parser input)"
+    },
+    {
+      "file": "Monitoring images (time-lapse)//Monitoring-Bilder (Zeitraffer)",
+      "step": "10",
+      "attach_to": "TEST step",
+      "dataset_type": "RAW_DATA",
+      "reason": "camera raw images"
+    },
+    {
+      "file": "Cleaned measurement data//Bereinigte Messdaten (CSV/HDF5)",
+      "step": "11",
+      "attach_to": "TEST step",
+      "dataset_type": "PROCESSED_DATA",
+      "reason": "cleaned raw data"
+    },
+    {
+      "file": "Evaluation plots//Auswerteplots",
+      "step": "11",
+      "attach_to": "TEST step",
+      "dataset_type": "FIGURE.PLOT",
+      "reason": "plots"
+    },
+    {
+      "file": "Conversion script//Konvertierungsskript",
+      "step": "11",
+      "attach_to": "TEST step",
+      "dataset_type": "SOURCE_CODE",
+      "reason": "code"
+    },
+    {
+      "file": "Macro photos//Makrofotos",
+      "step": "12",
+      "attach_to": "FRACTURE step",
+      "dataset_type": "RAW_DATA",
+      "reason": "photos as recorded"
+    },
+    {
+      "file": "Microscope images of crack origin//Mikroskopbilder Rissausgang",
+      "step": "12",
+      "attach_to": "FRACTURE step",
+      "dataset_type": "RAW_DATA",
+      "reason": "microscope raw images"
+    },
+    {
+      "file": "Beach-mark evaluation//Rastlinien-Auswertung (Excel)",
+      "step": "12",
+      "attach_to": "FRACTURE step",
+      "dataset_type": "ANALYZED_DATA",
+      "reason": "evaluation result"
+    }
+  ],
+  "step_location_map": [
+    {
+      "no": "00",
+      "step": "Subject (identity)",
+      "object": "specimen",
+      "section": "General Information + Specimen identification",
+      "data_items": [
+        "$NAME (final series designation)",
+        "ALIAS (internal designation, inherited)",
+        "FATIGUE.MANUFACTURER_DESIGNATION",
+        "FATIGUE.SOURCE_SHEET",
+        "EXPERIMENTAL_STEP.WELDMENT_TYPE",
+        "FATIGUE.TARGET_QUALITY_LEVEL"
+      ],
+      "equipment": [],
+      "files": []
+    },
+    {
+      "no": "01",
+      "step": "Pre-quality check of the weld",
+      "object": "specimen",
+      "section": "01 Pre-quality check",
+      "data_items": [
+        "FATIGUE.INITIAL_ANGULAR_DISTORTION",
+        "FATIGUE.INITIAL_EDGE_MISALIGNMENT",
+        "FATIGUE.WAS_STRAIGHTENED",
+        "FATIGUE.ANGULAR_DISTORTION_AFTER_STRAIGHTENING",
+        "FATIGUE.EDGE_MISALIGNMENT_AFTER_STRAIGHTENING",
+        "DEFECT_DESCRIPTION"
+      ],
+      "equipment": [],
+      "files": [
+        "Specimen photos"
+      ]
+    },
+    {
+      "no": "02",
+      "step": "Chamfering / grinding",
+      "object": "specimen",
+      "section": "02 Chamfering / grinding",
+      "data_items": [
+        "FATIGUE.WELD_POST_TREATMENT_NOTES"
+      ],
+      "equipment": [],
+      "files": [
+        "Post-processing report"
+      ]
+    },
+    {
+      "no": "03",
+      "step": "3D scan of the specimen",
+      "object": "S1B-01-SCAN (EXPERIMENTAL_STEP)",
+      "section": "-",
+      "data_items": [],
+      "equipment": [
+        "ZEISS GOM ATOS 5 (parent)"
+      ],
+      "files": [
+        "3D scan raw data"
+      ]
+    },
+    {
+      "no": "04",
+      "step": "Weld analysis (GOM)",
+      "object": "specimen (rating) + S1B-01-SCAN (files)",
+      "section": "04 Weld analysis",
+      "data_items": [
+        "FATIGUE.ISO_5817_ANNEX_C_RATING"
+      ],
+      "equipment": [
+        "GOM software (text in SCAN step)"
+      ],
+      "files": [
+        "Evaluation export"
+      ]
+    },
+    {
+      "no": "05",
+      "step": "Series assignment (randomisation)",
+      "object": "specimen + collection membership",
+      "section": "05 Series assignment",
+      "data_items": [
+        "FATIGUE.LOAD_LEVEL",
+        "FATIGUE.TEST_ORDER",
+        "'Assignment to test series' = specimen placed in the series collection (no property)",
+        "'Source sheet (bias avoidance)' = FATIGUE.SOURCE_SHEET (placed once, Specimen identification)"
+      ],
+      "equipment": [],
+      "files": [
+        "Randomisation script (collection)"
+      ]
+    },
+    {
+      "no": "06",
+      "step": "Geometry before installation",
+      "object": "specimen",
+      "section": "06 Geometry before installation",
+      "data_items": [
+        "FATIGUE.THICKNESS_POS_1",
+        "FATIGUE.THICKNESS_POS_2",
+        "FATIGUE.THICKNESS_POS_3",
+        "FATIGUE.WIDTH_POS_1",
+        "FATIGUE.WIDTH_POS_2",
+        "FATIGUE.WIDTH_POS_3",
+        "FATIGUE.MEAN_THICKNESS",
+        "FATIGUE.MEAN_WIDTH"
+      ],
+      "equipment": [
+        "Caliper (no inventory object/link; named in SOP only)"
+      ],
+      "files": []
+    },
+    {
+      "no": "07",
+      "step": "Strain gauge application",
+      "object": "S1B-01-TEST",
+      "section": "07 Strain gauge application",
+      "data_items": [
+        "FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE",
+        "FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE",
+        "FATIGUE.STRAIN_GAUGE_APPLICATION_TIME"
+      ],
+      "equipment": [
+        "Strain gauge",
+        "Adhesive",
+        "Crack luminescence set",
+        "Luxonis OAK-4D-Pro"
+      ],
+      "files": [
+        "Strain gauge position drawing",
+        "Setup photo"
+      ]
+    },
+    {
+      "no": "08",
+      "step": "Measuring amplifier / test rig",
+      "object": "S1B-01-TEST",
+      "section": "08 Measuring amplifier / test rig",
+      "data_items": [
+        "FATIGUE.SAMPLING_FREQUENCY",
+        "FATIGUE.RECORDING_MODE",
+        "FATIGUE.RECORDED_CHANNELS"
+      ],
+      "equipment": [
+        "IMC measuring amplifier",
+        "Servo-hydraulic testing machine"
+      ],
+      "files": []
+    },
+    {
+      "no": "09",
+      "step": "Installation stress",
+      "object": "S1B-01-TEST",
+      "section": "09 Installation stress",
+      "data_items": [
+        "FATIGUE.PRELOAD_FORCE"
+      ],
+      "equipment": [
+        "IMC measuring amplifier (same link as 08)"
+      ],
+      "files": [
+        "Bending moment raw data"
+      ]
+    },
+    {
+      "no": "10",
+      "step": "Cyclic fatigue test",
+      "object": "S1B-01-TEST",
+      "section": "10 Cyclic fatigue test",
+      "data_items": [
+        "FATIGUE.BEACH_MARKS_ACTIVE",
+        "FATIGUE.TERMINATION_REASON"
+      ],
+      "equipment": [
+        "Servo-hydraulic testing machine (same link as 08)"
+      ],
+      "files": [
+        "Load programme",
+        "Measurement raw data",
+        "Monitoring images"
+      ]
+    },
+    {
+      "no": "11",
+      "step": "Evaluation",
+      "object": "S1B-01-TEST",
+      "section": "11 Evaluation",
+      "data_items": [
+        "FATIGUE.CYCLES_GROSS",
+        "FATIGUE.CYCLES_NET",
+        "FATIGUE.CYCLES_TO_10_PERCENT_STRAIN_GAUGE_DROP"
+      ],
+      "equipment": [],
+      "files": [
+        "Cleaned measurement data",
+        "Evaluation plots",
+        "Conversion script"
+      ]
+    },
+    {
+      "no": "12",
+      "step": "Fracture surface analysis",
+      "object": "S1B-01-FRACTURE (EXPERIMENTAL_STEP)",
+      "section": "-",
+      "data_items": [],
+      "equipment": [
+        "Macro camera",
+        "Digital microscope"
+      ],
+      "files": [
+        "Macro photos",
+        "Microscope images of crack origin",
+        "Beach-mark evaluation"
+      ]
+    },
+    {
+      "no": "P5",
+      "step": "Workflow status",
+      "object": "specimen",
+      "section": "Workflow status",
+      "data_items": [
+        "FATIGUE.NEXT_STEP"
+      ],
+      "equipment": [],
+      "files": []
+    }
+  ],
+  "metrics": {
+    "new": {
+      "new_object_types": 2,
+      "new_vocabularies": 6,
+      "extended_vocabularies": 2,
+      "new_property_types": 33,
+      "reused_property_types_assigned": 2,
+      "new_collection_types": 0,
+      "new_dataset_types": 0,
+      "objects_per_specimen": 4,
+      "max_link_depth": 1,
+      "step_to_step_links": 0,
+      "inventory_objects": 9
+    },
+    "legacy_live": {
+      "new_object_types": 16,
+      "new_object_types_detail": "TEST_SPECIMEN + 12 step types + STRAIN_GAUGE_TYPE, CONSUMABLE_TYPE, INSTRUMENT_DUMMY",
+      "new_vocabularies": 6,
+      "extended_vocabularies": 0,
+      "new_collection_types": 1,
+      "new_dataset_types": 17,
+      "objects_per_specimen": 13,
+      "max_link_depth": 12,
+      "step_to_step_links": 11,
+      "source": "generated/live/dev1_inventory.md"
+    }
+  },
+  "unplaced": [],
+  "series_table_columns": [
+    "$NAME",
+    "EXPERIMENTAL_STEP.WELDMENT_TYPE",
+    "FATIGUE.LOAD_LEVEL",
+    "FATIGUE.TEST_ORDER",
+    "FATIGUE.ISO_5817_ANNEX_C_RATING",
+    "FATIGUE.TARGET_QUALITY_LEVEL",
+    "FATIGUE.NEXT_STEP",
+    "FATIGUE.CYCLES_GROSS",
+    "FATIGUE.CYCLES_NET",
+    "FATIGUE.TERMINATION_REASON"
+  ],
+  "series_table_columns_note": "Display order for the collection table. First 7 are specimen properties; CYCLES_GROSS/CYCLES_NET/TERMINATION_REASON come from the TEST step (same collection).",
+  "open_questions": [],
+  "resolved_questions": [
+    "Q1 codes: S1B-NN (butt) / S1C-NN (cruciform), steps <specimen>-SCAN/-TEST/-FRACTURE.",
+    "Q2 WELDING.WELD_TYPE terms: WELDING_BUTT_WELD, WELDING_CRUCIFORM_WELD (existing prefix convention).",
+    "Q3 weld geometry: reuse EXPERIMENTAL_STEP.WELDMENT_TYPE.",
+    "Q4 internal designation: inherited ALIAS; FATIGUE.INTERNAL_DESIGNATION dropped.",
+    "Q5 caliper: no inventory object, no parent link; SOP/step_location_map only.",
+    "Q6 series table: Annex C rating main column, target quality level additional column.",
+    "Q7 cycles to 10 % strain gauge drop: MULTILINE_VARCHAR text.",
+    "Q8 dev1 has project samples enabled: SOP WORKFLOW_PLAN at project level."
+  ]
+}
