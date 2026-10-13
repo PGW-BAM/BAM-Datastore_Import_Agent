@@ -32,6 +32,17 @@ Ersatz siehe `gap-report.md` → Abschnitt LIVE-ONLY.
       `SPECIMEN_THICKNESS_POS_1_3` …). **Nicht** löschen: `OPERATOR` (wird vom Standard genutzt) – nur das Label
       „Operator / Ausführende Person“ auf „Operator“ zurücksetzen.
 
+## 3b. Reste im Inventar und Ablaufplan (gefunden bei der Demo-Tour, 13.10.2026)
+- [ ] Standard-Objekttyp (`$DEFAULT_OBJECT_TYPE`) der Inventar-Collections umstellen – sonst zeigt der „+“-Button noch auf Alt-Typen
+      und das Löschen der Alt-Typen wird blockiert:
+      `/MATERIALS/7_2_EQUIPMENT/INSTRUMENTS` → `INSTRUMENT` (bisher `INSTRUMENT_DUMMY`),
+      `/MATERIALS/7_2_EQUIPMENT/STRAIN_GAUGES` → `AUXILIARY_MATERIAL` (bisher `STRAIN_GAUGE_TYPE`),
+      `/MATERIALS/7_2_MATERIALS/CONSUMABLES` → `AUXILIARY_MATERIAL` (bisher `CONSUMABLE_TYPE`).
+      (ELN: Collection öffnen → Edit → „Default object type“.)
+- [ ] Protokoll `WORKFLOW_PLAN`: Feld „Procedure“ ist Rich-Text – Zeilenumbrüche fehlen und `<Probe>` wurde als HTML-Tag verschluckt.
+      Inhalt von `presentation/tour/workflow_plan_procedure.html` einfügen (Edit → Procedure → Save).
+      Für spätere Läufe: `tools/openbis_demo.js` sollte den Text als HTML schreiben.
+
 ## 4. Kontrolle
 - [ ] `/FB_72/WELDED_FATIGUE` unverändert: 1 Protokoll, 8 Proben, 10 Schritte; Inventar in `/MATERIALS/7_2_*` vorhanden
 - [ ] Live-Inventur erneut laufen lassen (`/bam-analyze-prd …` Schritt 3) → LIVE-ONLY sollte leer sein
