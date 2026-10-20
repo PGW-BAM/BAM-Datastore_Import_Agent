@@ -133,6 +133,20 @@ def use_focus_area(prs, slide, master_index):
             rel._target = layout.part
 
 
+def checkpoint(slide, x, y, w, title, source, cols, rows, footer):
+    """Excerpt of a review document as a compact table on a light panel (height 3.2 cm)."""
+    box(slide, x, y, w, 3.2, LIGHT, name=title)
+    text(slide, x + 0.2, y + 0.1, w - 0.4, 0.65, [[("✔ " + title, {"font": MED, "color": RED, "size": 13}),
+                                                  ("   " + source, {"color": PETROL})]], size=11, margin=0.02)
+    for r, row in enumerate(rows):
+        cx = x + 0.2
+        for c, (cell, cw) in enumerate(zip(row, cols)):
+            text(slide, cx, y + 0.8 + r * 0.55, cw - 0.1, 0.55, cell, size=11,
+                 font=MED if c == 0 else LIGHTF, color=NAVY if c == 0 else INK, margin=0.02)
+            cx += cw
+    text(slide, x + 0.2, y + 2.5, w - 0.4, 0.6, footer, size=11, color=PETROL, margin=0.02)
+
+
 # ---------------------------------------------------------------- build
 def build():
     prs = Presentation(str(TEMPLATE))
@@ -203,24 +217,26 @@ def build():
     text(s, C2, cy + 2.75, CW, 1.3, [[("AI agents + scripts", {"font": MED, "size": 14})],
                                      "understand · design · compare – every element gets one verdict"],
          size=11, color=WHITE, fill=NAVY, align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, margin=0.1, name="Agents")
-    verdicts = [("REUSE", "20", "use as is", PETROL, WHITE), ("EXTEND", "2", "add terms", CYAN, WHITE),
-                ("CREATE", "41", "define new", RED, WHITE), ("LIVE-ONLY", "40", "migrate", GREY, NAVY)]
-    vy = cy + 4.3; vw = (CW - 3 * 0.2) / 4
-    for i, (k, n, d, col, tc) in enumerate(verdicts):
-        x = C2 + i * (vw + 0.2)
-        box(s, x, vy, vw, 2.85, col, name=f"Verdict {k}")
-        text(s, x, vy + 0.1, vw, 1.15, n, size=30, font=MED, color=tc, align=PP_ALIGN.CENTER, margin=0.02)
-        text(s, x, vy + 1.3, vw, 0.65, k, size=12, font=MED, color=tc, align=PP_ALIGN.CENTER, margin=0.02)
-        text(s, x, vy + 1.95, vw, 0.65, d, size=11, color=tc, align=PP_ALIGN.CENTER, margin=0.02)
-    text(s, C2, vy + 3.0, CW, 1.3, [[("Humans approve twice ", {"font": MED, "color": RED}),
-                                     ("(design, gap report). Only missing types are created; new types go to the "
-                                      "BAM standard as a pull request.", {})]], size=12, line=15, margin=0.05)
+    # counts = every single element of the gap analysis (types, vocabularies, property fields, dataset types)
+    verdicts = [("REUSE", "20", ["types, fields, file", "types used as is"], PETROL),
+                ("EXTEND", "2", ["existing lists get", "new terms"], CYAN),
+                ("CREATE", "41", ["2 object types,", "6 lists, 33 fields"], RED)]
+    vy = cy + 4.3; vw = (CW - 2 * 0.25) / 3
+    for i, (k, n, d, col) in enumerate(verdicts):
+        x = C2 + i * (vw + 0.25)
+        box(s, x, vy, vw, 3.1, col, name=f"Verdict {k}")
+        text(s, x, vy + 0.05, vw, 1.15, [[(n + "  ", {"size": 30}), (k, {"size": 13})]], font=MED, color=WHITE,
+             align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, margin=0.02)
+        text(s, x, vy + 1.3, vw, 1.7, d, size=11, color=WHITE, align=PP_ALIGN.CENTER, margin=0.08)
+    text(s, C2, vy + 3.25, CW, 1.3, [[("Humans approve twice ", {"font": MED, "color": RED}),
+                                      ("(see 4). Only missing elements are created; new types go to the "
+                                       "BAM standard as a pull request.", {})]], size=12, line=15, margin=0.05)
 
     # ================= row 2: 3 pipeline (graphic 3)
     py3 = 21.05
     heading(s, L, py3, W, "3", "Seven steps: scripts count, agents decide, humans approve", fill=PETROL)
     steps = [("1", "Catalog the", "standard", "S"), ("2", "Inventory the", "instance", "S"), ("3", "Read the", "workflow", "A"),
-             ("4", "Design a flat", "structure", "A"), ("5", "Gap analysis", "(4 verdicts)", "A"),
+             ("4", "Design a flat", "structure", "A"), ("5", "Gap analysis,", "3 verdicts", "A"),
              ("6", "Python classes,", "import-tested", "A"), ("7", "Apply to openBIS,", "dry run first", "S")]
     sw = (W - 6 * 0.3) / 7; sy = py3 + 1.35
     for i, (n, t1, t2, kind) in enumerate(steps):
@@ -236,47 +252,43 @@ def build():
     text(s, L, sy + 2.45, 9.0, 0.6, [[("■ ", {"color": NAVY}), ("AI agent    ", {}), ("■ ", {"color": GREY}),
                                       ("deterministic script", {})]], size=11, margin=0.05)
 
-    # ================= row 3 left: 4 result in openBIS (graphic 4)
+    # ================= row 3 left: 4 what the human checks (graphic 4: excerpts of the two review documents)
     y4 = 25.85
-    heading(s, C1, y4, CW, "4", "Result: one specimen, three steps, one level", fill=CYAN)
+    heading(s, C1, y4, CW, "4", "What the human checks", fill=RED)
+    checkpoint(s, C1, y4 + 1.4, CW, "Checkpoint 1 · Design", "design.md – every step gets one place",
+               [2.9, 4.1, 5.3],
+               [("01 Quality check", "specimen, section 01", "6 fields"),
+                ("03 3D scan", "own SCAN object", "GOM scanner, raw data"),
+                ("10 Fatigue test", "TEST, section 10", "machine, load programme")],
+               "34 data items + 17 file kinds placed · 0 unplaced · 8 questions answered")
+    checkpoint(s, C1, y4 + 4.85, CW, "Checkpoint 2 · Gap report", "gap-report.md – one verdict per element",
+               [2.1, 4.0, 6.2],
+               [("REUSE", "testing machine", "standard, object_types.py:1604"),
+                ("EXTEND", "weld type list", "+2 terms, vocabularies.py:38"),
+                ("CREATE", "cyclic fatigue test", "nearest: FCG test – no S-N data")],
+               "file:line in the standard or a reason – nothing is created unchecked")
+
+    # ================= row 3 right: 5 result in openBIS (graphic 5)
+    heading(s, C2, y4, CW, "5", "Result: one specimen, three steps, one level", fill=CYAN)
     ty = y4 + 1.4
-    text(s, C1, ty, CW, 1.15, [[("Specimen   ", {"font": MED}), ("“Next step” on top · sections 01 · 02 · 04 · 05 · 06", {})]],
+    text(s, C2, ty, CW, 1.15, [[("Specimen   ", {"font": MED}), ("“Next step” on top · sections 01 · 02 · 04 · 05 · 06", {})]],
          size=12, color=WHITE, fill=NAVY, anchor=MSO_ANCHOR.MIDDLE, margin=0.3, name="Specimen node")
     kids = [("SCAN", "steps 03–04"), ("TEST", "steps 07–11"), ("FRACTURE", "step 12")]
     kw = (CW - 2 * 0.3) / 3
     for i, (k, d) in enumerate(kids):
-        x = C1 + i * (kw + 0.3)
+        x = C2 + i * (kw + 0.3)
         arrow(s, x + kw / 2, ty + 1.15, x + kw / 2, ty + 1.7, color=NAVY)
         text(s, x, ty + 1.75, kw, 1.2, [[(k, {"font": MED, "color": NAVY})], d], size=11, fill=LIGHT,
              align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, margin=0.05, name=f"Child {k}")
-    text(s, C1, ty + 3.0, CW, 0.6, "Instruments & consumables: created once in the inventory, linked as parents",
+    text(s, C2, ty + 3.0, CW, 0.6, "Instruments & consumables: created once in the inventory, linked as parents",
          size=11, color=PETROL, margin=0.05)
     ky = ty + 3.75
     kpis = [("2", "new object", "types"), ("6+2", "vocabularies", "new + extended"), ("0", "new dataset", "types"), ("1", "link", "depth")]
     kw2 = (CW - 3 * 0.2) / 4
     for i, (n, d1, d2) in enumerate(kpis):
-        x = C1 + i * (kw2 + 0.2)
+        x = C2 + i * (kw2 + 0.2)
         text(s, x, ky, kw2, 1.2, n, size=30, font=MED, color=RED, align=PP_ALIGN.CENTER, margin=0.02)
         text(s, x, ky + 1.15, kw2, 1.1, [d1, d2], size=11, align=PP_ALIGN.CENTER, margin=0.02)
-
-    # ================= row 3 right: 5 connected across departments (graphic 5)
-    heading(s, C2, y4, CW, "5", "Connected across departments", fill=RED)
-    cy5 = y4 + 1.4
-    chain = [("FB 9.3", ["welding +", "process docs"], PETROL), ("Specimen", ["one object,", "one place"], NAVY),
-             ("FB 7.2", ["12-step", "test workflow"], CYAN)]
-    cw5 = (CW - 2 * 0.5) / 3
-    for i, (t, d, col) in enumerate(chain):
-        x = C2 + i * (cw5 + 0.5)
-        text(s, x, cy5, cw5, 2.2, [[(t, {"font": MED, "size": 14})]] + d, size=11, color=WHITE, fill=col,
-             align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE, margin=0.05, name=f"Chain {t}")
-        if i < 2:
-            arrow(s, x + cw5 + 0.03, cy5 + 1.1, x + cw5 + 0.47, cy5 + 1.1, color=NAVY)
-    text(s, C2, cy5 + 2.35, 6.4, 3.9, ["Welding and test data meet at the same specimen.",
-                                        "Instruments and datasets are linked once – and found from both sides."],
-         size=12, line=15, margin=0.05, space_after=6)
-    picture(s, A / "s13_14.jpg", C2 + 6.7, cy5 + 2.4, 6.0, 4.3, name="Screenshot specimen form")
-    text(s, C2 + 6.7, cy5 + 6.75, 6.0, 0.55, "openBIS: specimen with “Next step”", size=11, color=PETROL,
-         align=PP_ALIGN.CENTER, margin=0.02)
 
     # ================= take-home (results box at the end, template recommendation)
     ry = 34.85
