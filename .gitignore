@@ -23,3 +23,7 @@ __pycache__/
 # OS
 .DS_Store
 Thumbs.db
+
+# poster: large inputs (BAM template, source deck) and render scratch
+presentation/poster/input/
+presentation/poster/render/
