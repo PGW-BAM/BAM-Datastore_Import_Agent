@@ -36,7 +36,12 @@ Drop a Markdown PRD into this folder. The pipeline:
 - `pybis==1.37.4` (`pip install pybis==1.37.4`)
 - `nbformat` (`pip install nbformat`)
 - Access to a BAM openBIS 20.10.12.5 instance
-- `bam-masterdata` cloned at `C:/Users/<you>/repos/bam-masterdata` (or run `/bam-sync` first)
+- `bam-masterdata` cloned next to this repo at `../bam-masterdata` (or run `/bam-sync` first)
+
+**Cloud sessions (Claude Code on the web):** the agent has no network path to openBIS. Setup runs
+automatically (`tools/cloud_setup.sh` via SessionStart hook); the instance is reached only through
+committed handover files — inventory in (`tools/openbis_inventory.js`), spec out (`tools/openbis_apply.js`,
+`tools/openbis_demo.js`). See [CLOUD.md](CLOUD.md).
 
 ## Quick start
 

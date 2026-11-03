@@ -20,7 +20,7 @@ Examples:
 |---|---|---|---|
 | 1 | Sync standard | `/bam-sync` (fast-forward only) | `../bam-masterdata` at origin/main |
 | 2 | Catalog the standard | `bam-masterdata-explorer` → `python tools/build_catalog.py` | `generated/CATALOG.md`, `generated/catalog.json` |
-| 3 | Inventory the instance (optional, recommended) | browser session on the target instance, **read-only** V3 `search*` calls | `generated/live/<instance>_inventory.md` |
+| 3 | Inventory the instance (optional, recommended) | from a committed `generated/live/<instance>_inventory.json` (`tools/openbis_inventory.js`, run by a human in the ELN tab — the only way in cloud sessions, see `CLOUD.md`); otherwise a browser session on the target instance, **read-only** V3 `search*` calls | `generated/live/<instance>_inventory.md` |
 | 4 | Transcribe the PRD | `prd-requirements-extractor` | `generated/<stem>/requirements.json` |
 | 5 | Design a flat structure (workflow PRDs only) | `structure-designer` | `generated/<stem>/design.json`, `design.md` |
 | 6 | Classify | `gap-analyzer` (REUSE / EXTEND / CREATE / LIVE-ONLY) | `generated/<stem>/gap-report.md` |
@@ -29,6 +29,8 @@ Examples:
 Step 2 is skipped if the CATALOG SHA equals `git -C ../bam-masterdata rev-parse HEAD`.
 Step 3 must never write to the instance. Credentials are never typed by an agent — the user signs in
 in the browser and the agent reuses that session, or the user runs a script with their own token.
+If the inventory JSON is older than the instance's last known change (or missing in a cloud session),
+say so in the inventory MD header and ask for a fresh export instead of guessing.
 
 ## Human review checkpoint
 
