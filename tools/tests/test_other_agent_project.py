@@ -96,7 +96,7 @@ def test_process_line_is_drawn_as_a_line(tmp_path):
     assert rr.main(["demo", "struktur", "--repo", str(repo), "--out", str(out)]) == 0
     html = out.read_text(encoding="utf-8")
     assert 'class="line"' in html and "als Linie" in html  # specimen -> test -> fracture, not a star
-    assert "dev field" in html and "als Feld verlinkt" in html  # instrument linked by an OBJECT field (pattern M4)
+    assert "dev lnk" in html and "als Feld verlinkt" in html  # instrument linked by an OBJECT field (pattern M4)
     assert "A-01-TEST (step)" not in html  # the previous step is not listed as an instrument
 
 

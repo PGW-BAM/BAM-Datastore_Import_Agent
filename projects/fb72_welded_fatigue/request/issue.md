@@ -3,7 +3,7 @@
 
 ## Summary
 
-FB 7.2 documents S-N tests on welded joints in the BAM Data Store. This needs **2 new object types**, **6 new vocabularies**, **33 new property types** and **4 additional terms** in existing vocabularies. Everything else reuses bam-masterdata v0.17.0 (`datamodel/v0`) as it is.
+FB 7.2 documents S-N tests on welded joints in the BAM Data Store. This needs **2 new object types**, **6 new vocabularies**, **38 new property types** and **4 additional terms** in existing vocabularies. Everything else reuses bam-masterdata v0.17.0 (`datamodel/v0`) as it is.
 
 Contribution: Python modules (ready for a PR, attached) and `masterdata.xlsx` (attached).
 
@@ -15,7 +15,7 @@ Cyclic fatigue tests (S-N curves) on welded specimens (butt and cruciform welds)
 
 | Code | Name (EN / DE) | Parent (v0) | Fields (new) | Covers workflow steps |
 |---|---|---|---|---|
-| `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | Cyclic fatigue test / Zyklischer Ermüdungsversuch | `MechanicalTest` | 26 (12) | 07, 08, 09, 10, 11 |
+| `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | Cyclic fatigue test / Zyklischer Ermüdungsversuch | `MechanicalTest` | 32 (17) | 07, 08, 09, 10, 11 |
 | `SAMPLE.WELDED_FATIGUE_SPECIMEN` | Welded fatigue specimen / Geschweißte Ermüdungsprobe | `Sample` | 42 (21) | subject, 01, 02, 04, 05, 06 |
 
 ## New property types
@@ -25,6 +25,11 @@ Cyclic fatigue tests (S-N curves) on welded specimens (butt and cruciform welds)
 | `FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE` | Strain gauge distance to weld toe [mm] | DMS-Abstand zum Nahtübergang [mm] | REAL | Strain Gauge Application | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §3 step 07 |
 | `FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE` | Strain gauge distance to edge [mm] | DMS-Abstand zum Probenrand [mm] | REAL | Strain Gauge Application | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §3 step 07 |
 | `FATIGUE.STRAIN_GAUGE_APPLICATION_TIME` | Time of strain gauge application | Zeitpunkt der DMS-Applikation | TIMESTAMP | Strain Gauge Application | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §3 step 07 |
+| `FATIGUE.STRAIN_GAUGE` | Strain gauge | Dehnungsmessstreifen (DMS) | OBJECT | Strain Gauge Application | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E |
+| `FATIGUE.STRAIN_GAUGE_ADHESIVE` | Strain gauge adhesive | DMS-Klebstoff | OBJECT | Strain Gauge Application | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E |
+| `FATIGUE.CRACK_DETECTION_AGENT` | Crack detection agent | Rissprüfmittel | OBJECT | Strain Gauge Application | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E |
+| `FATIGUE.MONITORING_CAMERA` | Monitoring camera | Überwachungskamera | OBJECT | Strain Gauge Application | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E |
+| `FATIGUE.MEASURING_AMPLIFIER` | Measuring amplifier | Messverstärker | OBJECT | Measuring Amplifier And Test Rig | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E |
 | `FATIGUE.SAMPLING_FREQUENCY` | Sampling frequency [Hz] | Abtastfrequenz [Hz] | INTEGER | Measuring Amplifier And Test Rig | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §3 step 08 (INTEGER per decision 7; requirements.json had 'real') |
 | `FATIGUE.RECORDING_MODE` | Recording mode | Aufzeichnungsmodus | CONTROLLEDVOCABULARY → `FATIGUE.RECORDING_MODE` | Measuring Amplifier And Test Rig | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §3 step 08 |
 | `FATIGUE.RECORDED_CHANNELS` | Recorded channels | Erfasste Kanäle | VARCHAR | Measuring Amplifier And Test Rig | `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` | PRD §3 step 08 |

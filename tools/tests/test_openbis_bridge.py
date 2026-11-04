@@ -190,6 +190,31 @@ def test_apply_creates_parents_first_and_is_idempotent(tmp_path):
     assert len(again["skipped"]) == 4
 
 
+def test_link_fields_resolve_to_identifiers_and_are_checked(tmp_path):
+    """Pattern M4: an instrument linked by an OBJECT field instead of a parent (variant E of FB 7.2)."""
+    types = {**TYPES, "EXPERIMENTAL_STEP": TYPES["EXPERIMENTAL_STEP"] + [("INSTRUMENT", False, "Test Rig", "SAMPLE")]}
+    s = structure()
+    s["objects"][0]["props"].pop("UNKNOWN")
+    s["objects"][0]["parents"] = ["S1-01"]
+    s["objects"][0]["props"]["INSTRUMENT"] = "@obj:RIG"
+    s["objects"].insert(0, {"key": "RIG", "code": "RIG_01", "type": "INSTRUMENT", "collection": None, "props": {"$NAME": "Rig"}})
+    s["objects"].append({"key": "SCAN", "code": "S1-01-SCAN", "type": "EXPERIMENTAL_STEP", "collection": "SERIES_1",
+                         "props": {"$NAME": "scan", "INSTRUMENT": f"@obj:{EQUIP}/GOM"}, "parents": ["STEP"]})
+    assert ob.validate_structure(s) == []
+    (tmp_path / "notes.txt").write_text("hello\n")
+    f = FakeOpenBIS(types, {"LEVEL": ["HIGH", "LOW"]}, projects=[EQUIP], samples=[f"{EQUIP}/GOM"])
+    ob.apply(f, s, tmp_path, dry_run=False)
+    assert f.samples["/FB_72/TEST_PROJECT/S1-01-TEST"]["props"]["INSTRUMENT"] == "/FB_72/TEST_PROJECT/RIG_01"
+    assert f.samples["/FB_72/TEST_PROJECT/S1-01-SCAN"]["props"]["INSTRUMENT"] == f"{EQUIP}/GOM"
+
+    s["objects"][-1]["props"]["INSTRUMENT"] = f"@obj:{EQUIP}/MISSING"  # linked inventory object absent -> gap for you
+    inv = ob.read_inventory(fake(), "https://playground.example", [EQUIP])
+    rep = ob.check(inv, None, s)
+    assert {"kind": "equipment", "what": f"{EQUIP}/MISSING (link of SCAN)", "who": "you"} in rep["missing"]
+    s["objects"][-1]["props"]["INSTRUMENT"] = "@obj:NOPE"
+    assert any("link '@obj:NOPE'" in e for e in ob.validate_structure(s))
+
+
 def test_validate_structure_errors():
     s = structure()
     s["objects"][0]["parents"] = ["NOPE"]

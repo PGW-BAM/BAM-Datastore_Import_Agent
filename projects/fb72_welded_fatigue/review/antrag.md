@@ -7,7 +7,7 @@
 ## Das beantragen Sie / What you request
 
 - neue Objekttypen / new object types: 2
-- neue Felder / new fields: 33
+- neue Felder / new fields: 38
 - neue Auswahllisten / new choice lists: 6
 - ergänzte Begriffe / added terms: 4
 
@@ -23,6 +23,11 @@
 | `FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE` | DMS-Abstand zum Nahtübergang [mm] / Strain gauge distance to weld toe [mm] | REAL |
 | `FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE` | DMS-Abstand zum Probenrand [mm] / Strain gauge distance to edge [mm] | REAL |
 | `FATIGUE.STRAIN_GAUGE_APPLICATION_TIME` | Zeitpunkt der DMS-Applikation / Time of strain gauge application | TIMESTAMP |
+| `FATIGUE.STRAIN_GAUGE` | Dehnungsmessstreifen (DMS) / Strain gauge | OBJECT |
+| `FATIGUE.STRAIN_GAUGE_ADHESIVE` | DMS-Klebstoff / Strain gauge adhesive | OBJECT |
+| `FATIGUE.CRACK_DETECTION_AGENT` | Rissprüfmittel / Crack detection agent | OBJECT |
+| `FATIGUE.MONITORING_CAMERA` | Überwachungskamera / Monitoring camera | OBJECT |
+| `FATIGUE.MEASURING_AMPLIFIER` | Messverstärker / Measuring amplifier | OBJECT |
 | `FATIGUE.SAMPLING_FREQUENCY` | Abtastfrequenz [Hz] / Sampling frequency [Hz] | INTEGER |
 | `FATIGUE.RECORDING_MODE` | Aufzeichnungsmodus / Recording mode | CONTROLLEDVOCABULARY |
 | `FATIGUE.RECORDED_CHANNELS` | Erfasste Kanäle / Recorded channels | VARCHAR |

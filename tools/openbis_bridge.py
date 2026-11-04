@@ -28,6 +28,9 @@ structure.json (written by the agent, see templates/structure.json):
   collection: code in this project, "/SPACE/PROJECT/COLLECTION" elsewhere (e.g. the division's
   equipment project), or null for an object directly in this project. Prop values "@file:<path>"
   are read from a text file next to structure.json. parents: keys from this file or identifiers.
+  Link fields (property type OBJECT, pattern M4 in workflow/strukturmuster.md): "@obj:<key or identifier>", e.g.
+  "props": {"INSTRUMENT": "@obj:RIG"}. The bridge writes the object's identifier, creates linked objects first and
+  checks that linked inventory objects exist, like parents.
 """
 
 from __future__ import annotations
@@ -263,6 +266,14 @@ def _resolve(structure: dict) -> list[dict]:
     return out
 
 
+OBJ = "@obj:"
+
+
+def links(o: dict) -> list[str]:
+    """Targets of the link fields of an object ("@obj:<key or identifier>" values)."""
+    return [v[len(OBJ):] for v in (o.get("props") or {}).values() if isinstance(v, str) and v.startswith(OBJ)]
+
+
 def validate_structure(structure: dict) -> list[str]:
     """Offline consistency checks. Returns a list of problems (empty = fine)."""
     errs = []
@@ -298,6 +309,9 @@ def validate_structure(structure: dict) -> list[str]:
         for p in o.get("parents", []):
             if not p.startswith("/") and p not in keyset:
                 errs.append(f"{o['key']}: parent '{p}' is neither a key nor an identifier")
+        for p in links(o):
+            if not p.startswith("/") and p not in keyset:
+                errs.append(f"{o['key']}: link '@obj:{p}' is neither a key nor an identifier")
     # cycles among file-internal parents
     try:
         _order(objs)
@@ -307,10 +321,10 @@ def validate_structure(structure: dict) -> list[str]:
 
 
 def _order(objs: list[dict]) -> list[list[dict]]:
-    """Group objects into passes so that file-internal parents are created first."""
+    """Group objects into passes so that file-internal parents and linked objects are created first."""
     done, passes, rest = set(), [], list(objs)
     while rest:
-        ready = [o for o in rest if all(p.startswith("/") or p in done for p in o.get("parents", []))]
+        ready = [o for o in rest if all(p.startswith("/") or p in done for p in o.get("parents", []) + links(o))]
         if not ready:
             raise ValueError("parent cycle between: " + ", ".join(o["key"] for o in rest))
         passes.append(ready)
@@ -319,7 +333,10 @@ def _order(objs: list[dict]) -> list[list[dict]]:
     return passes
 
 
-def _value(v, base_dir: Path | None):
+def _value(v, base_dir: Path | None, ids: dict | None = None):
+    if isinstance(v, str) and v.startswith(OBJ):  # link field: key of this file -> identifier
+        target = v[len(OBJ):]
+        return (ids or {}).get(target, target)
     if isinstance(v, bool):
         return "true" if v else "false"
     if isinstance(v, str) and v.startswith("@file:"):
@@ -409,23 +426,23 @@ def check(inventory: dict, spec: dict | None = None, structure: dict | None = No
                     miss("assignment", f"{o['type']}: {k} (used by {o['key']})", "admin")
                     continue
                 vc = (pt.get(k) or {}).get("vocabulary")
-                if vc and isinstance(v, str) and not v.startswith("@file:") and v not in voc.get(vc, set()):
+                if vc and isinstance(v, str) and not v.startswith(("@file:", OBJ)) and v not in voc.get(vc, set()):
                     miss("term", f"{vc}: {v} (used by {o['key']})", "admin")
             for p in t["properties"]:
                 if p["mandatory"] and p["code"] not in props:
                     miss("mandatory field", f"{o['key']}: {p['code']}", "agent")
             if o["_identifier"] in objs_have:
                 info.append(f"{o['_identifier']} exists already (will be skipped)")
-            for par in o.get("parents", []):
+            for rel, par in [("parent", p) for p in o.get("parents", [])] + [("link", p) for p in links(o)]:
                 if par in keys:
                     continue
                 pu = par.upper()
                 in_read = any(pu.startswith(rp + "/") for rp in read_projects)
                 if pu not in objs_have:
                     if in_read:
-                        miss("equipment", f"{par} (parent of {o['key']})", "you")
+                        miss("equipment", f"{par} ({rel} of {o['key']})", "you")
                     else:
-                        warnings.append(f"{o['key']}: parent {par} lies outside the read projects, not checked")
+                        warnings.append(f"{o['key']}: {rel} {par} lies outside the read projects, not checked")
 
     # stable order, no duplicates
     seen, uniq = set(), []
@@ -516,6 +533,7 @@ def apply(call, structure: dict, base_dir: Path | None = None, dry_run: bool = T
                 for s in sts.get("objects", [])}
     objs = _resolve(structure)
     by_key = {o["key"]: o for o in objs}
+    key_ids = {o["key"]: o["_identifier"] for o in objs}
     for batch in _order(objs):
         ids = [o["_identifier"] for o in batch]
         have = exists("getSamples", ids, SID)
@@ -529,7 +547,7 @@ def apply(call, structure: dict, base_dir: Path | None = None, dry_run: bool = T
                 if v is None:
                     continue
                 if k in assigned.get(o["type"], set()):
-                    props[k] = _value(v, base_dir)
+                    props[k] = _value(v, base_dir, key_ids)
                 else:
                     rep["droppedProps"].append(f"{o['code']}: {k}")
             c = {"typeId": TID(o["type"], "SAMPLE"), "spaceId": SPID(o["_space"]),

@@ -295,6 +295,70 @@ class CyclicFatigueTest(MechanicalTest):
         section="Strain Gauge Application",
     )
 
+    strain_gauge = PropertyTypeAssignment(
+        code="FATIGUE.STRAIN_GAUGE",
+        data_type="OBJECT",
+        object_code="AUXILIARY_MATERIAL",
+        property_label="Strain gauge",
+        property_label_de="Dehnungsmessstreifen (DMS)",
+        description="""Strain gauge used (inventory object)//Verwendeter Dehnungsmessstreifen (Inventar-Objekt)""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    strain_gauge_adhesive = PropertyTypeAssignment(
+        code="FATIGUE.STRAIN_GAUGE_ADHESIVE",
+        data_type="OBJECT",
+        object_code="AUXILIARY_MATERIAL",
+        property_label="Strain gauge adhesive",
+        property_label_de="DMS-Klebstoff",
+        description="""Adhesive used for the strain gauges (inventory object)//Verwendeter DMS-Klebstoff (Inventar-Objekt)""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    crack_detection_agent = PropertyTypeAssignment(
+        code="FATIGUE.CRACK_DETECTION_AGENT",
+        data_type="OBJECT",
+        object_code="AUXILIARY_MATERIAL",
+        property_label="Crack detection agent",
+        property_label_de="Rissprüfmittel",
+        description="""Crack detection agent used, e.g. crack luminescence set (inventory object)//Verwendetes Rissprüfmittel, z. B. Risslumineszenz-Set (Inventar-Objekt)""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    monitoring_camera = PropertyTypeAssignment(
+        code="FATIGUE.MONITORING_CAMERA",
+        data_type="OBJECT",
+        object_code="INSTRUMENT.CAMERA",
+        property_label="Monitoring camera",
+        property_label_de="Überwachungskamera",
+        description="""Camera system monitoring the test (inventory object)//Kamerasystem zur Versuchsüberwachung (Inventar-Objekt)""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    measuring_amplifier = PropertyTypeAssignment(
+        code="FATIGUE.MEASURING_AMPLIFIER",
+        data_type="OBJECT",
+        object_code="INSTRUMENT.MEASURING_AMPLIFIER",
+        property_label="Measuring amplifier",
+        property_label_de="Messverstärker",
+        description="""Measuring amplifier used (inventory object)//Verwendeter Messverstärker (Inventar-Objekt)""",
+        mandatory=False,
+        section="Measuring Amplifier And Test Rig",
+    )
+
+    instrument = PropertyTypeAssignment(
+        code="INSTRUMENT",
+        data_type="OBJECT",  # any target, like "(ALL)" in the standard; the checker accepts only an empty object_code
+        property_label="Testing Machine or Measurement Device",
+        description="""Testing machine or measurement device//Prüfmaschine oder Messgerät""",
+        mandatory=False,
+        section="Measuring Amplifier And Test Rig",
+    )
+
     sampling_frequency = PropertyTypeAssignment(
         code="FATIGUE.SAMPLING_FREQUENCY",
         data_type="INTEGER",

@@ -22,8 +22,8 @@
     "10",
     "11"
    ],
-   "fields": 26,
-   "new_fields": 12
+   "fields": 32,
+   "new_fields": 17
   },
   {
    "code": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
@@ -76,6 +76,61 @@
    "vocabulary": null,
    "mandatory": false,
    "source": "PRD §3 step 07"
+  },
+  {
+   "code": "FATIGUE.STRAIN_GAUGE",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Strain gauge",
+   "label_de": "Dehnungsmessstreifen (DMS)",
+   "data_type": "OBJECT",
+   "section": "Strain Gauge Application",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E"
+  },
+  {
+   "code": "FATIGUE.STRAIN_GAUGE_ADHESIVE",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Strain gauge adhesive",
+   "label_de": "DMS-Klebstoff",
+   "data_type": "OBJECT",
+   "section": "Strain Gauge Application",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E"
+  },
+  {
+   "code": "FATIGUE.CRACK_DETECTION_AGENT",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Crack detection agent",
+   "label_de": "Rissprüfmittel",
+   "data_type": "OBJECT",
+   "section": "Strain Gauge Application",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E"
+  },
+  {
+   "code": "FATIGUE.MONITORING_CAMERA",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Monitoring camera",
+   "label_de": "Überwachungskamera",
+   "data_type": "OBJECT",
+   "section": "Strain Gauge Application",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E"
+  },
+  {
+   "code": "FATIGUE.MEASURING_AMPLIFIER",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Measuring amplifier",
+   "label_de": "Messverstärker",
+   "data_type": "OBJECT",
+   "section": "Measuring Amplifier And Test Rig",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E"
   },
   {
    "code": "FATIGUE.SAMPLING_FREQUENCY",
@@ -731,6 +786,10 @@
   {
    "code": "DEFECT_DESCRIPTION",
    "ref": "DEFECT_DESCRIPTION (Named, bam_masterdata/datamodel/object_types.py:7429)"
+  },
+  {
+   "code": "INSTRUMENT",
+   "ref": "INSTRUMENT (Calibration, bam_masterdata/datamodel/v0/object_types.py:1119)"
   }
  ],
  "sync": null,

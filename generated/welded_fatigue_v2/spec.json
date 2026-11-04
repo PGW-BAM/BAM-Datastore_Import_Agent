@@ -445,6 +445,72 @@
      "object_code": null
     },
     {
+     "code": "FATIGUE.STRAIN_GAUGE",
+     "data_type": "OBJECT",
+     "label": "Strain gauge",
+     "label_de": "Dehnungsmessstreifen (DMS)",
+     "description": "Strain gauge used (inventory object)//Verwendeter Dehnungsmessstreifen (Inventar-Objekt)",
+     "section": "Strain Gauge Application",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": "AUXILIARY_MATERIAL"
+    },
+    {
+     "code": "FATIGUE.STRAIN_GAUGE_ADHESIVE",
+     "data_type": "OBJECT",
+     "label": "Strain gauge adhesive",
+     "label_de": "DMS-Klebstoff",
+     "description": "Adhesive used for the strain gauges (inventory object)//Verwendeter DMS-Klebstoff (Inventar-Objekt)",
+     "section": "Strain Gauge Application",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": "AUXILIARY_MATERIAL"
+    },
+    {
+     "code": "FATIGUE.CRACK_DETECTION_AGENT",
+     "data_type": "OBJECT",
+     "label": "Crack detection agent",
+     "label_de": "Rissprüfmittel",
+     "description": "Crack detection agent used, e.g. crack luminescence set (inventory object)//Verwendetes Rissprüfmittel, z. B. Risslumineszenz-Set (Inventar-Objekt)",
+     "section": "Strain Gauge Application",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": "AUXILIARY_MATERIAL"
+    },
+    {
+     "code": "FATIGUE.MONITORING_CAMERA",
+     "data_type": "OBJECT",
+     "label": "Monitoring camera",
+     "label_de": "Überwachungskamera",
+     "description": "Camera system monitoring the test (inventory object)//Kamerasystem zur Versuchsüberwachung (Inventar-Objekt)",
+     "section": "Strain Gauge Application",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": "INSTRUMENT.CAMERA"
+    },
+    {
+     "code": "FATIGUE.MEASURING_AMPLIFIER",
+     "data_type": "OBJECT",
+     "label": "Measuring amplifier",
+     "label_de": "Messverstärker",
+     "description": "Measuring amplifier used (inventory object)//Verwendeter Messverstärker (Inventar-Objekt)",
+     "section": "Measuring Amplifier And Test Rig",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": "INSTRUMENT.MEASURING_AMPLIFIER"
+    },
+    {
+     "code": "INSTRUMENT",
+     "data_type": "OBJECT",
+     "label": "Testing Machine or Measurement Device",
+     "label_de": null,
+     "description": "Testing machine or measurement device//Prüfmaschine oder Messgerät",
+     "section": "Measuring Amplifier And Test Rig",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
      "code": "FATIGUE.SAMPLING_FREQUENCY",
      "data_type": "INTEGER",
      "label": "Sampling frequency [Hz]",
@@ -543,18 +609,6 @@
      "vocabulary_code": null,
      "object_code": null
     }
-   ],
-   "section_order": [
-    "General Information",
-    "Strain Gauge Application",
-    "Measuring Amplifier And Test Rig",
-    "Installation Stress",
-    "Cyclic Fatigue Test",
-    "Evaluation",
-    "Experimental Details",
-    "References",
-    "Additional Information",
-    "Comments"
    ]
   },
   {
@@ -1026,20 +1080,6 @@
      "vocabulary_code": null,
      "object_code": null
     }
-   ],
-   "section_order": [
-    "Workflow Status",
-    "General Information",
-    "Specimen Identification",
-    "Initial Quality Check",
-    "Chamfering And Grinding",
-    "Weld Analysis",
-    "Series Assignment",
-    "Geometry Before Installation",
-    "Properties",
-    "BAM Information",
-    "Additional Information",
-    "Comments"
    ]
   }
  ]

@@ -474,6 +474,89 @@
           "property_label_de": "Zeitpunkt der DMS-Applikation"
         },
         {
+          "attr": "strain_gauge",
+          "code": "FATIGUE.STRAIN_GAUGE",
+          "data_type": "OBJECT",
+          "property_label": "Strain gauge",
+          "property_label_de": "Dehnungsmessstreifen (DMS)",
+          "description": "Strain gauge used (inventory object)//Verwendeter Dehnungsmessstreifen (Inventar-Objekt)",
+          "section": "Strain Gauge Application",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": "AUXILIARY_MATERIAL",
+          "reuse_property": null,
+          "source": "PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E"
+        },
+        {
+          "attr": "strain_gauge_adhesive",
+          "code": "FATIGUE.STRAIN_GAUGE_ADHESIVE",
+          "data_type": "OBJECT",
+          "property_label": "Strain gauge adhesive",
+          "property_label_de": "DMS-Klebstoff",
+          "description": "Adhesive used for the strain gauges (inventory object)//Verwendeter DMS-Klebstoff (Inventar-Objekt)",
+          "section": "Strain Gauge Application",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": "AUXILIARY_MATERIAL",
+          "reuse_property": null,
+          "source": "PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E"
+        },
+        {
+          "attr": "crack_detection_agent",
+          "code": "FATIGUE.CRACK_DETECTION_AGENT",
+          "data_type": "OBJECT",
+          "property_label": "Crack detection agent",
+          "property_label_de": "Rissprüfmittel",
+          "description": "Crack detection agent used, e.g. crack luminescence set (inventory object)//Verwendetes Rissprüfmittel, z. B. Risslumineszenz-Set (Inventar-Objekt)",
+          "section": "Strain Gauge Application",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": "AUXILIARY_MATERIAL",
+          "reuse_property": null,
+          "source": "PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E"
+        },
+        {
+          "attr": "monitoring_camera",
+          "code": "FATIGUE.MONITORING_CAMERA",
+          "data_type": "OBJECT",
+          "property_label": "Monitoring camera",
+          "property_label_de": "Überwachungskamera",
+          "description": "Camera system monitoring the test (inventory object)//Kamerasystem zur Versuchsüberwachung (Inventar-Objekt)",
+          "section": "Strain Gauge Application",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": "INSTRUMENT.CAMERA",
+          "reuse_property": null,
+          "source": "PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E"
+        },
+        {
+          "attr": "measuring_amplifier",
+          "code": "FATIGUE.MEASURING_AMPLIFIER",
+          "data_type": "OBJECT",
+          "property_label": "Measuring amplifier",
+          "property_label_de": "Messverstärker",
+          "description": "Measuring amplifier used (inventory object)//Verwendeter Messverstärker (Inventar-Objekt)",
+          "section": "Measuring Amplifier And Test Rig",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": "INSTRUMENT.MEASURING_AMPLIFIER",
+          "reuse_property": null,
+          "source": "PRD §5 (2026-11-04): Gerät als Link-Feld, Variante E"
+        },
+        {
+          "attr": "instrument",
+          "code": "INSTRUMENT",
+          "data_type": "OBJECT",
+          "property_label": "Testing Machine or Measurement Device",
+          "description": "Testing machine or measurement device//Prüfmaschine oder Messgerät",
+          "section": "Measuring Amplifier And Test Rig",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": "INSTRUMENT (Calibration, bam_masterdata/datamodel/v0/object_types.py:1119)",
+          "source": "PRD §5 (2026-11-04): Prüfmaschine als Link-Feld, Feld aus dem Standard"
+        },
+        {
           "attr": "sampling_frequency",
           "code": "FATIGUE.SAMPLING_FREQUENCY",
           "data_type": "INTEGER",
@@ -949,56 +1032,56 @@
     {
       "inventory": "Strain gauge HBM LY11-6/120//DMS HBM LY11-6/120",
       "type_code": "AUXILIARY_MATERIAL",
-      "parent_of": "TEST step",
       "used_in_steps": [
         "07"
       ],
-      "AUXILIARY_MATERIAL_TYPE": "STRAIN_GAUGE (new term)"
+      "AUXILIARY_MATERIAL_TYPE": "STRAIN_GAUGE (new term)",
+      "linked_by": "FATIGUE.STRAIN_GAUGE"
     },
     {
       "inventory": "Adhesive HBM X60//Klebstoff HBM X60",
       "type_code": "AUXILIARY_MATERIAL",
-      "parent_of": "TEST step",
       "used_in_steps": [
         "07"
       ],
-      "AUXILIARY_MATERIAL_TYPE": "ADHESIVE (existing)"
+      "AUXILIARY_MATERIAL_TYPE": "ADHESIVE (existing)",
+      "linked_by": "FATIGUE.STRAIN_GAUGE_ADHESIVE"
     },
     {
       "inventory": "Crack luminescence set (MR Chemie)//Risslumineszenz-Set (MR Chemie)",
       "type_code": "AUXILIARY_MATERIAL",
-      "parent_of": "TEST step",
       "used_in_steps": [
         "07"
       ],
-      "AUXILIARY_MATERIAL_TYPE": "CRACK_DETECTION_AGENT (new term)"
+      "AUXILIARY_MATERIAL_TYPE": "CRACK_DETECTION_AGENT (new term)",
+      "linked_by": "FATIGUE.CRACK_DETECTION_AGENT"
     },
     {
       "inventory": "Camera system Luxonis OAK-4D-Pro//Kamerasystem Luxonis OAK-4D-Pro",
       "type_code": "INSTRUMENT.CAMERA",
-      "parent_of": "TEST step",
       "used_in_steps": [
         "07"
-      ]
+      ],
+      "linked_by": "FATIGUE.MONITORING_CAMERA"
     },
     {
       "inventory": "IMC measuring amplifier//IMC-Messverstärker",
       "type_code": "INSTRUMENT.MEASURING_AMPLIFIER",
-      "parent_of": "TEST step",
       "used_in_steps": [
         "08",
         "09"
-      ]
+      ],
+      "linked_by": "FATIGUE.MEASURING_AMPLIFIER"
     },
     {
       "inventory": "Servo-hydraulic testing machine//Servohydraulische Prüfmaschine",
       "type_code": "TESTING_MACHINE",
-      "parent_of": "TEST step",
       "used_in_steps": [
         "08",
         "10"
       ],
-      "TESTING_MACHINE_DRIVE_TYPE": "SERVOHYDRAULIC (existing)"
+      "TESTING_MACHINE_DRIVE_TYPE": "SERVOHYDRAULIC (existing)",
+      "linked_by": "INSTRUMENT"
     },
     {
       "inventory": "Macro camera//Makro-Kamera",
@@ -1107,13 +1190,7 @@
         "name_pattern": "S1B-01 Cyclic fatigue test",
         "collection": "series collection",
         "parents": [
-          "S1B-01 (specimen)",
-          "Strain gauge HBM LY11-6/120",
-          "Adhesive HBM X60",
-          "Crack luminescence set",
-          "Luxonis OAK-4D-Pro",
-          "IMC measuring amplifier",
-          "Servo-hydraulic testing machine"
+          "S1B-01-SCAN (step)"
         ],
         "covers_steps": [
           "07",
@@ -1123,7 +1200,15 @@
           "11"
         ],
         "name_de": "Zyklischer Ermüdungsversuch",
-        "name_en": "Cyclic fatigue test"
+        "name_en": "Cyclic fatigue test",
+        "links": [
+          "Strain gauge HBM LY11-6/120",
+          "Adhesive HBM X60",
+          "Crack luminescence set",
+          "Luxonis OAK-4D-Pro",
+          "IMC measuring amplifier",
+          "Servo-hydraulic testing machine"
+        ]
       },
       {
         "code_pattern": "S1B-01-FRACTURE",
@@ -1131,7 +1216,7 @@
         "name_pattern": "S1B-01 Fracture surface analysis",
         "collection": "series collection",
         "parents": [
-          "S1B-01 (specimen)",
+          "S1B-01-TEST (step)",
           "Macro camera",
           "Digital microscope"
         ],
@@ -1550,9 +1635,11 @@
       "new_collection_types": 0,
       "new_dataset_types": 0,
       "objects_per_specimen": 4,
-      "max_link_depth": 1,
-      "step_to_step_links": 0,
-      "inventory_objects": 9
+      "max_link_depth": 3,
+      "step_to_step_links": 2,
+      "inventory_objects": 9,
+      "shared_parents": 3,
+      "link_fields": 6
     },
     "legacy_live": {
       "new_object_types": 16,
@@ -1606,7 +1693,7 @@
     "Cyclic Fatigue Test": "Zyklischer Ermüdungsversuch",
     "Evaluation": "Auswertung"
   },
-  "variant": "A",
+  "variant": "E",
   "variants": [
     {
       "id": "E",
@@ -1615,8 +1702,8 @@
       "source": "Vorschlag des Agenten nach workflow/strukturmuster.md (M1, M4, M5, M6)",
       "name_de": "Prozesslinie, Geräte als Felder",
       "name_en": "Process line, instruments as fields",
-      "summary_de": "Dieselben vier Objekte wie A, aber als Linie in Ablauf-Reihenfolge: Probe → 3D-Scan → Ermüdungsversuch → Bruchflächenanalyse (M1, M5). Geräte und Hilfsstoffe stehen als Link-Felder im Formular des Schritts, nicht als Eltern (M4), so wie im BAM-Standard beim Kriechversuch.",
-      "summary_en": "The same four objects as A, but as a line in workflow order: specimen → 3D scan → fatigue test → fracture surface analysis (M1, M5). Instruments and auxiliary materials are link fields in the step's form, not parents (M4), as in the BAM standard's creep test.",
+      "summary_de": "Dieselben vier Objekte wie A, aber als Linie in Ablauf-Reihenfolge: Probe → 3D-Scan → Ermüdungsversuch → Bruchflächenanalyse (M1, M5). Die sechs Geräte und Hilfsstoffe des Ermüdungsversuchs stehen als Link-Felder in seinem Formular, nicht als Eltern (M4), so wie im BAM-Standard beim Kriechversuch. 3D-Scan und Bruchflächenanalyse sind Standard-Schritte ohne Link-Feld; ihre drei Geräte bleiben Eltern.",
+      "summary_en": "The same four objects as A, but as a line in workflow order: specimen → 3D scan → fatigue test → fracture surface analysis (M1, M5). The six instruments and auxiliary materials of the fatigue test are link fields in its form, not parents (M4), as in the BAM standard's creep test. 3D scan and fracture surface analysis are standard steps without a link field; their three instruments stay parents.",
       "objects": [
         {
           "name_de": "Probe",
@@ -1680,23 +1767,23 @@
       ],
       "cons": [
         {
-          "de": "Weicht von PRD §5 ab (Geräte als Eltern der Schritte): braucht Ihre Zustimmung",
-          "en": "Deviates from PRD §5 (instruments as parents of the steps): needs your approval"
-        },
-        {
           "de": "Der Graph einer Maschine zeigt nicht mehr, welche Proben auf ihr liefen",
           "en": "The graph of a machine no longer shows which specimens ran on it"
         },
         {
-          "de": "Bis zu 9 zusätzliche Link-Felder zu beantragen (eines je Gerät bzw. Hilfsstoff)",
-          "en": "Up to 9 additional link fields to request (one per instrument or auxiliary material)"
-        },
-        {
           "de": "Vom Bruchbild zurück zur Probe sind es 3 Verknüpfungen statt 1",
           "en": "From the fracture image back to the specimen it takes 3 links instead of 1"
+        },
+        {
+          "de": "5 neue Link-Felder zu beantragen; die Prüfmaschine nutzt das Standard-Feld INSTRUMENT",
+          "en": "5 new link fields to request; the testing machine uses the standard field INSTRUMENT"
+        },
+        {
+          "de": "Scanner, Makro-Kamera und Mikroskop bleiben Eltern (Standard-Schritte haben kein Link-Feld)",
+          "en": "Scanner, macro camera and microscope stay parents (standard steps have no link field)"
         }
       ],
-      "shared_parents": 0
+      "shared_parents": 3
     },
     {
       "id": "A",

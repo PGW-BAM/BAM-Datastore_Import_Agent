@@ -6,20 +6,20 @@
 
 ## 1 Welche Struktur soll es werden? / Which structure should it be?
 
-Empfohlen / recommended: **E**. Unten ausgearbeitet / worked out below: **A**. Muster und Quellen: `workflow/strukturmuster.md`.
+Empfohlen / recommended: **E**. Unten ausgearbeitet / worked out below: **E**. Muster und Quellen: `workflow/strukturmuster.md`.
 
 | | Variante / Variant | Objekte je Probe | Ebenen | neue Typen | Geräte als Eltern |
 |---|---|---|---|---|---|
-| E | Prozesslinie, Geräte als Felder / Process line, instruments as fields **(empfohlen / recommended)** | 4 | 3 | 2 | 0 |
+| E | Prozesslinie, Geräte als Felder / Process line, instruments as fields **(empfohlen / recommended)** | 4 | 3 | 2 | 3 |
 | A | Flach, Schritte gebündelt / Flat, steps grouped | 4 | 1 | 2 | 9 |
 | C | Alles an der Probe / Everything on the specimen | 1 | 0 | 1 | 9 |
 | D | Kette wie bisher auf dev1 / Chain as before on dev1 | 13 | 12 | 16 | – |
 
 ### E Prozesslinie, Geräte als Felder / Process line, instruments as fields (empfohlen / recommended)
 
-Dieselben vier Objekte wie A, aber als Linie in Ablauf-Reihenfolge: Probe → 3D-Scan → Ermüdungsversuch → Bruchflächenanalyse (M1, M5). Geräte und Hilfsstoffe stehen als Link-Felder im Formular des Schritts, nicht als Eltern (M4), so wie im BAM-Standard beim Kriechversuch.
+Dieselben vier Objekte wie A, aber als Linie in Ablauf-Reihenfolge: Probe → 3D-Scan → Ermüdungsversuch → Bruchflächenanalyse (M1, M5). Die sechs Geräte und Hilfsstoffe des Ermüdungsversuchs stehen als Link-Felder in seinem Formular, nicht als Eltern (M4), so wie im BAM-Standard beim Kriechversuch. 3D-Scan und Bruchflächenanalyse sind Standard-Schritte ohne Link-Feld; ihre drei Geräte bleiben Eltern.
 
-*The same four objects as A, but as a line in workflow order: specimen → 3D scan → fatigue test → fracture surface analysis (M1, M5). Instruments and auxiliary materials are link fields in the step's form, not parents (M4), as in the BAM standard's creep test.*
+*The same four objects as A, but as a line in workflow order: specimen → 3D scan → fatigue test → fracture surface analysis (M1, M5). The six instruments and auxiliary materials of the fatigue test are link fields in its form, not parents (M4), as in the BAM standard's creep test. 3D scan and fracture surface analysis are standard steps without a link field; their three instruments stay parents.*
 
 Aufbau / build-up: Probe → 3D-Scan & Nahtanalyse → Zyklischer Ermüdungsversuch → Bruchflächenanalyse
 
@@ -27,10 +27,10 @@ Aufbau / build-up: Probe → 3D-Scan & Nahtanalyse → Zyklischer Ermüdungsvers
 - ＋ Geräte und Hilfsstoffe sind anklickbare Links im Formular; openBIS prüft, dass dort ein Gerät steht / *Instruments and auxiliary materials are clickable links in the form; openBIS checks that an instrument is entered there*
 - ＋ Inventar-Objekte verbinden im Graphen nicht mehr alle Proben miteinander / *Inventory objects no longer connect all specimens with each other in the graph*
 - ＋ Gleiche Objekte und Felder wie A, nur 2 neue Objekttypen / *Same objects and fields as A, only 2 new object types*
-- – Weicht von PRD §5 ab (Geräte als Eltern der Schritte): braucht Ihre Zustimmung / *Deviates from PRD §5 (instruments as parents of the steps): needs your approval*
 - – Der Graph einer Maschine zeigt nicht mehr, welche Proben auf ihr liefen / *The graph of a machine no longer shows which specimens ran on it*
-- – Bis zu 9 zusätzliche Link-Felder zu beantragen (eines je Gerät bzw. Hilfsstoff) / *Up to 9 additional link fields to request (one per instrument or auxiliary material)*
 - – Vom Bruchbild zurück zur Probe sind es 3 Verknüpfungen statt 1 / *From the fracture image back to the specimen it takes 3 links instead of 1*
+- – 5 neue Link-Felder zu beantragen; die Prüfmaschine nutzt das Standard-Feld INSTRUMENT / *5 new link fields to request; the testing machine uses the standard field INSTRUMENT*
+- – Scanner, Makro-Kamera und Mikroskop bleiben Eltern (Standard-Schritte haben kein Link-Feld) / *Scanner, macro camera and microscope stay parents (standard steps have no link field)*
 
 ### A Flach, Schritte gebündelt / Flat, steps grouped
 
@@ -81,8 +81,8 @@ Aufbau / build-up: Probe → Vorqualitätsprüfung der Schweißnaht → Anfasen 
 
 - **Probe / Specimen** `S1B-01`
 - **3D-Scan & Nahtanalyse / 3D scan & weld analysis** `S1B-01-SCAN` ← Probe / Specimen · Schritte / steps 03, 04 · ZEISS GOM ATOS 5
-- **Zyklischer Ermüdungsversuch / Cyclic fatigue test** `S1B-01-TEST` ← Probe / Specimen · Schritte / steps 07–11 · DMS HBM LY11-6/120 / Strain gauge HBM LY11-6/120, Klebstoff HBM X60 / Adhesive HBM X60, Risslumineszenz-Set (MR Chemie) / Crack luminescence set (MR Chemie), Luxonis OAK-4D-Pro, IMC-Messverstärker / IMC measuring amplifier, Servohydraulische Prüfmaschine / Servo-hydraulic testing machine
-- **Bruchflächenanalyse / Fracture surface analysis** `S1B-01-FRACTURE` ← Probe / Specimen · Schritte / steps 12 · Makro-Kamera / Macro camera, Digitalmikroskop / Digital microscope
+- **Zyklischer Ermüdungsversuch / Cyclic fatigue test** `S1B-01-TEST` ← 3D-Scan & Nahtanalyse / 3D scan & weld analysis · Schritte / steps 07–11 · DMS HBM LY11-6/120 / Strain gauge HBM LY11-6/120, Klebstoff HBM X60 / Adhesive HBM X60, Risslumineszenz-Set (MR Chemie) / Crack luminescence set (MR Chemie), Luxonis OAK-4D-Pro, IMC-Messverstärker / IMC measuring amplifier, Servohydraulische Prüfmaschine / Servo-hydraulic testing machine
+- **Bruchflächenanalyse / Fracture surface analysis** `S1B-01-FRACTURE` ← Zyklischer Ermüdungsversuch / Cyclic fatigue test · Schritte / steps 12 · Makro-Kamera / Macro camera, Digitalmikroskop / Digital microscope
 
 ## 3 Wo landet welcher Ablaufschritt? / Where does each workflow step go?
 
@@ -124,6 +124,12 @@ Aufbau / build-up: Probe → Vorqualitätsprüfung der Schweißnaht → Anfasen 
 | DMS-Applikation / Strain Gauge Application | DMS-Abstand zum Nahtübergang [mm] / Strain gauge distance to weld toe [mm] | Zahl |  | neu |
 | DMS-Applikation / Strain Gauge Application | DMS-Abstand zum Probenrand [mm] / Strain gauge distance to edge [mm] | Zahl |  | neu |
 | DMS-Applikation / Strain Gauge Application | Zeitpunkt der DMS-Applikation / Time of strain gauge application | Datum und Uhrzeit |  | neu |
+| DMS-Applikation / Strain Gauge Application | Dehnungsmessstreifen (DMS) / Strain gauge | Verweis auf ein Objekt |  | neu |
+| DMS-Applikation / Strain Gauge Application | DMS-Klebstoff / Strain gauge adhesive | Verweis auf ein Objekt |  | neu |
+| DMS-Applikation / Strain Gauge Application | Rissprüfmittel / Crack detection agent | Verweis auf ein Objekt |  | neu |
+| DMS-Applikation / Strain Gauge Application | Überwachungskamera / Monitoring camera | Verweis auf ein Objekt |  | neu |
+| Messverstärker und Prüfstand / Measuring Amplifier And Test Rig | Messverstärker / Measuring amplifier | Verweis auf ein Objekt |  | neu |
+| Messverstärker und Prüfstand / Measuring Amplifier And Test Rig | Prüfmaschine oder Messgerät / Testing Machine or Measurement Device | Verweis auf ein Objekt |  |  |
 | Messverstärker und Prüfstand / Measuring Amplifier And Test Rig | Abtastfrequenz [Hz] / Sampling frequency [Hz] | ganze Zahl |  | neu |
 | Messverstärker und Prüfstand / Measuring Amplifier And Test Rig | Aufzeichnungsmodus / Recording mode | Auswahl |  | neu |
 | Messverstärker und Prüfstand / Measuring Amplifier And Test Rig | Erfasste Kanäle / Recorded channels | Text |  | neu |

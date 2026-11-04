@@ -206,3 +206,14 @@ None open. Resolved by the coordinator (2026-10-06):
 - Q6 series table: Annex C rating main column, target quality level additional column.
 - Q7 cycles to 10 % strain gauge drop: MULTILINE_VARCHAR text.
 - Q8 dev1 has project samples enabled: SOP WORKFLOW_PLAN at project level.
+
+
+## Änderung 2026-11-04: Variante E (◆ B „B freigegeben (Variante E)“)
+
+Die vier Objekte je Probe bilden eine **Prozesslinie**: Probe → 3D-Scan & Nahtanalyse → Zyklischer Ermüdungsversuch →
+Bruchflächenanalyse (Eltern → Kind). Die sechs Geräte und Hilfsstoffe des Ermüdungsversuchs sind **Link-Felder**
+(Typ OBJECT) statt Eltern: `FATIGUE.STRAIN_GAUGE`, `FATIGUE.STRAIN_GAUGE_ADHESIVE`, `FATIGUE.CRACK_DETECTION_AGENT`,
+`FATIGUE.MONITORING_CAMERA`, `FATIGUE.MEASURING_AMPLIFIER` (neu) und `INSTRUMENT` (Standard, Prüfmaschine).
+3D-Scan und Bruchflächenanalyse bleiben Standard-`EXPERIMENTAL_STEP` ohne Link-Feld; Scanner, Makro-Kamera und
+Mikroskop bleiben dort Eltern. Muster und Quellen: `workflow/strukturmuster.md`. Die Tabellen oben beschreiben noch
+Variante A, soweit sie Eltern-Verknüpfungen nennen; maßgeblich ist `design.json`.

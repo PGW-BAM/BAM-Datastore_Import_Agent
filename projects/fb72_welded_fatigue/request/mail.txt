@@ -7,7 +7,7 @@ für Wöhlerversuche an Schweißverbindungen im FB 7.2 beantragen wir neue Maste
 
 <Issue-Link>
 
-Kurz: 2 neue Objekttypen, 6 neue Auswahllisten, 33 neue Felder und 4 Ergänzungen bestehender Auswahllisten. Python-Module und masterdata.xlsx hängen am Issue. Der checker meldet 0 Fehler.
+Kurz: 2 neue Objekttypen, 6 neue Auswahllisten, 38 neue Felder und 4 Ergänzungen bestehender Auswahllisten. Python-Module und masterdata.xlsx hängen am Issue. Der checker meldet 0 Fehler.
 
 Sobald die Typen verfügbar sind, legen wir unser Projekt selbst an. Für Rückfragen stehe ich gern zur Verfügung.
 

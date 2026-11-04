@@ -14,10 +14,10 @@ Playground.
 | ◆ A | PRD freigegeben | erledigt (alt) | 2026-10-06 | Fachbereich, siehe `presentation/06_Befunde_und_Entscheidungen.md` |
 | 3 | Ist-Stand der Instanz | **wartet auf Mensch** | 2026-11-04 | `AUFGABE.md`: Playground lesen. Danach passt der Agent `space` und `inventory_projects` in `project.yaml` an |
 | 4 | Struktur entwerfen | erledigt (alt) | 2026-10-06 | `generated/welded_fatigue_v2/design.md` |
-| ◆ B | Struktur bestätigt | **wartet auf Freigabe** | 2026-11-04 | 2026-10-06 bestätigt (Variante A, flach). Neu: Variante E empfohlen (Prozesslinie, Geräte als Felder), Wahl auf `review/struktur.html` |
+| ◆ B | Struktur bestätigt | erledigt | 2026-11-04 | „B freigegeben (Variante E)“ (Chat, 2026-11-04), dazu „passe P1 und §5 im PRD an“ |
 | 5 | Abgleich | teilweise | 2026-10-06 | gegen dev1 + Katalog `d7a871b`; für den Playground nach Schritt 3 neu bewerten (NACHZIEHEN, GERÄT FEHLT) |
-| ◆ C | NEU geprüft | erledigt (alt) | 2026-10-06 | |
-| 6 | Antrag gebaut | erledigt (Entwurf) | 2026-11-04 | `request/` (Issue, Mail, Excel, checker), Prüfseite `review/antrag.html`. Abschnitt „nachziehen“ folgt nach Schritt 3.  Klassen + `spec.json` vorhanden; checker: 0 Fehler, 3 Warnungen (alle aus dem Standard geerbt). Sektionen am 2026-11-04 umbenannt (Title Case, ohne Nummern). Issue/Mail noch nicht geschrieben |
+| ◆ C | NEU geprüft | **wartet auf Freigabe** | 2026-11-04 | Antrag nach Variante E neu gebaut: 2 Typen, 38 Felder (+5 Link-Felder), 6 Auswahllisten, 4 Ergänzungen; checker 0 Fehler. Prüfseite `review/antrag.html` |
+| 6 | Antrag gebaut | erledigt (Entwurf) | 2026-11-04 | `request/` (Issue, Mail, Excel, checker), Prüfseite `review/antrag.html`. Abschnitt „nachziehen“ folgt nach Schritt 3. Klassen + `spec.json` nach Variante E (Link-Felder) neu exportiert; checker: 0 Fehler, 3 Warnungen (alle aus dem Standard geerbt). Issue/Mail noch nicht geschrieben |
 | ◆ D | Antrag gesendet | offen | | |
 | 7 | Lieferung geprüft | offen | | |
 | 8 | structure.json gebaut | erledigt (alt) | 2026-11-04 | aus `demo_series.json` umgewandelt; Equipment-Pfade sind noch die von dev1 |
@@ -26,13 +26,17 @@ Playground.
 
 ## Offene Fragen
 
+- Variante E: 3D-Scan und Bruchflächenanalyse sind Standard-`EXPERIMENTAL_STEP` ohne Link-Feld, deshalb bleiben Scanner, Makro-Kamera und Mikroskop dort Eltern (3 statt 0 geteilte Knoten). Alternative: zwei eigene Schritt-Typen mit Link-Feld (2 Typen mehr im Antrag). Entscheidung der Person offen
+- Link-Felder (Typ OBJECT) beim Anlegen: Die Brücke schreibt den Identifier des Inventar-Objekts. Auf dem Playground im Trockenlauf/Anlegen prüfen, ob openBIS 20.10 den Wert so annimmt
+
 - Equipment auf dem Playground: Welche Projekte/Collections? Nach Schritt 3 die Eltern-Pfade in `structure.json` anpassen.
-- PRD P1 (flach) und §5 (Geräte als Eltern) an die gewählte Variante anpassen, sobald ◆ B entschieden ist
 - Der Space `FB_72` und die neuen Typen (`SAMPLE.WELDED_FATIGUE_SPECIMEN`, `…CYCLIC_FATIGUE_TEST`, Vokabulare `FATIGUE.*`)
   gibt es auf dem Playground vermutlich nicht. Schritt 7 zeigt, was fehlt; für den Test entweder Antrag (Schritt 6)
   oder vorerst nur mit Standard-Typen testen.
 
 ## Verlauf
+
+- 2026-11-04: ◆ B „B freigegeben (Variante E)“. PRD P1 (Prozesslinie) und §5 (Geräte als Link-Felder) angepasst. Variante E ausgearbeitet: `design.json`, Datenmodell, `spec.json`, `structure.json` (Demo-Serie), Antragspaket neu gebaut
 
 - 2026-11-04: Prüfseiten für ◆ A (`review/prd.html`) und ◆ E (`review/trockenlauf.html`) ergänzt; zu jeder Prüfseite eine Markdown-Fassung (`review/*.md`). Die Brücke legt jetzt auch `reports/check_<datum>.json` ab. Seite E wartet auf den Trockenlauf (nach Schritt 3/7)
 

@@ -2,7 +2,9 @@
 
 > Input für die Agenten-Pipeline (`/bam-analyze-prd`). Beschreibt **was** der Fachbereich dokumentieren will —
 > **nicht**, welche openBIS-Typen schon existieren. Das entscheidet die Pipeline (REUSE / EXTEND / CREATE / LIVE-ONLY).
-> Vorgänger: `BAM_PRD_Workflow_FB72.md` (v1, 12 Schritt-Typen, nicht flach).
+> Vorgänger: `BAM_PRD_Workflow_FB72.md` (v1, 12 Schritt-Typen als Kette).
+> Geändert 2026-11-04 nach ◆ B („B freigegeben (Variante E)“): P1 (Prozesslinie statt flach) und §5 (Geräte als Link-Felder
+> statt als Eltern). Muster und Quellen: `workflow/strukturmuster.md`.
 
 ---
 
@@ -20,7 +22,7 @@ openBIS (BAM Data Store) so dokumentiert werden, dass
 
 | # | Prinzip | Bedeutung |
 |---|---|---|
-| P1 | **Flache Objekt-Hierarchie** | Space → Projekt → Collection (= Prüfserie) → Objekte. Versuchsschritte hängen **direkt** an der Probe (genau eine Eltern-Kind-Ebene). **Keine Ketten** Schritt→Schritt. Alle Objekte einer Serie liegen **in der Serien-Collection**. |
+| P1 | **Prozesslinie** | Space → Projekt → Collection (= Prüfserie) → Objekte. Die Objekte einer Probe bilden **eine Linie in Ablauf-Reihenfolge** (Eltern → Kind): Probe → 3D-Scan & Nahtanalyse → Zyklischer Ermüdungsversuch → Bruchflächenanalyse. Eltern/Kind nur für Herkunft und Reihenfolge, keine Abzweigungen ohne fachlichen Grund. Alle Objekte einer Serie liegen **in der Serien-Collection**. |
 | P2 | **Flache Typ-Hierarchie** | Neue Typen erben direkt von einer existierenden BAM-Basisklasse; keine eigenen Zwischenebenen. So wenige neue Typen wie möglich. |
 | P3 | **Probendaten an die Probe** | Eigenschaften, die die Probe beschreiben (Verzug, Geometrie, Nahtbewertung, Lastniveau), sind Properties der Probe → die Collection-Tabelle ist die Versuchsmatrix. |
 | P4 | **Tätigkeiten mit Gerät/Datei = Versuchsschritt** | Ein eigenes Schritt-Objekt nur dort, wo Gerät(e), Zeitraum, Bearbeiter*in und Dateien zusammengehören. Mehrere Ablaufschritte am selben Arbeitsplatz werden in **einem** Objekt mit **nummerierten Sektionen** zusammengefasst. |
@@ -56,8 +58,9 @@ Angestrebte Bewertungsgruppe nach ISO 5817 (B, C, D).
 
 ## 5. Inventar (Geräte & Hilfsstoffe)
 
-Geräte und Hilfsstoffe werden **einmal im Inventar** angelegt und von Versuchsschritten als Eltern verlinkt
-(nicht als Freitext). Es gibt keine projekt-eigenen Katalog-Typen für DMS oder Klebstoffe.
+Geräte und Hilfsstoffe werden **einmal im Inventar** angelegt und vom Versuchsschritt, in dem sie benutzt werden, über
+ein **Link-Feld** (Typ OBJECT) verlinkt: nicht als Eltern und nicht als Freitext. So erscheinen sie im Formular des Schritts
+als anklickbarer Link, aber nicht im Graphen der Probe. Es gibt keine projekt-eigenen Katalog-Typen für DMS oder Klebstoffe.
 
 ## 6. Prüfserie
 

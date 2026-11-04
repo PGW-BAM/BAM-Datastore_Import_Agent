@@ -259,6 +259,16 @@ def prop_row(m: Model, code: str, section_prop: dict) -> str:
     en_desc = de(p.get("description") or section_prop.get("description"))[0]
     dt = p.get("type") or section_prop.get("data_type")
     typ = te(TYPE_DE.get(dt, dt or ""), TYPE_EN.get(dt, dt or ""))
+    target = section_prop.get("object_code")
+    if dt in ("OBJECT", "SAMPLE"):  # link field: name the kind of object it points to
+        tn = type_label(m, target) if target and target != "(ALL)" else Name("beliebiges Objekt", "any object")
+        cls = next((x.get("class") for x in m.catalog.get("types", []) if x["code"] == target), None)
+        short_en = re.sub(r"(?<!^)(?=[A-Z])", " ", cls) if cls else tn.en  # MeasuringAmplifier -> Measuring Amplifier
+        if len(short_en) <= 4 and target:  # class "Bam" of PERSON.BAM -> "Person"
+            short_en = target.split(".")[0].replace("_", " ").title()
+        de_txt = tn.de if tn.de and len(tn.de) <= 30 else short_en
+        en_txt = tn.en if tn.en and len(tn.en) <= 30 else short_en
+        typ = t(f"Verweis auf {E(de_txt)}", f"Link to {E(en_txt)}")
     vocab = p.get("vocabulary") or section_prop.get("vocabulary_code")
     choice = ""
     if vocab and vocab in m.vocab:
@@ -470,7 +480,7 @@ def view_struktur(m: Model) -> str:
                 f'<code>{E(o["code_pattern"])}</code>'
                 f'{"<span>" + te("Schritte ", "Steps ") + E(step_range(o.get("covers_steps", []))) + "</span>" if o.get("covers_steps") else ""}'
                 f'{"".join(chip(short(m.device_name(e).text, 60), "dev") for e in o["equipment"])}'
-                f'{"".join(chip(short(m.device_name(e).text, 60), "dev field") for e in o["fields"])}</div>')
+                f'{"".join(chip(short(m.device_name(e).text, 60), "dev lnk") for e in o["fields"])}</div>')
     if line:
         steps = "".join(f'<div class="arrow">↓ {t("danach", "then")}</div>{node(o)}' for o in objs[1:])
         below = f'<div class="line">{steps}</div>'
@@ -486,9 +496,9 @@ def view_struktur(m: Model) -> str:
                   "A series is a collection. Each specimen appears once in its series, and its test steps hang directly on the specimen. "
                   "Instruments and materials come from the division's inventory.")
     legend = t(f"{chip('Gerät', 'dev', 'instrument')} als Eltern verlinkt (im Graphen sichtbar)"
-               f"{' · ' + chip('Gerät', 'dev field', 'instrument') + ' als Feld verlinkt (im Formular, nicht im Graphen)' if any(o['fields'] for o in objs) else ''}",
+               f"{' · ' + chip('Gerät', 'dev lnk', 'instrument') + ' als Feld verlinkt (im Formular, nicht im Graphen)' if any(o['fields'] for o in objs) else ''}",
                f"{chip('Gerät', 'dev', 'instrument')} linked as parent (shown in the graph)"
-               f"{' · ' + chip('Gerät', 'dev field', 'instrument') + ' linked as a field (in the form, not in the graph)' if any(o['fields'] for o in objs) else ''}")
+               f"{' · ' + chip('Gerät', 'dev lnk', 'instrument') + ' linked as a field (in the form, not in the graph)' if any(o['fields'] for o in objs) else ''}")
     body.append(f"""<section aria-labelledby="h1s">{section_head("2", "h1s", "So ist Ihr Projekt aufgebaut", "How your project is built")}
 <p>{intro}</p>
 <div class="tree"><div class="node root"><span>Space</span><b>{E(space)}</b></div><div class="arrow">↓</div>
@@ -1096,10 +1106,13 @@ def view_trockenlauf(m: Model) -> str:
     for coll, objs in groups.items():
         rows = []
         for o in objs:
-            par = ", ".join(names.get(p, p) for p in o.get("parents", []))
+            par = E(", ".join(names.get(p, p) for p in o.get("parents", [])))
+            lk = ob.links(o)
+            if lk:  # link fields (pattern M4): shown in the form, not in the graph
+                par = (par + "<br>" if par else "") + t("Links: ", "Links: ") + E(", ".join(names.get(p, p) for p in lk))
             n_props = len([k for k in (o.get("props") or {}) if not k.startswith("$")])
             rows.append(f'<tr><td><b>{E(names[o["key"]])}</b><br><code>{E(o["code"])}</code></td><td>{type_label(m, o["type"]).html()}</td>'
-                        f'<td>{E(short(par, 120)) or "–"}</td><td>{n_props}</td><td>{status_chip(r.status(o["_identifier"]))}</td></tr>')
+                        f'<td>{par or "–"}</td><td>{n_props}</td><td>{status_chip(r.status(o["_identifier"]))}</td></tr>')
         blocks.append(f'<h3><code>{E(coll)}</code> <small>{t(f"{len(objs)} Objekte", f"{len(objs)} objects")}</small></h3>'
                       f'<div class="tbl"><table class="tw"><thead><tr><th>{t("Objekt", "Object")}</th><th>{t("Typ", "Type")}</th>'
                       f'<th>{t("Eltern", "Parents")}</th><th>{t("Felder", "Fields")}</th><th>Status</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>')
@@ -1322,7 +1335,7 @@ code{font:13px var(--m);color:var(--muted);overflow-wrap:anywhere}section{displa
 .chip.must{background:#f8ecdd;color:var(--warning)}
 .chip.dev,.chip.file{font:400 13px var(--f);letter-spacing:0;text-transform:none;padding:3px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--fg)}
 .chip.dev{border-color:var(--bam-steel);color:var(--bam-steel)}.chip.file{border-style:dashed;color:var(--muted)}
-.node .chip{margin-top:2px}.chip.dev.field{border-style:dotted;background:var(--gray-1)}.line{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:480px}.line>.node{width:100%}.node.obj.probe .chip.dev{background:transparent;color:#fff;border-color:var(--gray-4)}
+.node .chip{margin-top:2px}.chip.dev.lnk{border-style:dashed;border-width:1.5px;background:var(--cyan-tint);color:var(--accent-strong);border-color:var(--accent-strong)}.line{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:480px}.line>.node{width:100%;flex:none}.node.obj.probe .chip.dev{background:transparent;color:#fff;border-color:var(--gray-4)}
 .timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .step{display:grid;grid-template-columns:52px 1fr;gap:12px;background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--c);padding:14px}
 .step .no{font:500 20px var(--m);color:var(--c)}.s-body{display:flex;flex-direction:column;gap:6px;min-width:0}

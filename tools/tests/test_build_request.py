@@ -13,7 +13,8 @@ import render_review as rr  # noqa: E402
 
 def test_collect_counts_and_german_names():
     r = br.collect(ROOT, "fb72_welded_fatigue")
-    assert len(r["new_types"]) == 2 and len(r["new_vocabularies"]) == 6 and len(r["new_properties"]) == 33
+    assert len(r["new_types"]) == 2 and len(r["new_vocabularies"]) == 6 and len(r["new_properties"]) == 38  # 33 + 5 link fields (variant E)
+    assert "INSTRUMENT" not in {p["code"] for p in r["new_properties"]}  # standard link field, reused
     assert sum(len(e["terms"]) for e in r["extensions"]) == 4
     assert all(p.get("label_de") for p in r["new_properties"])
     assert {x["code"] for x in r["reused_types"]} >= {"EXPERIMENTAL_STEP"}
