@@ -160,6 +160,8 @@ class Model:
         for t in self.spec.get("object_types", []):
             for p in t.get("properties", []):
                 put(p["code"], p.get("label"), p.get("label_de"), p.get("data_type"), p.get("description"), p.get("vocabulary_code"))
+        self.request = ob.read_json(pdir / "request" / "request.json")
+        self.request_dir = pdir / "request"
         self.sections_de = {**SECTION_DE_STD, **(self.design.get("section_names_de") or {})}
         self.files = {de(x["file"])[0]: x["file"] for x in self.design.get("dataset_mapping", [])}
         self.devices = {de(x["inventory"])[0]: x["inventory"] for x in self.design.get("inventory_links", [])}
@@ -450,8 +452,7 @@ def view_struktur(m: Model) -> str:
 <label for="fb-gesamt">{t("Noch etwas Allgemeines? (freiwillig)", "Anything else? (optional)")}</label><textarea id="fb-gesamt" rows="3"></textarea>
 <p id="state" class="state"></p>
 <pre id="out" class="out" aria-live="polite"></pre>
-<button type="button" id="copy" class="primary">{t("Text kopieren", "Copy text")}</button>
-<span id="copied" class="copied" hidden>{t("Kopiert. Jetzt im Chat einfügen.", "Copied. Now paste it into the chat.")}</span>
+<button type="button" data-copy="#out" class="primary">{t("Text kopieren", "Copy text")}</button>
 <p class="hint">{t("Den kopierten Text fügen Sie im Chat mit dem Agenten ein. Die Seite speichert nichts und schickt nichts ab.",
                    "Paste the copied text into the chat with the agent. The page stores nothing and sends nothing.")}</p></section>""")
 
@@ -475,6 +476,157 @@ def view_struktur(m: Model) -> str:
 <li>{t("Passen die Begriffe auf Deutsch und auf Englisch?", "Are the terms right in German and in English?")}</li></ol>
 <p class="names">{legend}</p>
 <p class="meta">{t("Vorschlag vom", "Proposal of")} {E((d.get("designed_at") or "")[:10])} · {t("Projekt", "Project")} <code>{E(m.project["name"])}</code></p></header>"""
+    return "\n".join([header, *body])
+
+
+def copy_block(cid: str, text: str, label_de: str, label_en: str) -> str:
+    return (f'<div class="copyblock"><div class="cb-head"><b>{te(label_de, label_en)}</b>'
+            f'<button type="button" data-copy="#{cid}">{t("Kopieren", "Copy")}</button></div>'
+            f'<pre id="{cid}" class="out">{E(text)}</pre></div>')
+
+
+def view_antrag(m: Model) -> str:
+    r = m.request
+    if not r:
+        return (f'<header class="hero"><h1>{E(m.title)}</h1><p class="lead">'
+                f'{t("Noch kein Antragspaket. Der Agent erzeugt es mit <code>python tools/build_request.py " + E(m.project["name"]) + "</code>.", "No request package yet. The agent creates it with <code>python tools/build_request.py " + E(m.project["name"]) + "</code>.")}'
+                f'</p>{lang_switch()}</header>')
+    tname = {x["code"]: Name(x.get("name_de"), x.get("name_en")) for x in r["new_types"]}
+    body = []
+    n_ext = sum(len(e["terms"]) for e in r["extensions"])
+    sync = r.get("sync")
+    tiles = "".join(f'<div class="tile"><span>{te(a, b)}</span><b>{E(str(n))}</b></div>' for a, b, n in (
+        ("neue Objekttypen", "new object types", len(r["new_types"])), ("neue Felder", "new fields", len(r["new_properties"])),
+        ("neue Auswahllisten", "new choice lists", len(r["new_vocabularies"])), ("ergänzte Begriffe", "added terms", n_ext)))
+    tiles += (f'<div class="tile"><span>{t("Admin zieht nach", "Admin syncs")}</span><b>{len(sync)}</b></div>' if sync is not None else
+              f'<div class="tile"><span>{t("Admin zieht nach", "Admin syncs")}</span><b>?</b><small>{t("Instanz noch nicht gelesen", "instance not read yet")}</small></div>')
+    body.append(f'<section aria-labelledby="a0">{section_head("1", "a0", "Das beantragen Sie", "What you request")}'
+                f'<p>{t("Nur was es im BAM-Standard noch nicht gibt, wird beantragt. Alles andere wird wiederverwendet (Abschnitt 6).", "Only what does not exist in the BAM standard yet is requested. Everything else is reused (section 6).")}</p>'
+                f'<div class="tiles">{tiles}</div></section>')
+
+    # 2 new types
+    cards = []
+    for x in r["new_types"]:
+        steps = ", ".join(x.get("covers_steps", []))
+        cards.append(f'<article class="card obj"><header><div><h3>{tname[x["code"]].html()}</h3><code>{E(x["code"])}</code></div>'
+                     f'{chip("neu", "new", "new")}</header>'
+                     f'<p>{t(f"Baut auf dem Standard-Typ <b>{E(x.get("parent") or "")}</b> auf und übernimmt dessen Felder. "
+                             f"{x["fields"]} Felder, davon {x["new_fields"]} neu. Ablaufschritte {E(steps)}.",
+                             f"Builds on the standard type <b>{E(x.get("parent") or "")}</b> and inherits its fields. "
+                             f"{x["fields"]} fields, {x["new_fields"]} of them new. Workflow steps {E(steps)}.")}</p></article>')
+    body.append(f'<section aria-labelledby="a1">{section_head("2", "a1", "Neue Objekttypen", "New object types")}'
+                f'<div class="cards">{"".join(cards)}</div>{feedback("typen", "Neue Objekttypen", "New object types")}</section>')
+
+    # 3 new fields
+    rows = []
+    for p in r["new_properties"]:
+        nm = m._note(Name(p.get("label_de"), p["label"]), f"p:{p['code']}")
+        dt = p["data_type"]
+        rows.append(f'<tr><td>{nm.html()}<br><code>{E(p["code"])}</code></td><td>{te(TYPE_DE.get(dt, dt), TYPE_EN.get(dt, dt))}</td>'
+                    f'<td>{m.section_name(p.get("section") or "").html()}</td><td>{tname.get(p["type"], Name("", p["type"])).html()}</td>'
+                    f'<td class="src">{E(p.get("source") or "")}</td></tr>')
+    body.append(f'<section aria-labelledby="a2">{section_head("3", "a2", "Neue Felder", "New fields")}'
+                f'<p>{t("Jedes Feld mit seinem Typ, dem Abschnitt im Formular und der Stelle im PRD, aus der es stammt.", "Each field with its type, its section in the form and the place in the PRD it comes from.")}</p>'
+                f'<div class="tbl"><table class="wrap"><thead><tr><th>{t("Feld", "Field")}</th><th>{t("Art", "Kind")}</th><th>{t("Abschnitt", "Section")}</th>'
+                f'<th>{t("Objekttyp", "Object type")}</th><th>{t("Quelle", "Source")}</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
+                f'{feedback("felder", "Neue Felder", "New fields")}</section>')
+
+    # 4 vocabularies and additions
+    vc = []
+    for v in r["new_vocabularies"]:
+        en, dd = de(v.get("description"))
+        terms = "".join(f'<li class="newt">{m.term_name(v["code"], x["code"]).html()}</li>' for x in v["terms"])
+        vc.append(f'<article class="card voc"><header><div><h3>{m._note(Name(dd if "//" in (v.get("description") or "") else "", en), "v:" + v["code"]).html()}</h3>'
+                  f'<code>{E(v["code"])}</code></div>{chip("neu", "new", "new")}</header><ul class="tlist">{terms}</ul></article>')
+    for e in r["extensions"]:
+        terms = "".join(f'<li class="newt">{m.term_name(e["vocabulary"], x["code"]).html()}</li>' for x in e["terms"])
+        vc.append(f'<article class="card voc"><header><div><h3><code>{E(e["vocabulary"])}</code></h3>'
+                  f'<span class="muted">{t("bestehende Liste, nur neue Begriffe", "existing list, new terms only")}</span></div>'
+                  f'{chip("ergänzt", "new", "extended")}</header><ul class="tlist">{terms}</ul></article>')
+    body.append(f'<section aria-labelledby="a3">{section_head("4", "a3", "Auswahllisten", "Choice lists")}'
+                f'<div class="cards">{"".join(vc)}</div>{feedback("listen", "Auswahllisten", "Choice lists")}</section>')
+
+    # 5 sync
+    if sync is None:
+        sync_html = t(f"Die Instanz <code>{E(r['instance'])}</code> ist noch nicht gelesen. Ob der Admin Standard-Typen nur nachziehen muss, "
+                      f"zeigt sich nach dem Lesen (Schritt 3). Der Antrag kann trotzdem schon raus.",
+                      f"The instance <code>{E(r['instance'])}</code> has not been read yet. Whether the admin only needs to sync standard types "
+                      f"shows after reading it (step 3). The request can go out anyway.")
+    elif not sync:
+        sync_html = te("Nichts: Alles, was aus dem Standard genutzt wird, ist auf der Instanz vorhanden.", "Nothing: everything used from the standard exists on the instance.")
+    else:
+        sync_html = "<ul>" + "".join(f"<li><code>{E(x['what'])}</code> ({E(x['kind'])})</li>" for x in sync) + "</ul>"
+    body.append(f'<section aria-labelledby="a4">{section_head("5", "a4", "Was der Admin nur nachziehen muss", "What the admin only needs to sync")}'
+                f'<p>{t("Das gibt es im BAM-Standard schon, auf der Instanz aber noch nicht. Dafür braucht es keinen neuen Typ.", "This exists in the BAM standard but not yet on the instance. No new type is needed for it.")}</p>'
+                f'<div class="card">{sync_html}</div></section>')
+
+    # 6 reused
+    reused = sorted({x["code"] for x in r["reused_types"]}) + sorted(x["code"] for x in r["reused_properties"])
+    body.append(f'<section aria-labelledby="a5">{section_head("6", "a5", "Was wiederverwendet wird", "What is reused")}'
+                f'<p>{t("Diese Typen und Felder gibt es im Standard schon. Sie werden nicht beantragt.", "These types and fields already exist in the standard. They are not requested.")}</p>'
+                f'<div class="chips">{"".join(chip(c, "dev") for c in reused)}</div></section>')
+
+    # 7 checks
+    ck = r.get("checker") or {}
+    if ck.get("ran"):
+        inh = [w for w in ck.get("warning_texts", []) if any(x in w for x in ("$ANNOTATIONS_STATE", "same properties defined as EXPERIMENTAL_STEP"))]
+        own = [w for w in ck.get("warning_texts", []) if w not in inh]
+        check_html = (f'<p><b>{ck["errors"]}</b> {t("Fehler", "errors")} · <b>{ck["warnings"]}</b> {t("Warnungen", "warnings")}'
+                      f'{" · " + t("alle Warnungen stammen aus dem BAM-Standard selbst", "all warnings come from the BAM standard itself") if not own else ""}</p>'
+                      + ("<ul>" + "".join(f"<li>{E(w)}</li>" for w in own) + "</ul>" if own else ""))
+    else:
+        check_html = te("Der checker ist für diesen Entwurf nicht gelaufen.", "The checker has not run for this draft.")
+    body.append(f'<section aria-labelledby="a6">{section_head("7", "a6", "Automatische Prüfung", "Automatic check")}'
+                f'<p>{t("Der checker von bam-masterdata prüft Codes, Beschreibungen und Sektionen nach den BAM-Regeln.", "The bam-masterdata checker validates codes, descriptions and sections against the BAM rules.")}</p>'
+                f'<div class="card">{check_html}</div>'
+                f'{feedback("begriffe", "Begriffe Deutsch / Englisch", "Terms German / English")}</section>')
+
+    # answer C
+    body.append(f"""<section aria-labelledby="h7s" class="answer" data-gate="C"><h2 id="h7s"><span class="n">✓</span>{t("Ihre Antwort an den Agenten", "Your reply to the agent")}</h2>
+<label for="fb-gesamt">{t("Noch etwas Allgemeines? (freiwillig)", "Anything else? (optional)")}</label><textarea id="fb-gesamt" rows="3"></textarea>
+<p id="state" class="state"></p><pre id="out" class="out" aria-live="polite"></pre>
+<button type="button" data-copy="#out" class="primary">{t("Text kopieren", "Copy text")}</button>
+<p class="hint">{t("Den kopierten Text fügen Sie im Chat mit dem Agenten ein. Die Seite speichert nichts und schickt nichts ab.",
+                   "Paste the copied text into the chat with the agent. The page stores nothing and sends nothing.")}</p></section>""")
+
+    # send (D)
+    issue = (m.request_dir / "issue.md").read_text(encoding="utf-8") if (m.request_dir / "issue.md").exists() else ""
+    mail = (m.request_dir / "mail.txt").read_text(encoding="utf-8") if (m.request_dir / "mail.txt").exists() else ""
+    title = next((re.sub(r"^<!--\s*Title:\s*|\s*-->$", "", ln) for ln in issue.splitlines() if ln.startswith("<!-- Title:")), "")
+    issue_body = "\n".join(ln for ln in issue.splitlines() if not ln.startswith("<!--")).strip()
+    mail_lines = mail.splitlines()
+    to = mail_lines[0].split(":", 1)[1].strip() if mail_lines and mail_lines[0].startswith("An:") else "datastore@bam.de"
+    subject = mail_lines[1].split(":", 1)[1].strip() if len(mail_lines) > 1 and mail_lines[1].startswith("Betreff:") else ""
+    mail_body = "\n".join(mail_lines[3:]).strip() if subject else mail
+    xlsx = f"projects/{m.project['name']}/request/masterdata.xlsx"
+    new_issue = "https://github.com/BAMresearch/bam-masterdata/issues/new?title=" + __import__("urllib.parse").parse.quote(title)
+    body.append(f"""<section aria-labelledby="a8" id="send" class="send locked">{section_head("D", "a8", "Antrag senden", "Send the request")}
+<p class="locked-msg">{t("Dieser Teil öffnet sich, wenn oben alle Teile mit <b>passt</b> bestätigt sind.", "This part opens once every part above is confirmed with <b>fits</b>.")}</p>
+<div class="send-body"><ol class="sendsteps">
+<li><b>{t("Issue anlegen", "Create the issue")}</b> · <a href="{E(new_issue)}" target="_blank" rel="noopener">{t("neues Issue bei bam-masterdata öffnen", "open a new issue at bam-masterdata")}</a>
+{t(" (Titel ist schon eingetragen). Text einfügen, die Excel-Datei anhängen, absenden.", " (title already filled in). Paste the text, attach the Excel file, submit.")}
+{copy_block("c-title", title, "Titel", "Title")}{copy_block("c-issue", issue_body, "Text des Issues (englisch)", "Issue text (English)")}
+<p class="hint">{t("Excel-Datei im Repo:", "Excel file in the repository:")} <code>{E(xlsx)}</code></p></li>
+<li><b>{t("Mail schreiben", "Write the mail")}</b> · {t("an", "to")} <code class="sel">{E(to)}</code>. {t("Den Issue-Link anstelle von &lt;Issue-Link&gt; einsetzen.", "Replace &lt;Issue-Link&gt; with the issue link.")}
+{copy_block("c-subject", subject, "Betreff", "Subject")}{copy_block("c-mail", mail_body, "Text der Mail (deutsch)", "Mail text (German)")}</li>
+<li><b>{t("Dem Agenten Bescheid geben", "Tell the agent")}</b>
+<label for="issue-url">{t("Link des Issues", "Link of the issue")}</label><input id="issue-url" type="url" placeholder="https://github.com/BAMresearch/bam-masterdata/issues/…">
+<pre id="out-d" class="out"></pre><button type="button" data-copy="#out-d" class="primary">{t("Text kopieren", "Copy text")}</button></li>
+</ol></div></section>""")
+
+    n = len(m.missing)
+    header = f"""<header class="hero"><div class="hero-top"><span class="eyebrow">{t("Prüfpunkte C und D · Antrag prüfen und senden", "Checkpoints C and D · Review and send the request")}</span>{lang_switch()}</div>
+<h1>{E(m.title)}</h1>
+<p class="lead">{t("Das geht an den BAM Data Store: ein Issue bei bam-masterdata und eine Mail an datastore@bam.de. Prüfen Sie zuerst, "
+                   "ob nur beantragt wird, was es wirklich noch nicht gibt. Danach öffnet sich unten der Teil zum Senden.",
+                   "This goes to the BAM Data Store: an issue at bam-masterdata and a mail to datastore@bam.de. First check that only "
+                   "what really does not exist yet is requested. Then the sending part opens at the bottom.")}</p>
+<ol class="ask"><li>{t("Ist jeder neue Typ wirklich nötig, oder reicht ein vorhandener mit ein, zwei Feldern mehr?", "Is every new type really needed, or would an existing one with one or two more fields do?")}</li>
+<li>{t("Stimmen Feldnamen, Einheiten und Auswahlbegriffe, auf Deutsch und auf Englisch?", "Are field names, units and choice terms right, in German and in English?")}</li>
+<li>{t("Ist der Antrag so kurz wie möglich?", "Is the request as short as possible?")}</li></ol>
+<p class="names">{t(f"Alle Namen stehen als <b>Deutsch</b> / Englisch. {chip('DE fehlt', 'miss', 'DE missing')} = deutsche Fassung fehlt ({n if n else 'hier keine'}).",
+                      f"All names are shown as <b>German</b> / English. {chip('DE fehlt', 'miss', 'DE missing')} = German version missing ({n if n else 'none here'}).")}</p>
+<p class="meta">{t("Stand", "State")}: bam-masterdata {E(r.get("bam_masterdata") or "")} · {t("Projekt", "Project")} <code>{E(m.project["name"])}</code></p></header>"""
     return "\n".join([header, *body])
 
 
@@ -554,6 +706,12 @@ textarea{font:inherit;width:100%;border:1px solid var(--line);border-radius:2px;
 .names{font-size:15px;color:var(--gray-3)}.hero .names .de{color:#fff}.dual.th{display:flex;flex-direction:column;gap:0}.dual.th .sep{display:none}
 .node.obj.probe .dual .en,.node.obj.probe .dual .sep{color:var(--gray-3)}
 html:not(.lang-en) .l-en,html.lang-en .l-de{display:none}
+.copyblock{display:flex;flex-direction:column;gap:6px;margin-top:10px}.cb-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cb-head button{padding:6px 14px;font-size:13px}.copyblock .out{max-height:260px;overflow:auto}.sendsteps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:22px}
+.send{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--bam-petrol);padding:24px}.send.locked .send-body{display:none}.send:not(.locked) .locked-msg{display:none}
+.locked-msg{color:var(--muted)}input[type=url]{font:inherit;width:100%;border:1px solid var(--line);border-radius:2px;padding:10px;margin:6px 0}
+table.wrap td{white-space:normal;vertical-align:top}td.src{font-size:13px;color:var(--muted)}.muted{color:var(--muted);font-size:14px}.sel{user-select:all}
+a{color:var(--accent-strong)}a:hover{color:var(--bam-petrol)}
 .hero-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
 .lang{display:flex}.lang button{background:transparent;color:#fff;border-color:var(--gray-4);padding:6px 14px;font-size:14px}
 .lang button[aria-pressed="true"]{background:var(--bam-cyan);border-color:var(--bam-cyan);color:var(--bam-petrol)}.lang button:hover{background:rgba(255,255,255,.1)}
@@ -590,6 +748,10 @@ JS = """
     else{txt=gate+T.not+'\\n'+changes.join('\\n')+(g?'\\n\\n'+T.also+g:'');state=changes.length+(changes.length>1?T.many:T.one);}
     document.getElementById('state').textContent=state;
     document.getElementById('out').textContent=txt||T.wait;
+    var send=document.getElementById('send');
+    if(send){send.classList.toggle('locked',open>0||changes.length>0);
+      var u=(document.getElementById('issue-url')||{}).value||'';
+      document.getElementById('out-d').textContent=(lang==='en'?'D sent':'D gesendet')+(u.trim()?': '+u.trim():'');}
   }
   function setLang(l){lang=l==='en'?'en':'de';root.classList.toggle('lang-en',lang==='en');root.setAttribute('lang',lang);
     [].forEach.call(document.querySelectorAll('.lang button'),function(b){b.setAttribute('aria-pressed',b.dataset.lang===lang)});
@@ -601,9 +763,14 @@ JS = """
     f.querySelector('.chg').onclick=function(){st[id]={v:'chg',t:(st[id]||{}).t||''};save();render();f.querySelector('textarea').focus()};
     f.querySelector('textarea').oninput=function(e){st[id]={v:'chg',t:e.target.value};save();render()};});
   gen.oninput=function(e){st._g=e.target.value;save();render()};
-  document.getElementById('copy').onclick=function(){var t=document.getElementById('out').textContent,ok=document.getElementById('copied');
-    function sel(){var r=document.createRange();r.selectNodeContents(document.getElementById('out'));var s=getSelection();s.removeAllRanges();s.addRange(r)}
-    if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){ok.hidden=false},function(){sel();ok.hidden=false;ok.textContent=L[lang].sel})}else{sel();ok.hidden=false}};
+  var iu=document.getElementById('issue-url'); if(iu)iu.oninput=render;
+  [].forEach.call(document.querySelectorAll('button[data-copy]'),function(btn){btn.onclick=function(){
+    var el=document.querySelector(btn.dataset.copy), t=el.textContent;
+    function sel(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+    function done(msg){var o=btn.getAttribute('data-orig')||btn.innerHTML;btn.setAttribute('data-orig',o);
+      btn.textContent=msg;setTimeout(function(){btn.innerHTML=o},1800)}
+    var ok=lang==='en'?'Copied':'Kopiert';
+    if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){done(ok)},function(){sel();done(L[lang].sel)})}else{sel();done(L[lang].sel)}}});
   setLang(lang);
 })();
 """
@@ -622,7 +789,7 @@ def page(title: str, body: str, fragment: bool) -> str:
             + inner.replace("<div class=\"wrap\">", "</head>\n<body>\n<div class=\"wrap\">", 1) + "</body>\n</html>\n")
 
 
-VIEWS = {"struktur": ("Strukturvorschlag", view_struktur)}
+VIEWS = {"struktur": ("Strukturvorschlag", view_struktur), "antrag": ("Masterdaten-Antrag", view_antrag)}
 
 
 def main(argv=None) -> int:

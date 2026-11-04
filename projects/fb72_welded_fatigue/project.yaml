@@ -2,6 +2,13 @@
 # Keine Zugangsdaten hier eintragen.
 
 name: fb72_welded_fatigue
+title: Wöhlerversuche an Schweißverbindungen
+title_en: S-N tests on welded joints
+division: FB 7.2
+summary_en: >-
+  Cyclic fatigue tests (S-N curves) on welded specimens (butt and cruciform welds). Each specimen must be traceable from
+  the incoming inspection to the fracture surface, every series must show which specimen is in which workflow step, and
+  the data must be machine-readable (S-N curve from the series table, parser for the measurement raw data).
 instance: https://playground.datastore.bam.de
 space: FB_72                      # TODO prüfen: dein Space auf dem Playground (im ELN nachsehen)
 project: WELDED_FATIGUE
@@ -13,5 +20,6 @@ bam_masterdata: v0.17.0
 # Die Dateien stammen aus dem Lauf auf dev1 (vor dem Umbau) und liegen noch unter generated/:
 prd: ../../BAM_PRD_Workflow_FB72_v2.md
 design: ../../generated/welded_fatigue_v2/design.json
+datamodel: ../../generated/welded_fatigue_v2/datamodel
 structure: ../../generated/welded_fatigue_v2/structure.json
 spec: ../../generated/welded_fatigue_v2/spec.json

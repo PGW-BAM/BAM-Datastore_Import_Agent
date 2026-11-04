@@ -1,0 +1,16 @@
+An: datastore@bam.de
+Betreff: Masterdaten-Antrag FB 7.2: Wöhlerversuche an Schweißverbindungen
+
+Guten Tag,
+
+für Wöhlerversuche an Schweißverbindungen im FB 7.2 beantragen wir neue Masterdaten. Alle Einzelheiten stehen im Issue:
+
+<Issue-Link>
+
+Kurz: 2 neue Objekttypen, 6 neue Auswahllisten, 33 neue Felder und 4 Ergänzungen bestehender Auswahllisten. Python-Module und masterdata.xlsx hängen am Issue. Der checker meldet 0 Fehler.
+
+Sobald die Typen verfügbar sind, legen wir unser Projekt selbst an. Für Rückfragen stehe ich gern zur Verfügung.
+
+Mit freundlichen Grüßen
+<Name>
+Data Store Steward FB 7.2

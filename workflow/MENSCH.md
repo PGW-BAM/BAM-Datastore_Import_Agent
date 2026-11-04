@@ -58,6 +58,9 @@ Lieber mit Ansicht? Das Notebook `notebooks/openbis_bruecke.ipynb` macht dasselb
 
 ## Antrag senden (◆ D)
 
+Am einfachsten über die Prüfseite `projects/<name>/review/antrag.html`: Dort stehen Titel, Text, Betreff und Mail zum
+Kopieren, sobald Sie oben alles mit „passt“ bestätigt haben. Ohne Prüfseite:
+
 1. https://github.com/BAMresearch/bam-masterdata/issues → **New issue**: Titel und Text aus `projects/<name>/request/issue.md`
    einfügen, `request/masterdata.xlsx` anhängen, absenden.
 2. Den Link des Issues in `request/mail.txt` einsetzen und die Mail an datastore@bam.de schicken.

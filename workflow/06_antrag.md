@@ -20,19 +20,23 @@ Nur nötig, wenn es NEU, ERWEITERN oder NACHZIEHEN gibt. Gibt es nur GERÄT FEHL
    `.claude/agents/masterdata-extender.md`, Beispiel `generated/welded_fatigue_v2/datamodel/`.
 2. **ERWEITERN** als `datamodel/extend.json` (Vokabular, Beleg, neue Begriffe).
 3. **Import-Test und Soll-Zustand:** `python tools/export_spec.py projects/<name>/datamodel > projects/<name>/spec.json`
-4. **Excel** für den Admin:
-   `bam_masterdata export_to_excel --python-path projects/<name>/datamodel --export-dir projects/<name>/request`
-   (enthält nur NEU; ERWEITERN steht im Issue-Text).
-5. **checker:**
-   `bam_masterdata checker --file-path projects/<name>/datamodel --mode individual 2>&1 | sed 's/\x1b\[[0-9;]*m//g' > projects/<name>/request/checker.log`
-   Ziel: 0 Fehler. Warnungen entweder beheben (z. B. Sektionen in Title Case ohne Ziffern) oder im Issue erklären. Bekannte
-   Warnungen, die aus dem Standard selbst kommen: `$ANNOTATIONS_STATE is deprecated`, `EXPERIMENTAL_STEP.MECHANICAL_TEST
-   has the same properties as EXPERIMENTAL_STEP`.
-6. **Issue-Text** `request/issue.md` nach `templates/request/issue.md`: was, warum, Auswirkung, Python oder Excel,
-   Tabelle je Klasse mit Begründung aus dem PRD, NACHZIEHEN als eigener Abschnitt, vorgeschlagenes Label
-   (`semver:minor` für neue Typen), checker-Ergebnis, kurze Mapping-Notizen (BFO/IAO), falls möglich.
-7. **Mail** `request/mail.txt` nach `templates/request/mail.txt`: an datastore@bam.de, kurz, verweist auf das Issue.
-8. `STATUS.md`: Schritt 6 „wartet auf D“, `AUFGABE.md` schreiben (Links, Dateien, Mail-Text zum Kopieren).
+4. **Antragspaket bauen** (Excel, checker, Issue-Text, Mail, `request.json`):
+   ```bash
+   python tools/build_request.py <name>        # -> projects/<name>/request/
+   ```
+   Ziel des checker: 0 Fehler. Warnungen entweder beheben (z. B. Sektionen in Title Case ohne Ziffern) oder im Issue
+   erklären. Bekannte Warnungen aus dem Standard selbst: `$ANNOTATIONS_STATE is deprecated`, `EXPERIMENTAL_STEP.MECHANICAL_TEST
+   has the same properties as EXPERIMENTAL_STEP`. `issue.md` und `mail.txt` sind Entwürfe: Begründungen aus dem PRD
+   schärfen, Mapping-Notizen (BFO/IAO) ergänzen, falls möglich. Vorlagen: `templates/request/`. In `project.yaml`
+   gehören dafür `title`, `title_en`, `division` und `summary_en`.
+5. **Prüfseite** erzeugen und zeigen:
+   ```bash
+   python tools/render_review.py <name> antrag    # -> projects/<name>/review/antrag.html
+   ```
+   Sie fasst den Antrag in einfacher Sprache zusammen (neue Typen, Felder, Listen, was nur nachgezogen wird, was
+   wiederverwendet wird, checker), mit „passt / ändern“ je Teil. Erst wenn alles passt, öffnet sich dort der Teil
+   „Antrag senden“ mit Titel, Issue-Text, Betreff und Mail zum Kopieren und einem Link auf ein neues Issue.
+6. `STATUS.md`: Schritt 6 „wartet auf C“, nach Freigabe „wartet auf D“; `AUFGABE.md` verweist auf die Prüfseite.
 
 ## Prüfen
 
@@ -45,7 +49,9 @@ Nur nötig, wenn es NEU, ERWEITERN oder NACHZIEHEN gibt. Gibt es nur GERÄT FEHL
 
 ## Stopp
 
-◆ **D**, Mensch:
+◆ **C**: Die Person prüft die Prüfseite und gibt frei („C freigegeben“ / „C approved“) oder nennt Änderungen.
+
+◆ **D**, Mensch (Teil „Antrag senden“ der Prüfseite):
 1. Issue in https://github.com/BAMresearch/bam-masterdata/issues anlegen (Text aus `issue.md`, `masterdata.xlsx` anhängen).
    Optional selbst einen PR: Fork, Branch `<issue-nr>-<thema>`, Ziel `dev`.
 2. Issue-Link in `mail.txt` eintragen und an datastore@bam.de senden.

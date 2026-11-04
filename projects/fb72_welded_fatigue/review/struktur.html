@@ -79,6 +79,12 @@ textarea{font:inherit;width:100%;border:1px solid var(--line);border-radius:2px;
 .names{font-size:15px;color:var(--gray-3)}.hero .names .de{color:#fff}.dual.th{display:flex;flex-direction:column;gap:0}.dual.th .sep{display:none}
 .node.obj.probe .dual .en,.node.obj.probe .dual .sep{color:var(--gray-3)}
 html:not(.lang-en) .l-en,html.lang-en .l-de{display:none}
+.copyblock{display:flex;flex-direction:column;gap:6px;margin-top:10px}.cb-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cb-head button{padding:6px 14px;font-size:13px}.copyblock .out{max-height:260px;overflow:auto}.sendsteps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:22px}
+.send{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--bam-petrol);padding:24px}.send.locked .send-body{display:none}.send:not(.locked) .locked-msg{display:none}
+.locked-msg{color:var(--muted)}input[type=url]{font:inherit;width:100%;border:1px solid var(--line);border-radius:2px;padding:10px;margin:6px 0}
+table.wrap td{white-space:normal;vertical-align:top}td.src{font-size:13px;color:var(--muted)}.muted{color:var(--muted);font-size:14px}.sel{user-select:all}
+a{color:var(--accent-strong)}a:hover{color:var(--bam-petrol)}
 .hero-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
 .lang{display:flex}.lang button{background:transparent;color:#fff;border-color:var(--gray-4);padding:6px 14px;font-size:14px}
 .lang button[aria-pressed="true"]{background:var(--bam-cyan);border-color:var(--bam-cyan);color:var(--bam-petrol)}.lang button:hover{background:rgba(255,255,255,.1)}
@@ -182,8 +188,7 @@ html:not(.lang-en) .l-en,html.lang-en .l-de{display:none}
 <label for="fb-gesamt"><span class="l-de" lang="de">Noch etwas Allgemeines? (freiwillig)</span><span class="l-en" lang="en">Anything else? (optional)</span></label><textarea id="fb-gesamt" rows="3"></textarea>
 <p id="state" class="state"></p>
 <pre id="out" class="out" aria-live="polite"></pre>
-<button type="button" id="copy" class="primary"><span class="l-de" lang="de">Text kopieren</span><span class="l-en" lang="en">Copy text</span></button>
-<span id="copied" class="copied" hidden><span class="l-de" lang="de">Kopiert. Jetzt im Chat einfügen.</span><span class="l-en" lang="en">Copied. Now paste it into the chat.</span></span>
+<button type="button" data-copy="#out" class="primary"><span class="l-de" lang="de">Text kopieren</span><span class="l-en" lang="en">Copy text</span></button>
 <p class="hint"><span class="l-de" lang="de">Den kopierten Text fügen Sie im Chat mit dem Agenten ein. Die Seite speichert nichts und schickt nichts ab.</span><span class="l-en" lang="en">Paste the copied text into the chat with the agent. The page stores nothing and sends nothing.</span></p></section>
 </div>
 <script>
@@ -213,6 +218,10 @@ html:not(.lang-en) .l-en,html.lang-en .l-de{display:none}
     else{txt=gate+T.not+'\n'+changes.join('\n')+(g?'\n\n'+T.also+g:'');state=changes.length+(changes.length>1?T.many:T.one);}
     document.getElementById('state').textContent=state;
     document.getElementById('out').textContent=txt||T.wait;
+    var send=document.getElementById('send');
+    if(send){send.classList.toggle('locked',open>0||changes.length>0);
+      var u=(document.getElementById('issue-url')||{}).value||'';
+      document.getElementById('out-d').textContent=(lang==='en'?'D sent':'D gesendet')+(u.trim()?': '+u.trim():'');}
   }
   function setLang(l){lang=l==='en'?'en':'de';root.classList.toggle('lang-en',lang==='en');root.setAttribute('lang',lang);
     [].forEach.call(document.querySelectorAll('.lang button'),function(b){b.setAttribute('aria-pressed',b.dataset.lang===lang)});
@@ -224,9 +233,14 @@ html:not(.lang-en) .l-en,html.lang-en .l-de{display:none}
     f.querySelector('.chg').onclick=function(){st[id]={v:'chg',t:(st[id]||{}).t||''};save();render();f.querySelector('textarea').focus()};
     f.querySelector('textarea').oninput=function(e){st[id]={v:'chg',t:e.target.value};save();render()};});
   gen.oninput=function(e){st._g=e.target.value;save();render()};
-  document.getElementById('copy').onclick=function(){var t=document.getElementById('out').textContent,ok=document.getElementById('copied');
-    function sel(){var r=document.createRange();r.selectNodeContents(document.getElementById('out'));var s=getSelection();s.removeAllRanges();s.addRange(r)}
-    if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){ok.hidden=false},function(){sel();ok.hidden=false;ok.textContent=L[lang].sel})}else{sel();ok.hidden=false}};
+  var iu=document.getElementById('issue-url'); if(iu)iu.oninput=render;
+  [].forEach.call(document.querySelectorAll('button[data-copy]'),function(btn){btn.onclick=function(){
+    var el=document.querySelector(btn.dataset.copy), t=el.textContent;
+    function sel(){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+    function done(msg){var o=btn.getAttribute('data-orig')||btn.innerHTML;btn.setAttribute('data-orig',o);
+      btn.textContent=msg;setTimeout(function(){btn.innerHTML=o},1800)}
+    var ok=lang==='en'?'Copied':'Kopiert';
+    if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){done(ok)},function(){sel();done(L[lang].sel)})}else{sel();done(L[lang].sel)}}});
   setLang(lang);
 })();
 </script>

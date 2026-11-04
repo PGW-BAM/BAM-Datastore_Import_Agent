@@ -1,0 +1,748 @@
+{
+ "project": "fb72_welded_fatigue",
+ "title": "Wöhlerversuche an Schweißverbindungen",
+ "title_en": "S-N tests on welded joints",
+ "division": "FB 7.2",
+ "summary_en": "Cyclic fatigue tests (S-N curves) on welded specimens (butt and cruciform welds). Each specimen must be traceable from the incoming inspection to the fracture surface, every series must show which specimen is in which workflow step, and the data must be machine-readable (S-N curve from the series table, parser for the measurement raw data).",
+ "instance": "https://playground.datastore.bam.de",
+ "bam_masterdata": "v0.17.0",
+ "catalog_sha": "3cc15ca71348af09f222924ff01f8e1ac6d1b734",
+ "inventory_collected": null,
+ "new_types": [
+  {
+   "code": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "parent": "MechanicalTest",
+   "name_en": "Cyclic fatigue test",
+   "name_de": "Zyklischer Ermüdungsversuch",
+   "description": "Cyclic fatigue test of a welded specimen incl. strain gauge application, measurement chain, installation and evaluation//Zyklischer Ermüdungsversuch an einer geschweißten Probe inkl. DMS-Applikation, Messkette, Einbau und Auswertung",
+   "covers_steps": [
+    "07",
+    "08",
+    "09",
+    "10",
+    "11"
+   ],
+   "fields": 26,
+   "new_fields": 12
+  },
+  {
+   "code": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "parent": "Sample",
+   "name_en": "Welded fatigue specimen",
+   "name_de": "Geschweißte Ermüdungsprobe",
+   "description": "Welded specimen for cyclic fatigue testing (butt or cruciform weld)//Geschweißte Probe für zyklische Ermüdungsversuche (Stumpf- oder Kreuzstoß)",
+   "covers_steps": [
+    "subject",
+    "01",
+    "02",
+    "04",
+    "05",
+    "06"
+   ],
+   "fields": 42,
+   "new_fields": 21
+  }
+ ],
+ "new_properties": [
+  {
+   "code": "FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Strain gauge distance to weld toe [mm]",
+   "label_de": "DMS-Abstand zum Nahtübergang [mm]",
+   "data_type": "REAL",
+   "section": "Strain Gauge Application",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 07"
+  },
+  {
+   "code": "FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Strain gauge distance to edge [mm]",
+   "label_de": "DMS-Abstand zum Probenrand [mm]",
+   "data_type": "REAL",
+   "section": "Strain Gauge Application",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 07"
+  },
+  {
+   "code": "FATIGUE.STRAIN_GAUGE_APPLICATION_TIME",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Time of strain gauge application",
+   "label_de": "Zeitpunkt der DMS-Applikation",
+   "data_type": "TIMESTAMP",
+   "section": "Strain Gauge Application",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 07"
+  },
+  {
+   "code": "FATIGUE.SAMPLING_FREQUENCY",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Sampling frequency [Hz]",
+   "label_de": "Abtastfrequenz [Hz]",
+   "data_type": "INTEGER",
+   "section": "Measuring Amplifier And Test Rig",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 08 (INTEGER per decision 7; requirements.json had 'real')"
+  },
+  {
+   "code": "FATIGUE.RECORDING_MODE",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Recording mode",
+   "label_de": "Aufzeichnungsmodus",
+   "data_type": "CONTROLLEDVOCABULARY",
+   "section": "Measuring Amplifier And Test Rig",
+   "vocabulary": "FATIGUE.RECORDING_MODE",
+   "mandatory": false,
+   "source": "PRD §3 step 08"
+  },
+  {
+   "code": "FATIGUE.RECORDED_CHANNELS",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Recorded channels",
+   "label_de": "Erfasste Kanäle",
+   "data_type": "VARCHAR",
+   "section": "Measuring Amplifier And Test Rig",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 08"
+  },
+  {
+   "code": "FATIGUE.PRELOAD_FORCE",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Preload force [kN]",
+   "label_de": "Vorspannkraft [kN]",
+   "data_type": "REAL",
+   "section": "Installation Stress",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 09"
+  },
+  {
+   "code": "FATIGUE.BEACH_MARKS_ACTIVE",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Beach marks (marker loads) active",
+   "label_de": "Rastlinien (Markerlasten) aktiv",
+   "data_type": "BOOLEAN",
+   "section": "Cyclic Fatigue Test",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 10"
+  },
+  {
+   "code": "FATIGUE.TERMINATION_REASON",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Termination reason",
+   "label_de": "Abbruchgrund",
+   "data_type": "CONTROLLEDVOCABULARY",
+   "section": "Cyclic Fatigue Test",
+   "vocabulary": "FATIGUE.TERMINATION_REASON",
+   "mandatory": false,
+   "source": "PRD §3 step 10"
+  },
+  {
+   "code": "FATIGUE.CYCLES_GROSS",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Gross number of cycles",
+   "label_de": "Bruttoschwingspielzahl",
+   "data_type": "INTEGER",
+   "section": "Evaluation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 11"
+  },
+  {
+   "code": "FATIGUE.CYCLES_NET",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Net number of cycles",
+   "label_de": "Nettoschwingspielzahl",
+   "data_type": "INTEGER",
+   "section": "Evaluation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 11"
+  },
+  {
+   "code": "FATIGUE.CYCLES_TO_10_PERCENT_STRAIN_GAUGE_DROP",
+   "type": "EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+   "label": "Cycles to 10 % strain gauge drop per strain gauge",
+   "label_de": "Zyklen bis 10 % DMS-Abfall je DMS",
+   "data_type": "MULTILINE_VARCHAR",
+   "section": "Evaluation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 11 (kind text)"
+  },
+  {
+   "code": "FATIGUE.NEXT_STEP",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Next step",
+   "label_de": "Nächster Schritt",
+   "data_type": "CONTROLLEDVOCABULARY",
+   "section": "Workflow Status",
+   "vocabulary": "WELDED_FATIGUE_WORKFLOW_STEP",
+   "mandatory": false,
+   "source": "PRD §2 P5 / domain_decisions 'next step field' (principle-required, not a PRD data item)"
+  },
+  {
+   "code": "FATIGUE.MANUFACTURER_DESIGNATION",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Manufacturer designation (original ID)",
+   "label_de": "Herstellerbezeichnung (Original-ID)",
+   "data_type": "VARCHAR",
+   "section": "Specimen Identification",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §4 subject"
+  },
+  {
+   "code": "FATIGUE.SOURCE_SHEET",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Source sheet",
+   "label_de": "Herkunftsblech",
+   "data_type": "VARCHAR",
+   "section": "Specimen Identification",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §4 subject + §3 step 05 (same data item, placed once)"
+  },
+  {
+   "code": "FATIGUE.TARGET_QUALITY_LEVEL",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Target quality level (ISO 5817)",
+   "label_de": "Angestrebte Bewertungsgruppe (ISO 5817)",
+   "data_type": "CONTROLLEDVOCABULARY",
+   "section": "Specimen Identification",
+   "vocabulary": "WELDING.ISO_5817_QUALITY_LEVEL",
+   "mandatory": false,
+   "source": "PRD §4 subject"
+  },
+  {
+   "code": "FATIGUE.INITIAL_ANGULAR_DISTORTION",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Initial angular distortion [°]",
+   "label_de": "Winkelverzug initial [°]",
+   "data_type": "REAL",
+   "section": "Initial Quality Check",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 01"
+  },
+  {
+   "code": "FATIGUE.INITIAL_EDGE_MISALIGNMENT",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Initial edge misalignment [mm]",
+   "label_de": "Kantenversatz initial [mm]",
+   "data_type": "REAL",
+   "section": "Initial Quality Check",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 01"
+  },
+  {
+   "code": "FATIGUE.WAS_STRAIGHTENED",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Was straightened",
+   "label_de": "Wurde gerichtet",
+   "data_type": "BOOLEAN",
+   "section": "Initial Quality Check",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 01"
+  },
+  {
+   "code": "FATIGUE.ANGULAR_DISTORTION_AFTER_STRAIGHTENING",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Angular distortion after straightening [°]",
+   "label_de": "Winkelverzug nach dem Richten [°]",
+   "data_type": "REAL",
+   "section": "Initial Quality Check",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 01"
+  },
+  {
+   "code": "FATIGUE.EDGE_MISALIGNMENT_AFTER_STRAIGHTENING",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Edge misalignment after straightening [mm]",
+   "label_de": "Kantenversatz nach dem Richten [mm]",
+   "data_type": "REAL",
+   "section": "Initial Quality Check",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 01"
+  },
+  {
+   "code": "FATIGUE.WELD_POST_TREATMENT_NOTES",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Weld reinforcement treatment / grinding notes",
+   "label_de": "Nahtüberhöhungs-Bearbeitung / Schleifhinweise",
+   "data_type": "MULTILINE_VARCHAR",
+   "section": "Chamfering And Grinding",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 02"
+  },
+  {
+   "code": "FATIGUE.ISO_5817_ANNEX_C_RATING",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Quality level ISO 5817 Annex C",
+   "label_de": "Bewertungsgruppe ISO 5817 Anhang C",
+   "data_type": "CONTROLLEDVOCABULARY",
+   "section": "Weld Analysis",
+   "vocabulary": "WELDING.ISO_5817_ANNEX_C_RATING",
+   "mandatory": false,
+   "source": "PRD §3 step 04"
+  },
+  {
+   "code": "FATIGUE.LOAD_LEVEL",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Load level",
+   "label_de": "Lastniveau",
+   "data_type": "CONTROLLEDVOCABULARY",
+   "section": "Series Assignment",
+   "vocabulary": "FATIGUE.LOAD_LEVEL",
+   "mandatory": false,
+   "source": "PRD §3 step 05"
+  },
+  {
+   "code": "FATIGUE.TEST_ORDER",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Test order",
+   "label_de": "Prüfreihenfolge",
+   "data_type": "INTEGER",
+   "section": "Series Assignment",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 05 (INTEGER per decision 7)"
+  },
+  {
+   "code": "FATIGUE.THICKNESS_POS_1",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Thickness position 1 [mm]",
+   "label_de": "Dicke Position 1 [mm]",
+   "data_type": "REAL",
+   "section": "Geometry Before Installation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 06 (repeat 3)"
+  },
+  {
+   "code": "FATIGUE.THICKNESS_POS_2",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Thickness position 2 [mm]",
+   "label_de": "Dicke Position 2 [mm]",
+   "data_type": "REAL",
+   "section": "Geometry Before Installation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 06 (repeat 3)"
+  },
+  {
+   "code": "FATIGUE.THICKNESS_POS_3",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Thickness position 3 [mm]",
+   "label_de": "Dicke Position 3 [mm]",
+   "data_type": "REAL",
+   "section": "Geometry Before Installation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 06 (repeat 3)"
+  },
+  {
+   "code": "FATIGUE.WIDTH_POS_1",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Width position 1 [mm]",
+   "label_de": "Breite Position 1 [mm]",
+   "data_type": "REAL",
+   "section": "Geometry Before Installation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 06 (repeat 3)"
+  },
+  {
+   "code": "FATIGUE.WIDTH_POS_2",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Width position 2 [mm]",
+   "label_de": "Breite Position 2 [mm]",
+   "data_type": "REAL",
+   "section": "Geometry Before Installation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 06 (repeat 3)"
+  },
+  {
+   "code": "FATIGUE.WIDTH_POS_3",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Width position 3 [mm]",
+   "label_de": "Breite Position 3 [mm]",
+   "data_type": "REAL",
+   "section": "Geometry Before Installation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 06 (repeat 3)"
+  },
+  {
+   "code": "FATIGUE.MEAN_THICKNESS",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Mean thickness [mm]",
+   "label_de": "Mittlere Dicke [mm]",
+   "data_type": "REAL",
+   "section": "Geometry Before Installation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 06"
+  },
+  {
+   "code": "FATIGUE.MEAN_WIDTH",
+   "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
+   "label": "Mean width [mm]",
+   "label_de": "Mittlere Breite [mm]",
+   "data_type": "REAL",
+   "section": "Geometry Before Installation",
+   "vocabulary": null,
+   "mandatory": false,
+   "source": "PRD §3 step 06"
+  }
+ ],
+ "new_vocabularies": [
+  {
+   "code": "FATIGUE.LOAD_LEVEL",
+   "description": "Load level of a specimen within a fatigue test series//Lastniveau einer Probe innerhalb einer Ermüdungsprüfserie",
+   "reason": null,
+   "terms": [
+    {
+     "code": "HIGH",
+     "label": "High",
+     "label_de": "Hoch",
+     "description": "High load level//Hohes Lastniveau"
+    },
+    {
+     "code": "MEDIUM",
+     "label": "Medium",
+     "label_de": "Mittel",
+     "description": "Medium load level//Mittleres Lastniveau"
+    },
+    {
+     "code": "LOW",
+     "label": "Low",
+     "label_de": "Niedrig",
+     "description": "Low load level//Niedriges Lastniveau"
+    }
+   ]
+  },
+  {
+   "code": "FATIGUE.RECORDING_MODE",
+   "description": "Data recording mode of the measuring amplifier in fatigue tests//Aufzeichnungsmodus des Messverstärkers in Ermüdungsversuchen",
+   "reason": null,
+   "terms": [
+    {
+     "code": "FULL_SIGNAL",
+     "label": "Full signal",
+     "label_de": "Vollsignal",
+     "description": "Full signal recorded//Vollsignal aufgezeichnet"
+    },
+    {
+     "code": "PEAK_COUNTER",
+     "label": "Peak counter",
+     "label_de": "Peak-Counter",
+     "description": "Peak counter//Peak-Counter"
+    },
+    {
+     "code": "PEAK_VALLEY",
+     "label": "Peak-valley",
+     "label_de": "Peak-Valley",
+     "description": "Peak and valley values recorded//Peak-Valley-Werte aufgezeichnet"
+    }
+   ]
+  },
+  {
+   "code": "FATIGUE.TERMINATION_REASON",
+   "description": "Reason for terminating a fatigue test//Grund für den Abbruch eines Ermüdungsversuchs",
+   "reason": null,
+   "terms": [
+    {
+     "code": "TOTAL_FRACTURE",
+     "label": "Total fracture",
+     "label_de": "Totalbruch",
+     "description": "Total fracture of the specimen//Totalbruch der Probe"
+    },
+    {
+     "code": "CRACK_DETECTED",
+     "label": "Crack detected",
+     "label_de": "Riss detektiert",
+     "description": "Crack detected//Riss detektiert"
+    },
+    {
+     "code": "RUN_OUT",
+     "label": "Run-out",
+     "label_de": "Durchläufer",
+     "description": "Run-out, cycle limit reached//Durchläufer, Zyklenzahl erreicht"
+    },
+    {
+     "code": "MANUAL_STOP",
+     "label": "Manual stop",
+     "label_de": "Manueller Stopp",
+     "description": "Test stopped manually//Versuch manuell gestoppt"
+    }
+   ]
+  },
+  {
+   "code": "WELDING.ISO_5817_ANNEX_C_RATING",
+   "description": "Quality levels for fatigue-loaded structures according to ISO 5817 Annex C//Bewertungsgruppen für schwingend beanspruchte Konstruktionen nach ISO 5817 Anhang C",
+   "reason": "decision 3 (C63, not legacy C56)",
+   "terms": [
+    {
+     "code": "C63",
+     "label": "C63",
+     "label_de": null,
+     "description": "Quality level C63 according to ISO 5817 Annex C//Bewertungsgruppe C63 nach ISO 5817 Anhang C"
+    },
+    {
+     "code": "B90",
+     "label": "B90",
+     "label_de": null,
+     "description": "Quality level B90 according to ISO 5817 Annex C//Bewertungsgruppe B90 nach ISO 5817 Anhang C"
+    },
+    {
+     "code": "B125",
+     "label": "B125",
+     "label_de": null,
+     "description": "Quality level B125 according to ISO 5817 Annex C//Bewertungsgruppe B125 nach ISO 5817 Anhang C"
+    }
+   ]
+  },
+  {
+   "code": "WELDING.ISO_5817_QUALITY_LEVEL",
+   "description": "Quality levels for imperfections according to ISO 5817//Bewertungsgruppen für Unregelmäßigkeiten nach ISO 5817",
+   "reason": "decision 3",
+   "terms": [
+    {
+     "code": "B",
+     "label": "B",
+     "label_de": null,
+     "description": "Quality level B (stringent)//Bewertungsgruppe B (hoch)"
+    },
+    {
+     "code": "C",
+     "label": "C",
+     "label_de": null,
+     "description": "Quality level C (intermediate)//Bewertungsgruppe C (mittel)"
+    },
+    {
+     "code": "D",
+     "label": "D",
+     "label_de": null,
+     "description": "Quality level D (moderate)//Bewertungsgruppe D (niedrig)"
+    }
+   ]
+  },
+  {
+   "code": "WELDED_FATIGUE_WORKFLOW_STEP",
+   "description": "Ordered workflow steps of the welded fatigue test programme//Geordnete Ablaufschritte des Schweißnaht-Ermüdungsprogramms",
+   "reason": "decision 9; PRD §2 P5",
+   "terms": [
+    {
+     "code": "S01_PRE_QUALITY_CHECK",
+     "label": "01 Pre-quality check",
+     "label_de": "01 Vorqualitätsprüfung",
+     "description": "Pre-quality check of the weld//Vorqualitätsprüfung der Schweißnaht"
+    },
+    {
+     "code": "S02_CHAMFERING_GRINDING",
+     "label": "02 Chamfering / grinding",
+     "label_de": "02 Anfasen / Schleifen",
+     "description": "Chamfering / grinding//Anfasen / Schleifen"
+    },
+    {
+     "code": "S03_3D_SCAN",
+     "label": "03 3D scan",
+     "label_de": "03 3D-Scan",
+     "description": "3D scan of the specimen//3D-Scan der Probe"
+    },
+    {
+     "code": "S04_WELD_ANALYSIS",
+     "label": "04 Weld analysis",
+     "label_de": "04 Nahtanalyse",
+     "description": "Weld analysis (GOM)//Nahtanalyse (GOM)"
+    },
+    {
+     "code": "S05_SERIES_ASSIGNMENT",
+     "label": "05 Series assignment",
+     "label_de": "05 Serienzuordnung",
+     "description": "Series assignment (randomisation)//Serienzuordnung (Randomisierung)"
+    },
+    {
+     "code": "S06_GEOMETRY_BEFORE_INSTALLATION",
+     "label": "06 Geometry before installation",
+     "label_de": "06 Geometrie vor Einbau",
+     "description": "Geometry before installation//Geometrie vor Einbau"
+    },
+    {
+     "code": "S07_STRAIN_GAUGE_APPLICATION",
+     "label": "07 Strain gauge application",
+     "label_de": "07 DMS-Applikation",
+     "description": "Strain gauge application//DMS-Applikation"
+    },
+    {
+     "code": "S08_MEASURING_AMPLIFIER_TEST_RIG",
+     "label": "08 Measuring amplifier / test rig",
+     "label_de": "08 Messverstärker / Prüfstand",
+     "description": "Measuring amplifier / test rig//Messverstärker / Prüfstand"
+    },
+    {
+     "code": "S09_INSTALLATION_STRESS",
+     "label": "09 Installation stress",
+     "label_de": "09 Einbaubeanspruchung",
+     "description": "Installation stress//Einbaubeanspruchung"
+    },
+    {
+     "code": "S10_CYCLIC_FATIGUE_TEST",
+     "label": "10 Cyclic fatigue test",
+     "label_de": "10 Zyklischer Ermüdungsversuch",
+     "description": "Cyclic fatigue test//Zyklischer Ermüdungsversuch"
+    },
+    {
+     "code": "S11_EVALUATION",
+     "label": "11 Evaluation",
+     "label_de": "11 Auswertung",
+     "description": "Evaluation//Auswertung"
+    },
+    {
+     "code": "S12_FRACTURE_SURFACE_ANALYSIS",
+     "label": "12 Fracture surface analysis",
+     "label_de": "12 Bruchflächenanalyse",
+     "description": "Fracture surface analysis//Bruchflächenanalyse"
+    },
+    {
+     "code": "DONE",
+     "label": "Done",
+     "label_de": "Abgeschlossen",
+     "description": "All workflow steps completed//Alle Ablaufschritte abgeschlossen"
+    }
+   ]
+  }
+ ],
+ "extensions": [
+  {
+   "vocabulary": "WELDING.WELD_TYPE",
+   "citation": "bam_masterdata/datamodel/welding/vocabularies.py:38",
+   "reason": "decision 2 / domain_decisions 'weld geometry vocabulary'",
+   "terms": [
+    {
+     "code": "WELDING_BUTT_WELD",
+     "label": "butt weld",
+     "description": "Butt weld//Stumpfstoß",
+     "label_de": "Stumpfstoß"
+    },
+    {
+     "code": "WELDING_CRUCIFORM_WELD",
+     "label": "cruciform weld",
+     "description": "Cruciform weld//Kreuzstoß",
+     "label_de": "Kreuzstoß"
+    }
+   ]
+  },
+  {
+   "vocabulary": "AUXILIARY_MATERIAL_TYPE",
+   "citation": "bam_masterdata/datamodel/vocabulary_types.py:252",
+   "reason": "decision 6; PRD §5 (no project catalog types for strain gauges/adhesives)",
+   "terms": [
+    {
+     "code": "STRAIN_GAUGE",
+     "label": "Strain gauge",
+     "description": "Strain gauge//Dehnungsmessstreifen",
+     "label_de": "Dehnungsmessstreifen (DMS)"
+    },
+    {
+     "code": "CRACK_DETECTION_AGENT",
+     "label": "Crack detection agent",
+     "description": "Crack detection agent (e.g. crack luminescence)//Rissprüfmittel (z. B. Risslumineszenz)",
+     "label_de": "Rissprüfmittel"
+    }
+   ]
+  }
+ ],
+ "reused_types": [
+  {
+   "code": "EXPERIMENTAL_STEP",
+   "used_as": "S1B-01-SCAN",
+   "ref": "bam_masterdata/datamodel/object_types.py:235"
+  },
+  {
+   "code": "EXPERIMENTAL_STEP",
+   "used_as": "S1B-01-FRACTURE",
+   "ref": "bam_masterdata/datamodel/object_types.py:235"
+  },
+  {
+   "code": "SAMPLE",
+   "used_as": null,
+   "ref": "bam_masterdata/datamodel/object_types.py:3005"
+  },
+  {
+   "code": "EXPERIMENTAL_STEP.MECHANICAL_TEST",
+   "used_as": null,
+   "ref": "bam_masterdata/datamodel/activities.py:2196"
+  },
+  {
+   "code": "INSTRUMENT",
+   "used_as": null,
+   "ref": "bam_masterdata/datamodel/object_types.py:1370"
+  },
+  {
+   "code": "INSTRUMENT.CAMERA",
+   "used_as": null,
+   "ref": "bam_masterdata/datamodel/instruments.py:1221"
+  },
+  {
+   "code": "INSTRUMENT.MEASURING_AMPLIFIER",
+   "used_as": null,
+   "ref": "bam_masterdata/datamodel/instruments.py:631"
+  },
+  {
+   "code": "TESTING_MACHINE",
+   "used_as": null,
+   "ref": "bam_masterdata/datamodel/object_types.py:1604"
+  },
+  {
+   "code": "AUXILIARY_MATERIAL",
+   "used_as": null,
+   "ref": "bam_masterdata/datamodel/object_types.py:1175"
+  },
+  {
+   "code": "SOP",
+   "used_as": null,
+   "ref": "bam_masterdata/datamodel/object_types.py:2868"
+  },
+  {
+   "code": "COLLECTION",
+   "used_as": null,
+   "ref": "bam_masterdata/datamodel/collection_types.py:8"
+  }
+ ],
+ "reused_properties": [
+  {
+   "code": "EXPERIMENTAL_STEP.WELDMENT_TYPE",
+   "ref": "EXPERIMENTAL_STEP.WELDMENT_TYPE (Weldment, bam_masterdata/datamodel/welding/object_types.py:409)"
+  },
+  {
+   "code": "DEFECT_DESCRIPTION",
+   "ref": "DEFECT_DESCRIPTION (Named, bam_masterdata/datamodel/object_types.py:7429)"
+  }
+ ],
+ "sync": null,
+ "tested_on": null,
+ "checker": {
+  "ran": true,
+  "errors": 0,
+  "warnings": 3,
+  "warning_texts": [
+   "Entity will not be imported in openBIS. The entity EXPERIMENTAL_STEP.MECHANICAL_TEST at row None has the same properties defined as EXPERIMENTAL_STEP. Maybe they are representing the same entity?",
+   "Property $ANNOTATIONS_STATE is deprecated from openBIS 20.10.7.3. Assigned to entity 'SAMPLE' at row None.",
+   "Property $ANNOTATIONS_STATE is deprecated from openBIS 20.10.7.3. Assigned to entity 'SAMPLE.WELDED_FATIGUE_SPECIMEN' at row None."
+  ]
+ }
+}

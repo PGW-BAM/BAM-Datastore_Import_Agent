@@ -17,7 +17,7 @@ Playground.
 | ◆ B | Struktur bestätigt | erledigt (alt) | 2026-10-06 | Fachbereich |
 | 5 | Abgleich | teilweise | 2026-10-06 | gegen dev1 + Katalog `d7a871b`; für den Playground nach Schritt 3 neu bewerten (NACHZIEHEN, GERÄT FEHLT) |
 | ◆ C | NEU geprüft | erledigt (alt) | 2026-10-06 | |
-| 6 | Antrag gebaut | teilweise | 2026-11-04 | Klassen + `spec.json` vorhanden; checker: 0 Fehler, 3 Warnungen (alle aus dem Standard geerbt). Sektionen am 2026-11-04 umbenannt (Title Case, ohne Nummern). Issue/Mail noch nicht geschrieben |
+| 6 | Antrag gebaut | erledigt (Entwurf) | 2026-11-04 | `request/` (Issue, Mail, Excel, checker), Prüfseite `review/antrag.html`. Abschnitt „nachziehen“ folgt nach Schritt 3.  Klassen + `spec.json` vorhanden; checker: 0 Fehler, 3 Warnungen (alle aus dem Standard geerbt). Sektionen am 2026-11-04 umbenannt (Title Case, ohne Nummern). Issue/Mail noch nicht geschrieben |
 | ◆ D | Antrag gesendet | offen | | |
 | 7 | Lieferung geprüft | offen | | |
 | 8 | structure.json gebaut | erledigt (alt) | 2026-11-04 | aus `demo_series.json` umgewandelt; Equipment-Pfade sind noch die von dev1 |
@@ -33,6 +33,7 @@ Playground.
 
 ## Verlauf
 
+- 2026-11-04: Antragspaket und Prüfseite „antrag“ erzeugt (`tools/build_request.py`, `tools/render_review.py antrag`); wartet auf Prüfpunkt C
 - 2026-11-04: Alle Namen zweisprachig: 33 Feldnamen (`property_label_de`), 27 Auswahlbegriffe (`label_de`), Sektionen, Schritte, Objekt- und Collection-Namen („Deutsch / Englisch“). Übersetzungen sind Vorschläge des Agenten, Prüfung auf der Prüfseite (`review/struktur.html`)
 - 2026-11-04: Aufgabe „Playground auslesen“ gestellt (`AUFGABE.md`)
 - 2026-11-04: Sektionen umbenannt (Title Case ohne Nummern, Entscheidung im Chat); Nummern bleiben in „Next step“ und im Ablaufplan

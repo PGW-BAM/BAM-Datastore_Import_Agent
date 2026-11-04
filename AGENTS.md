@@ -84,7 +84,7 @@ Englisch umschaltbar, Namen immer „Deutsch / Englisch“.
 | `templates/` | Vorlagen für ein neues Projekt (Kopiervorlage) |
 | `projects/<name>/` | ein Projekt: Einstellungen, Status, alle Zwischenstände |
 | `tools/bruecke.py`, `notebooks/openbis_bruecke.ipynb` | die Werkzeuge im BAM-Netz (Befehl oder Notebook, gleiche Logik): Lesen, Prüfen, Trockenlauf, Anlegen |
-| `tools/` | Skripte: Katalog, Spec-Export, Brücke (`openbis_bridge.py`), Cloud-Setup |
+| `tools/` | Skripte: Katalog, Spec-Export, Brücke (`openbis_bridge.py`), Antragspaket (`build_request.py`), Prüfseiten (`render_review.py struktur|antrag`), Cloud-Setup |
 | `generated/CATALOG.md`, `catalog.json` | Katalog des Standards (gepinnter Stand) |
 | `generated/welded_fatigue_v2/` | Referenzbeispiel FB 7.2 (Wöhlerversuche), entstanden vor dem Umbau |
 | `.claude/` | Claude-Agenten und Befehle (`/bam-*`) als Abkürzungen für einzelne Schritte |
