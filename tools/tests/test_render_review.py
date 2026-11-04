@@ -18,7 +18,7 @@ def test_struktur_page_renders_fb72(tmp_path):
     for part in ("Prüfpunkt B", "SAMPLE.WELDED_FATIGUE_SPECIMEN", "Strain Gauge Application", "Serientabelle",
                  "Stumpfstoß", "Text kopieren", 'data-item="aufbau"'):
         assert part in html, part
-    assert html.count('class="fb"') == 6  # one answer per part: build-up, steps, 2 forms, table, lists
+    assert html.count('class="fb"') == 7  # build-up, steps, 2 forms, table, lists, terms
 
 
 def test_fragment_has_no_document_wrapper(tmp_path):
@@ -26,3 +26,23 @@ def test_fragment_has_no_document_wrapper(tmp_path):
     rr.main(["fb72_welded_fatigue", "struktur", "--fragment", "--out", str(out)])
     html = out.read_text(encoding="utf-8")
     assert html.startswith("<title>") and "<html" not in html and "<body" not in html
+
+
+def test_every_new_name_is_bilingual():
+    m = rr.Model(ROOT, "fb72_welded_fatigue")
+    html = rr.view_struktur(m)
+    assert m.missing == set(), f"names without German: {sorted(m.missing)}"
+    for pair in ("Geschweißte Ermüdungsprobe", "Welded fatigue specimen", "Herkunftsblech", "Source sheet",
+                 "Probenidentifikation", "Specimen Identification", "Hoch", "High"):
+        assert pair in html, pair
+    assert "nur EN" in html  # standard fields without German are shown, not flagged as gaps
+
+
+def test_new_properties_carry_property_label_de():
+    import json
+    spec = json.loads((ROOT / "generated" / "welded_fatigue_v2" / "spec.json").read_text(encoding="utf-8"))
+    m = rr.Model(ROOT, "fb72_welded_fatigue")
+    for t in spec["object_types"]:
+        for p in t["properties"]:
+            if p["code"] in m.new_codes:
+                assert p.get("label_de"), p["code"]

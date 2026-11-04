@@ -16,6 +16,8 @@ fehlt. Nichts wird geändert oder gelöscht, keine Typen.
    `tools/openbis_bridge.py`, `templates/structure.example.json`, `generated/welded_fatigue_v2/structure.json`.
    - `space` und `project.code` aus `project.yaml`
    - Codes in Großbuchstaben, eindeutig, mit führender Null sortierbar (`S1-01`, nicht `S1-1`)
+   - `$NAME` von Collections, Ablaufplan, Schritten und Geräten als „Deutsch / Englisch“
+     (z. B. „Serie 1 – Stumpfstoß / Series 1 – butt weld“); Eigennamen wie „ZEISS GOM ATOS 5“ einmal
    - Eltern: Schlüssel aus der Datei oder Identifier aus dem Export (`/SPACE/PROJEKT/CODE`)
    - Pflichtfelder der Typen setzen (stehen im Export, `mandatory: true`)
    - Lange Texte (Ablaufplan) als Datei daneben und `"@file:<datei>"`

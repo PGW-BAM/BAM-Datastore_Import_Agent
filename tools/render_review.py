@@ -39,8 +39,56 @@ def de(text: str | None) -> tuple[str, str]:
     return en.strip(), (d or en).strip()
 
 
+def de_only(text: str | None) -> str:
+    """German part of 'English//Deutsch', or '' when there is none."""
+    return text.partition("//")[2].strip() if text and "//" in text else ""
+
+
 def short(text: str, n: int = 90) -> str:
     return text if len(text) <= n else text[: n - 1].rstrip() + "…"
+
+
+# Standard sections of bam-masterdata v0 (German names for display; openBIS keeps the English section name)
+SECTION_DE_STD = {"General Information": "Allgemeine Informationen", "Additional Information": "Zusätzliche Informationen",
+                  "Comments": "Kommentare", "References": "Referenzen", "Experimental Details": "Versuchsdetails",
+                  "BAM Information": "BAM-Informationen", "Properties": "Eigenschaften"}
+
+
+class Name:
+    """A name in both languages. src: 'label' (official German label), 'desc' (taken from the German description)."""
+
+    def __init__(self, de_txt: str | None, en_txt: str | None, src: str = "label"):
+        self.de, self.en = (de_txt or "").strip(), (en_txt or "").strip()
+        self.src = src if self.de else ("std" if src == "std" else "missing")
+
+    @property
+    def text(self) -> str:
+        if self.de and self.en and self.de != self.en:
+            return f"{self.de} / {self.en}"
+        return self.de or self.en
+
+    def html(self, cls: str = "") -> str:
+        derived = ' derived" title="aus der deutschen Beschreibung abgeleitet' if self.src == "desc" else ""
+        if self.de and self.en and self.de != self.en:
+            return (f'<span class="dual {cls}"><span class="de{derived}">{E(self.de)}</span>'
+                    f'<span class="sep"> / </span><span class="en">{E(self.en)}</span></span>')
+        if self.de:
+            return f'<span class="dual {cls}"><span class="de{derived}">{E(self.de)}</span></span>'
+        flag = chip("nur EN", "std") if self.src == "std" else chip("DE fehlt", "miss")
+        return f'<span class="dual {cls}"><span class="en">{E(self.en)}</span> {flag}</span>'
+
+
+def from_desc(label_en: str, description: str | None, label_de: str | None = None, standard: bool = False) -> Name:
+    """Official German label, else a short German description that reads like a name, else missing.
+    standard=True: the name belongs to the BAM standard (only English there, nothing to fix in this project)."""
+    if label_de:
+        return Name(label_de, label_en)
+    if label_en and len(label_en) <= 5 and not re.search(r"[a-zäöüß]", label_en):  # B90, C63: same in both languages
+        return Name(label_en, label_en)
+    d = de_only(description)
+    if d and len(d) <= 40 and ";" not in d and d[0].isupper() and not d.lower().startswith(("z.b", "z. b")):
+        return Name(d, label_en, "desc")
+    return Name("", label_en, "std" if standard else "label")
 
 
 # --------------------------------------------------------------------------------------------
@@ -58,10 +106,11 @@ class Model:
         prd = (pdir / cfg.get("prd", "prd.md")).resolve()
         first = next((l for l in prd.read_text(encoding="utf-8").splitlines() if l.startswith("# ")), "") if prd.exists() else ""
         self.title = re.sub(r"^#\s*(PRD\s*(v\d+)?\s*:\s*)?", "", first).strip() or name
+        self.missing: set[str] = set()  # names shown without German, counted for the header
         self.vocab: dict[str, dict] = {}
         for t in self.catalog["types"]:
             if t.get("root") == "VocabularyType":
-                self.vocab[t["code"]] = {"terms": t.get("terms", []), "description": t["defs"].get("description"),
+                self.vocab[t["code"]] = {"terms": list(t.get("terms", [])), "description": t["defs"].get("description"),
                                          "status": "standard"}
         for v in self.design.get("vocabularies", []):
             existing = self.vocab.get(v["code"])
@@ -75,39 +124,83 @@ class Model:
             v["terms"] += [t for t in e.get("terms", []) if t["code"] not in have]
             v["status"] = "erweitert"
             v.setdefault("new_terms", set()).update(t["code"] for t in e.get("terms", []))
-        # every property code -> label, type, vocabulary; own (new) codes from the design
+        # every property code -> label (en, de), type, vocabulary; own (new) codes from the design
         self.props: dict[str, dict] = {}
+
+        def put(code, label, label_de, typ, desc, vocab, force=False):
+            if force or code not in self.props:
+                self.props[code] = {"label": label or code, "label_de": label_de, "type": typ, "description": desc,
+                                    "vocabulary": vocab}
         for t in self.catalog["types"]:
             for p in t.get("properties", []) + t.get("inherited_properties", []):
-                self.props.setdefault(p["code"], {"label": p.get("property_label") or p["code"], "type": p.get("data_type"),
-                                                  "description": p.get("description"), "vocabulary": p.get("vocabulary_code")})
+                put(p["code"], p.get("property_label"), p.get("property_label_de"), p.get("data_type"), p.get("description"),
+                    p.get("vocabulary_code"))
         self.new_codes = set()
         for t in self.design.get("object_types", []):
             for p in t.get("properties", []):
-                self.props[p["code"]] = {"label": p.get("property_label") or p["code"], "type": p.get("data_type"),
-                                         "description": p.get("description"), "vocabulary": p.get("vocabulary_code")}
+                put(p["code"], p.get("property_label"), p.get("property_label_de"), p.get("data_type"), p.get("description"),
+                    p.get("vocabulary_code"), force=True)
                 if not p.get("reuse_property"):
                     self.new_codes.add(p["code"])
         for t in self.spec.get("object_types", []):
             for p in t.get("properties", []):
-                self.props.setdefault(p["code"], {"label": p.get("label") or p["code"], "type": p.get("data_type"),
-                                                  "description": p.get("description"), "vocabulary": p.get("vocabulary_code")})
+                put(p["code"], p.get("label"), p.get("label_de"), p.get("data_type"), p.get("description"), p.get("vocabulary_code"))
+        self.sections_de = {**SECTION_DE_STD, **(self.design.get("section_names_de") or {})}
+        self.files = {de(x["file"])[0]: x["file"] for x in self.design.get("dataset_mapping", [])}
+        self.devices = {de(x["inventory"])[0]: x["inventory"] for x in self.design.get("inventory_links", [])}
 
-    def term_label(self, vocab: str | None, code: str) -> str:
-        """Short German text if the description has one, else the term's label."""
+    def _note(self, n: Name, key: str) -> Name:
+        if n.src == "missing":
+            self.missing.add(key)
+        return n
+
+    def prop_name(self, code: str) -> Name:
+        p = self.props.get(code, {})
+        return self._note(from_desc(p.get("label") or code, p.get("description"), p.get("label_de"),
+                                    standard=code not in self.new_codes), f"p:{code}")
+
+    def term_name(self, vocab: str | None, code: str) -> Name:
         for t in (self.vocab.get(vocab) or {}).get("terms", []):
             if t["code"] == code:
-                d = de(t.get("description"))[1]
-                return d if d and len(d) <= 40 else (t.get("label") or d or code)
-        return code
+                new = code in (self.vocab.get(vocab) or {}).get("new_terms", set())
+                return self._note(from_desc(t.get("label") or code, t.get("description"), t.get("label_de"), standard=not new),
+                                  f"t:{vocab}:{code}")
+        return Name(code, code)
+
+    def section_name(self, s: str) -> Name:
+        return self._note(Name(self.sections_de.get(s, ""), s), f"s:{s}")
+
+    def type_name(self, t: dict) -> Name:
+        dt = next((x for x in self.design.get("object_types", []) if x["code"] == t["code"]), {})
+        if dt.get("name_de") or dt.get("name_en"):
+            return Name(dt.get("name_de"), dt.get("name_en"))
+        en, d = de(t.get("description"))
+        return self._note(Name(d if "//" in (t.get("description") or "") else "", en), f"o:{t['code']}")
+
+    def device_name(self, text: str) -> Name:
+        text = text.replace(" (parent)", "")
+        full = self.devices.get(text) or next((v for k, v in self.devices.items() if k.startswith(text) or text.startswith(k)), None)
+        if full and "//" in full:
+            en, d = de(full)
+            return Name(d, en)
+        return Name(text, text)  # proper names (ZEISS GOM ATOS 5) need no translation
+
+    def file_name(self, text: str) -> Name:
+        base = re.sub(r"\s*\(.*?\)\s*$", "", text)  # "Randomisation script (collection)" -> "Randomisation script"
+        full = self.files.get(text) or next((v for k, v in self.files.items() if re.sub(r"\s*\(.*?\)\s*$", "", k) == base), text)
+        if "//" in full:
+            en, d = de(full)
+            return Name(d, en)
+        return self._note(Name("", full), f"f:{text}")
 
     def objects(self) -> list[dict]:
-        """Objects per specimen with a kind (for colours) and a friendly name."""
+        """Objects per specimen with a kind (for colours) and a name in both languages."""
         out = []
         for i, o in enumerate(self.design.get("layout", {}).get("per_specimen", [])):
             name = o.get("name_pattern", "")
             name = name[len(o["code_pattern"]):].strip() if name.startswith(o["code_pattern"]) else name
-            out.append({**o, "kind": KIND_COLORS[min(i, len(KIND_COLORS) - 1)], "label": name or "Probe",
+            nm = Name(o.get("name_de"), o.get("name_en") or name or "Specimen")
+            out.append({**o, "kind": KIND_COLORS[min(i, len(KIND_COLORS) - 1)], "name": self._note(nm, f"x:{o['code_pattern']}"),
                         "equipment": [p for p in o.get("parents", []) if "(specimen)" not in p]})
         return out
 
@@ -129,18 +222,19 @@ def chip(text: str, cls: str = "") -> str:
 
 def prop_row(m: Model, code: str, section_prop: dict) -> str:
     p = m.props.get(code, {})
-    en, d = de(p.get("description") or section_prop.get("description"))
+    name = m.prop_name(code)
+    d = de_only(p.get("description") or section_prop.get("description"))
     typ = TYPE_DE.get(p.get("type") or section_prop.get("data_type"), p.get("type") or "")
     vocab = p.get("vocabulary") or section_prop.get("vocabulary_code")
     choice = ""
     if vocab and vocab in m.vocab:
-        terms = [m.term_label(vocab, t["code"]) for t in m.vocab[vocab]["terms"]]
+        terms = [m.term_name(vocab, t["code"]).text for t in m.vocab[vocab]["terms"]]
         choice = f'<span class="terms">{E(" · ".join(terms[:8]))}{" …" if len(terms) > 8 else ""}</span>'
     badge = chip("neu", "new") if code in m.new_codes else chip("Standard", "std")
     must = chip("Pflicht", "must") if section_prop.get("mandatory") else ""
-    label = p.get("label") or section_prop.get("label") or code
-    return (f'<li class="field"><div class="f-main"><span class="f-label">{E(label)}</span>'
-            f'<span class="f-de">{E(d) if d and d != label else ""}</span>{choice}</div>'
+    expl = d if d and d not in (name.de, name.en) else ""
+    return (f'<li class="field"><div class="f-main"><span class="f-label">{name.html()}</span>'
+            f'<span class="f-de">{E(expl)}</span>{choice}</div>'
             f'<div class="f-meta"><span class="f-type">{E(typ)}</span>{must}{badge}</div></li>')
 
 
@@ -157,15 +251,14 @@ def object_card(m: Model, t: dict, role_kind: str) -> str:
         if not fields:
             continue
         own = sum(p["code"] in m.new_codes for p in fields)
-        block = (f'<section class="sec"><h4>{E(s)} <small>{len(fields)} Felder'
+        block = (f'<section class="sec"><h4>{m.section_name(s).html()} <small>{len(fields)} Felder'
                  f'{f", {own} neu" if own else ""}</small></h4><ul>'
                  + "".join(prop_row(m, p["code"], p) for p in fields) + "</ul></section>")
         (hidden if s in system and not own else parts).append(block)
-    en, d = de(t.get("description"))
     more = (f'<details><summary>Weitere Standard-Felder ({len(hidden)} Sektionen)</summary>{"".join(hidden)}</details>'
             if hidden else "")
     return (f'<article class="card obj {role_kind}" id="obj-{E(t["code"])}"><header><span class="dot"></span>'
-            f'<div><h3>{E(d or t["code"])}</h3><code>{E(t["code"])}</code></div>{chip("neuer Typ", "new")}</header>'
+            f'<div><h3>{m.type_name(t).html()}</h3><code>{E(t["code"])}</code></div>{chip("neuer Typ", "new")}</header>'
             f'{"".join(parts)}{more}</article>')
 
 
@@ -187,56 +280,50 @@ def view_struktur(m: Model) -> str:
     st = m.structure
     space, project = lay.get("space", f"/{st.get('space', '')}"), lay.get("project", "")
     cols = lay.get("collections", [])
-    out = []
-
-    # header
-    out.append(f"""<header class="hero"><span class="eyebrow">Prüfpunkt B · Struktur bestätigen</span>
-<h1>{E(m.title)}</h1>
-<p class="lead">So würde der Agent deinen Versuchsablauf in openBIS abbilden. Lies die Seite von oben nach unten.
-Bei jedem Teil sagst du <b>passt</b> oder <b>ändern</b>. Ganz unten entsteht daraus dein Text für den Chat.</p>
-<ol class="ask"><li>Hat jeder Ablaufschritt genau einen Ort?</li><li>Sind die Felder die, die ihr im Labor wirklich notiert?</li>
-<li>Würdet ihr die Serientabelle so lesen wollen?</li></ol>
-<p class="meta">Vorschlag vom {E((d.get("designed_at") or "")[:10])} · Projekt <code>{E(m.project["name"])}</code></p></header>""")
+    body = []
 
     # 1 hierarchy
-    collections = "".join(f'<div class="node col"><b>{E(de(c.get("$NAME") or c["code"])[1])}</b><code>{E(c["code"])}</code></div>'
+    collections = "".join(f'<div class="node col"><b>{E(c.get("$NAME") or c["code"])}</b><code>{E(c["code"])}</code></div>'
                           for c in cols)
     plan = "".join(f'<div class="node plan"><b>{E(o.get("$NAME") or o["code"])}</b><span>einmal im Projekt</span></div>'
                    for o in lay.get("project_objects", []))
-    steps = "".join(f'<div class="node obj {o["kind"]}"><span class="dot"></span><b>{E(o["label"])}</b>'
+    steps = "".join(f'<div class="node obj {o["kind"]}"><span class="dot"></span><b>{o["name"].html()}</b>'
                     f'<code>{E(o["code_pattern"])}</code>'
                     f'{"<span>Schritte " + E(", ".join(o.get("covers_steps", []))) + "</span>" if o.get("covers_steps") else ""}'
-                    f'{"".join(chip(short(de(e)[1], 34), "dev") for e in o["equipment"])}</div>'
+                    f'{"".join(chip(short(m.device_name(e).text, 60), "dev") for e in o["equipment"])}</div>'
                     for o in objs[1:])
-    probe = objs[0] if objs else {"label": "Probe", "code_pattern": "", "kind": "probe"}
-    out.append(f"""<section aria-labelledby="h1s"><h2 id="h1s"><span class="n">1</span>So ist dein Projekt aufgebaut</h2>
+    probe = objs[0] if objs else {"name": Name("Probe", "Specimen"), "code_pattern": "", "kind": "probe"}
+    body.append(f"""<section aria-labelledby="h1s"><h2 id="h1s"><span class="n">1</span>So ist dein Projekt aufgebaut</h2>
 <p>Eine Serie ist eine Collection. In jeder Serie steht jede Probe einmal, und direkt an der Probe hängen ihre Versuchsschritte.
 Geräte und Material kommen aus dem Inventar des Fachbereichs und werden nur verlinkt.</p>
 <div class="tree"><div class="node root"><span>Space</span><b>{E(space)}</b></div><div class="arrow">↓</div>
-<div class="node root"><span>Projekt</span><b>{E(project)}</b></div><div class="arrow">↓</div>
+<div class="node root"><span>Projekt / Project</span><b>{E(project)}</b></div><div class="arrow">↓</div>
 <div class="row">{collections}{plan}</div><div class="arrow">↓ in jeder Serie, je Probe</div>
-<div class="specimen"><div class="node obj {probe['kind']} big"><span class="dot"></span><b>{E(probe['label'])}</b><code>{E(probe['code_pattern'])}</code>
+<div class="specimen"><div class="node obj {probe['kind']} big"><span class="dot"></span><b>{probe['name'].html()}</b><code>{E(probe['code_pattern'])}</code>
 <span>trägt alles, was die Probe beschreibt</span></div><div class="arrow">↓ hängen direkt daran</div><div class="row">{steps}</div></div></div>
 {feedback("aufbau", "Aufbau")}</section>""")
 
     # 2 step -> location
     rows = []
     for s in d.get("step_location_map", []):
-        o = m.object_for(s.get("object", "")) or {"kind": "extra", "label": s.get("object", "")}
+        o = m.object_for(s.get("object", "")) or {"kind": "extra", "name": Name("", s.get("object", ""))}
         items = []
         for it in s.get("data_items", []):
             code = it.split()[0]
             quoted = re.match(r"'([^']+)'", it)
-            items.append(m.props.get(code, {}).get("label") or (quoted.group(1) if quoted else short(it.split(" = ")[0], 60)))
-        files = [de(next((x["file"] for x in d.get("dataset_mapping", []) if de(x["file"])[0] == f), f))[1]
-                 for f in s.get("files", [])]
+            if code in m.props:
+                items.append(m.prop_name(code).text)
+            else:
+                items.append(quoted.group(1) if quoted else short(it.split(" = ")[0], 60))
         sec = s.get("section") if s.get("section") not in (None, "-") else ""
+        sec_html = " + ".join(m.section_name(x.strip()).html() for x in sec.split("+")) if sec else ""
         rows.append(f"""<li class="step {o['kind']}"><span class="no">{E(s.get('no', ''))}</span><div class="s-body">
-<h3>{E(s.get('step', ''))}</h3><p class="where">→ <b>{E(o['label'])}</b>{f" · Abschnitt „{E(sec)}“" if sec else ""}</p>
+<h3>{m._note(Name(s.get('step_de'), s.get('step', '')), 'st:' + s.get('no', '')).html()}</h3>
+<p class="where">→ <b>{o['name'].html()}</b>{f" · Abschnitt {sec_html}" if sec else ""}</p>
 {'<p class="items">' + E(" · ".join(items)) + "</p>" if items else ""}
-<div class="chips">{"".join(chip(short(de(e)[1].replace(" (parent)", ""), 40), "dev") for e in s.get("equipment", []))}{"".join(chip(f, "file") for f in files)}</div></div></li>""")
-    out.append(f"""<section aria-labelledby="h2s"><h2 id="h2s"><span class="n">2</span>Wo landet welcher Ablaufschritt?</h2>
-<p>Farbe = Objekt, in das der Schritt geschrieben wird. Grüne Marken sind Geräte oder Material, graue sind Dateien.</p>
+<div class="chips">{"".join(chip(short(m.device_name(e).text, 60), "dev") for e in s.get("equipment", []))}{"".join(chip(m.file_name(f).text, "file") for f in s.get("files", []))}</div></div></li>""")
+    body.append(f"""<section aria-labelledby="h2s"><h2 id="h2s"><span class="n">2</span>Wo landet welcher Ablaufschritt?</h2>
+<p>Die Farbe zeigt das Objekt, in das der Schritt geschrieben wird. Umrandete Marken sind Geräte oder Material, gestrichelte sind Dateien.</p>
 <ol class="timeline">{"".join(rows)}</ol>{feedback("ablauf", "Zuordnung der Schritte")}</section>""")
 
     # 3 object forms
@@ -248,12 +335,11 @@ Geräte und Material kommen aus dem Inventar des Fachbereichs und werden nur ver
     for o in reused:
         role = next((r.get("role", "") for r in d.get("reused_types", []) if r.get("code") == o["type"] and
                      r.get("used_as", "").endswith(o["code_pattern"][len(objs[0]["code_pattern"]):] or "~")), "")
-        cards.append(f'<article class="card obj {o["kind"]} slim"><header><span class="dot"></span><div><h3>{E(o["label"])}</h3>'
+        cards.append(f'<article class="card obj {o["kind"]} slim"><header><span class="dot"></span><div><h3>{o["name"].html()}</h3>'
                      f'<code>{E(o["type"])}</code></div>{chip("aus dem Standard", "std")}</header>'
                      f'<p>{E(short(role, 220)) if role else "Standard-Versuchsschritt: Datum, Bearbeiter*in, Notizen, Dateien. Keine neuen Felder."}</p></article>')
-    fb = "".join(feedback(f"obj-{t['code']}", f"Felder „{short(de(t.get('description'))[1], 50) or t['code']}“")
-                 for t in spec_types)
-    out.append(f"""<section aria-labelledby="h3s"><h2 id="h3s"><span class="n">3</span>Welche Felder bekommt jedes Objekt?</h2>
+    fb = "".join(feedback(f"obj-{t['code']}", f"Felder „{short(m.type_name(t).text, 60)}“") for t in spec_types)
+    body.append(f"""<section aria-labelledby="h3s"><h2 id="h3s"><span class="n">3</span>Welche Felder bekommt jedes Objekt?</h2>
 <p>So ungefähr sieht das Formular in der ELN aus. <b>neu</b> heißt: beantragt der Agent beim Data Store, <b>Standard</b> gibt es schon.
 Felder mit <b>Pflicht</b> müssen beim Anlegen ausgefüllt sein.</p><div class="cards">{"".join(cards)}</div>{fb}</section>""")
 
@@ -270,13 +356,15 @@ Felder mit <b>Pflicht</b> müssen beim Anlegen ausgefüllt sein.</p><div class="
         for c in codes:
             v = (target.get("props") or {}).get(c)
             if v is not None:
-                return m.term_label(m.props.get(c, {}).get("vocabulary"), str(v)) if m.props.get(c, {}).get("vocabulary") else str(v)
+                vocab = m.props.get(c, {}).get("vocabulary")
+                return m.term_name(vocab, str(v)).text if vocab else str(v)
         return "–"
-    head = "".join(f"<th>{E(de(c['column'])[1])}</th>" for c in cols_)
-    body = "".join("<tr>" + "".join(f"<td>{E(cell(c['source'], sp))}</td>" for c in cols_) + "</tr>" for sp in specimens)
-    out.append(f"""<section aria-labelledby="h4s"><h2 id="h4s"><span class="n">4</span>So sieht die Serientabelle aus</h2>
+    head = "".join(f"<th>{m._note(Name(de(c['column'])[1] if '//' in c['column'] else '', de(c['column'])[0]), 'c:' + c['column']).html('th')}</th>"
+                   for c in cols_)
+    rows_ = "".join("<tr>" + "".join(f"<td>{E(cell(c['source'], sp))}</td>" for c in cols_) + "</tr>" for sp in specimens)
+    body.append(f"""<section aria-labelledby="h4s"><h2 id="h4s"><span class="n">4</span>So sieht die Serientabelle aus</h2>
 <p>Das ist die Tabelle, die man beim Öffnen einer Serie sieht. Die Werte sind Beispieldaten aus der Demo-Serie (fiktiv).</p>
-<div class="tbl"><table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table></div>{feedback("tabelle", "Serientabelle")}</section>""")
+<div class="tbl"><table><thead><tr>{head}</tr></thead><tbody>{rows_}</tbody></table></div>{feedback("tabelle", "Serientabelle")}</section>""")
 
     # 5 vocabularies
     vcards = []
@@ -284,10 +372,11 @@ Felder mit <b>Pflicht</b> müssen beim Anlegen ausgefüllt sein.</p><div class="
         if v["status"] == "standard":
             continue
         new = v.get("new_terms", set())
-        terms = "".join(f'<li class="{"newt" if t["code"] in new else ""}">{E(m.term_label(code, t["code"]))}</li>' for t in v["terms"])
-        vcards.append(f'<article class="card voc"><header><div><h3>{E(de(v.get("description"))[1] or code)}</h3><code>{E(code)}</code></div>'
-                      f'{chip("neu" if v["status"] == "neu" else "ergänzt", "new")}</header><ul class="tlist">{terms}</ul></article>')
-    out.append(f"""<section aria-labelledby="h5s"><h2 id="h5s"><span class="n">5</span>Auswahllisten</h2>
+        terms = "".join(f'<li class="{"newt" if t["code"] in new else ""}">{m.term_name(code, t["code"]).html()}</li>' for t in v["terms"])
+        en, dd = de(v.get("description"))
+        vcards.append(f'<article class="card voc"><header><div><h3>{m._note(Name(dd if "//" in (v.get("description") or "") else "", en), "v:" + code).html()}</h3>'
+                      f'<code>{E(code)}</code></div>{chip("neu" if v["status"] == "neu" else "ergänzt", "new")}</header><ul class="tlist">{terms}</ul></article>')
+    body.append(f"""<section aria-labelledby="h5s"><h2 id="h5s"><span class="n">5</span>Auswahllisten</h2>
 <p>Hier wählt man im Formular aus einer festen Liste. Hervorgehoben sind die Einträge, die neu dazukommen.</p>
 <div class="cards">{"".join(vcards)}</div>{feedback("listen", "Auswahllisten")}</section>""")
 
@@ -298,17 +387,35 @@ Felder mit <b>Pflicht</b> müssen beim Anlegen ausgefüllt sein.</p><div class="
         tiles = "".join(f'<div class="tile"><span>{E(lbl)}</span><b>{E(str(a.get(k, "–")))}</b><small>vorher {E(str(b.get(k, "–")))}</small></div>'
                         for k, lbl in (("objects_per_specimen", "Objekte je Probe"), ("max_link_depth", "Ebenen unter der Probe"),
                                        ("new_object_types", "neue Typen"), ("new_dataset_types", "neue Datei-Typen")))
-        out.append(f'<section aria-labelledby="h6s"><h2 id="h6s"><span class="n">6</span>Einfacher als vorher</h2>'
-                   f'<p>Vergleich mit dem bisherigen Modell auf der Übungsinstanz.</p><div class="tiles">{tiles}</div></section>')
+        body.append(f'<section aria-labelledby="h6s"><h2 id="h6s"><span class="n">6</span>Einfacher als vorher</h2>'
+                    f'<p>Vergleich mit dem bisherigen Modell auf der Übungsinstanz.</p><div class="tiles">{tiles}</div></section>')
 
     # 7 answer
-    out.append("""<section aria-labelledby="h7s" class="answer"><h2 id="h7s"><span class="n">✓</span>Deine Antwort an den Agenten</h2>
+    body.append("""<section aria-labelledby="h7s" class="answer"><h2 id="h7s"><span class="n">✓</span>Deine Antwort an den Agenten</h2>
 <label for="fb-gesamt">Noch etwas Allgemeines? (freiwillig)</label><textarea id="fb-gesamt" rows="3"></textarea>
 <p id="state" class="state">Noch nicht alles beantwortet.</p>
 <pre id="out" class="out" aria-live="polite"></pre>
 <button type="button" id="copy" class="primary">Text kopieren</button> <span id="copied" class="copied" hidden>Kopiert. Jetzt im Chat einfügen.</span>
 <p class="hint">Den kopierten Text fügst du im Chat mit dem Agenten ein. Die Seite speichert nichts und schickt nichts ab.</p></section>""")
-    return "\n".join(out)
+
+    # header last, because it reports how many names still lack German
+    n_missing = len(m.missing)
+    header = f"""<header class="hero"><span class="eyebrow">Prüfpunkt B · Struktur bestätigen</span>
+<h1>{E(m.title)}</h1>
+<p class="lead">So würde der Agent deinen Versuchsablauf in openBIS abbilden. Lies die Seite von oben nach unten.
+Bei jedem Teil sagst du <b>passt</b> oder <b>ändern</b>. Ganz unten entsteht daraus dein Text für den Chat.</p>
+<ol class="ask"><li>Hat jeder Ablaufschritt genau einen Ort?</li><li>Sind die Felder die, die ihr im Labor wirklich notiert?</li>
+<li>Würdet ihr die Serientabelle so lesen wollen?</li><li>Passen die Begriffe auf Deutsch und auf Englisch?</li></ol>
+<p class="names">Alle Namen stehen als <span class="dual"><span class="de">Deutsch</span><span class="sep"> / </span><span class="en">Englisch</span></span>.
+<span class="de derived">Kursiv</span> = aus der deutschen Beschreibung übernommen, noch kein eigener deutscher Name.
+{chip("DE fehlt", "miss")} = die deutsche Fassung fehlt noch{f" (hier {n_missing}×)" if n_missing else " (hier keine)"}.
+{chip("nur EN", "std")} = Name aus dem BAM-Standard, den es dort nur auf Englisch gibt.</p>
+<p class="meta">Vorschlag vom {E((d.get("designed_at") or "")[:10])} · Projekt <code>{E(m.project["name"])}</code></p></header>"""
+    terms_fb = feedback("begriffe", "Begriffe Deutsch / Englisch")
+    return "\n".join([header, *body[:-1], f'<section aria-labelledby="h8s"><h2 id="h8s"><span class="n">7</span>Begriffe in beiden Sprachen</h2>'
+                      f'<p>Alle Namen oben stehen auf Deutsch und Englisch. Stimmen die Begriffe in beiden Sprachen? '
+                      f'Schreib bei „ändern“ die gewünschten Begriffe einfach dazu, z. B. „Herkunftsblech → Ausgangsblech“.</p>{terms_fb}</section>',
+                      body[-1]])
 
 
 # --------------------------------------------------------------------------------------------
@@ -382,6 +489,10 @@ textarea{font:inherit;width:100%;border:1px solid var(--line);border-radius:2px;
 .answer{background:var(--paper);border-top:3px solid var(--bam-cyan);box-shadow:var(--shadow-card);padding:24px}
 .out{margin:0;white-space:pre-wrap;background:var(--gray-1);border:1px solid var(--gray-2);padding:12px;font:14px var(--m);min-height:3em}
 .primary{background:var(--bam-petrol);color:#fff;font-size:16px;padding:14px 28px}.primary:hover{background:#00404f}.state{font-weight:600;color:var(--head)}
+.dual .sep{color:var(--gray-4);font-weight:400}.dual .en{color:var(--muted);font-weight:400}.de.derived{font-style:italic}
+.chip.miss{background:#f8ecdd;color:var(--warning)}.hero .dual .en{color:var(--gray-3)}.hero .dual .sep{color:var(--gray-4)}
+.names{font-size:15px;color:var(--gray-3)}.hero .names .de{color:#fff}.dual.th{display:flex;flex-direction:column;gap:0}.dual.th .sep{display:none}
+.node.obj.probe .dual .en,.node.obj.probe .dual .sep{color:var(--gray-3)}
 .copied{color:var(--success);font-weight:600}.hint{font-size:14px;color:var(--muted)}
 @media (max-width:640px){.step{grid-template-columns:40px 1fr}.hero{padding:24px 20px}}
 @media (prefers-reduced-motion:reduce){button{transition:none}}

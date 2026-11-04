@@ -33,6 +33,7 @@ Playground.
 
 ## Verlauf
 
+- 2026-11-04: Alle Namen zweisprachig: 33 Feldnamen (`property_label_de`), 27 Auswahlbegriffe (`label_de`), Sektionen, Schritte, Objekt- und Collection-Namen („Deutsch / Englisch“). Übersetzungen sind Vorschläge des Agenten, Prüfung auf der Prüfseite (`review/struktur.html`)
 - 2026-11-04: Aufgabe „Playground auslesen“ gestellt (`AUFGABE.md`)
 - 2026-11-04: Sektionen umbenannt (Title Case ohne Nummern, Entscheidung im Chat); Nummern bleiben in „Next step“ und im Ablaufplan
 - 2026-11-04: Projekt im neuen Format angelegt, Katalog auf v0.17.0, `structure.json` aus der dev1-Demo erzeugt

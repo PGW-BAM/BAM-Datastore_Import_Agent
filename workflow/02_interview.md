@@ -22,6 +22,8 @@ nach und bringt eigene Ideen ein, schreibt aber nur auf, was die Person bestäti
    Reihenfolge? Fehlt etwas?“ Erst nach Bestätigung weiter.
 2. **Schritt für Schritt fragen.** Pro Nachricht ein Schritt aus der Ablaufliste, höchstens etwa fünf Fragen:
    - die Grundfragen aus [interview_fragen.md](interview_fragen.md),
+   - für jeden neuen Namen (Schritt, Messwert, Auswahlbegriff, Datei) beide Sprachen: „Wie heißt das auf Englisch?“
+     bzw. „Passt ‚Herkunftsblech / Source sheet‘?“ Fremde Übersetzungen sind Vorschläge, bis die Person sie bestätigt,
    - die passenden Stichwort-Nachfragen (z. B. „DMS“ → Lage, Typ, Anzahl, Klebstoff),
    - einen Blick in den Katalog als konkrete Frage: „Im Standard gibt es Hilfsstoffe mit Typ ‚Strain gauge‘. Reicht
      das, oder braucht ihr mehr Angaben je DMS?“
@@ -40,6 +42,7 @@ nach und bringt eigene Ideen ein, schreibt aber nur auf, was die Person bestäti
 
 - [ ] Jeder Kasten im Schema steht in `ablauf.md` und umgekehrt
 - [ ] Jeder Messwert hat Einheit, Wertebereich oder Auswahlliste, Pflicht ja/nein
+- [ ] Jeder Name steht als „Deutsch / Englisch“ (Schritte, Messwerte, Auswahlbegriffe, Dateien, Geräte)
 - [ ] Jede Datei hat Format und Herkunft (Gerät/Software)
 - [ ] Alle Vorschläge sind entschieden (bestätigt oder abgelehnt), keiner ist stillschweigend übernommen
 - [ ] Keine openBIS-Typnamen im PRD (die kommen erst in Schritt 4/5)

@@ -6,12 +6,14 @@
       {
         "code": "WELDING_BUTT_WELD",
         "label": "butt weld",
-        "description": "Butt weld//Stumpfstoß"
+        "description": "Butt weld//Stumpfstoß",
+        "label_de": "Stumpfstoß"
       },
       {
         "code": "WELDING_CRUCIFORM_WELD",
         "label": "cruciform weld",
-        "description": "Cruciform weld//Kreuzstoß"
+        "description": "Cruciform weld//Kreuzstoß",
+        "label_de": "Kreuzstoß"
       }
     ]
   },
@@ -22,12 +24,14 @@
       {
         "code": "STRAIN_GAUGE",
         "label": "Strain gauge",
-        "description": "Strain gauge//Dehnungsmessstreifen"
+        "description": "Strain gauge//Dehnungsmessstreifen",
+        "label_de": "Dehnungsmessstreifen (DMS)"
       },
       {
         "code": "CRACK_DETECTION_AGENT",
         "label": "Crack detection agent",
-        "description": "Crack detection agent (e.g. crack luminescence)//Rissprüfmittel (z. B. Risslumineszenz)"
+        "description": "Crack detection agent (e.g. crack luminescence)//Rissprüfmittel (z. B. Risslumineszenz)",
+        "label_de": "Rissprüfmittel"
       }
     ]
   }

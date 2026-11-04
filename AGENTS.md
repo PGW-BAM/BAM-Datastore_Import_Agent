@@ -46,8 +46,9 @@ Kurzform für Agenten mit Skills oder Slash-Befehlen: Skill `bam-weiter` (`.agen
 | Was | Regel |
 |---|---|
 | Codes | GROSSBUCHSTABEN_MIT_UNTERSTRICH; Namensraum mit Punkt nur wie in v0 üblich (z. B. `FATIGUE.LOAD_LEVEL`) |
+| **Namen (immer zweisprachig)** | Jeder Name gibt es auf Deutsch und Englisch. **Anzeige und Prüfung:** „Deutsch / Englisch“ (Prüfseiten, Interview, PRD). **Masterdaten:** `property_label` englisch + `property_label_de`; Begriffe `label` + `label_de`; bam-masterdata schreibt daraus in openBIS „English//Deutsch“ (BAM-Konvention). **Sektionen:** in openBIS nur englisch (der `checker` erlaubt nur Buchstaben), die deutsche Fassung steht in `design.json` → `section_names_de` und auf der Prüfseite. **Objektnamen** (`$NAME` in `structure.json`): „Deutsch / Englisch“. Übernommene Standard-Felder haben oft nur einen englischen Namen; das wird angezeigt („nur EN“), nicht geändert |
 | Beschreibungen | zweisprachig `English//Deutsch`, ohne Leerzeichen um `//` |
-| Labels, Sektionen | englisch; Sektionen in **Title Case** und nur aus Buchstaben: jedes Wort groß, keine Ziffern, kein `/` oder `-` („Strain Gauge Application“, „Measuring Amplifier And Test Rig“), sonst warnt der `checker`. Schrittnummern stehen im Auswahlfeld „Next step“ und im Ablaufplan, nicht in Sektionen |
+| Sektionsnamen | englisch in **Title Case** und nur aus Buchstaben: jedes Wort groß, keine Ziffern, kein `/` oder `-` („Strain Gauge Application“, „Measuring Amplifier And Test Rig“), sonst warnt der `checker`. Schrittnummern stehen im Auswahlfeld „Next step“ und im Ablaufplan, nicht in Sektionen |
 | Pflichtangaben | `mandatory` und `section` immer setzen; Einheiten über `units` (Label wird zu „Length in [mm]“) |
 | Tabellen, Messreihen | als Datei, nicht als Properties |
 | Struktur | flach: Space → Projekt → Collection (= Serie) → Objekte; Schritte hängen direkt an der Probe |

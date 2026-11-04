@@ -11,6 +11,7 @@ Stichwort-Nachfragen, die zum Gesagten passen. Eigene Ergänzungen sind erwünsc
 4. Welche Dateien entstehen? Format, Größe, aus welchem Gerät oder welcher Software?
 5. Was davon willst du später filtern, vergleichen oder auswerten?
 6. Was ist das Ergebnis, und was entscheidet sich hier für den nächsten Schritt?
+7. Wie heißen Schritt, Messwerte und Auswahlbegriffe auf Englisch? (Jeder Name wird als „Deutsch / Englisch“ geführt.)
 
 ## Querschnitt (einmal pro Projekt)
 

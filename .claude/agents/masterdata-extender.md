@@ -73,10 +73,11 @@ class MyNewType(ObjectType):
     my_property = PropertyTypeAssignment(
         code="MY_PROPERTY",
         data_type="VARCHAR",
-        property_label="My property//Meine Eigenschaft",
-        description="My property description//Beschreibung",
+        property_label="My property",
+        property_label_de="Meine Eigenschaft",   # German name: required for every NEW property
+        description="My property description//Beschreibung der Eigenschaft",
         mandatory=False,
-        section="My Section//Mein Abschnitt",
+        section="My Section",                     # English, Title Case, letters only (checker rule)
     )
 ```
 
@@ -122,7 +123,7 @@ class Iso5817FatClass(VocabularyType):
     )
     c56 = VocabularyTerm(
         code="C56",
-        label="C56",
+        label="C56",                 # same in both languages: no label_de
         description="FAT Class C56//FAT Klasse C56",
     )
     b90 = VocabularyTerm(
@@ -157,18 +158,20 @@ class WeldedFatigueSpecimen(ObjectType):
     original_id = PropertyTypeAssignment(
         code="ORIGINAL_ID",
         data_type="VARCHAR",
-        property_label="Manufacturer ID//Herstellerbezeichnung",
+        property_label="Manufacturer ID",
+        property_label_de="Herstellerbezeichnung",
         description="Manufacturer ID//Herstellerbezeichnung",
         mandatory=False,
-        section="Material Details//Materialdetails",
+        section="Material Details",
     )
     weld_geometry = PropertyTypeAssignment(
         code="WELDING.WELD_TYPE",  # REUSE — references existing vocabulary
         data_type="CONTROLLEDVOCABULARY",
-        property_label="Weld geometry//Schweißnahtgeometrie",
+        property_label="Weld geometry",
+        property_label_de="Schweißnahtgeometrie",
         description="Weld geometry//Schweißnahtgeometrie",
         mandatory=True,
-        section="Weld Details//Schweißnahtdetails",
+        section="Weld Details",
     )
     # ... remaining properties
 ```

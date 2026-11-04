@@ -29,78 +29,91 @@ class WeldedFatigueWorkflowStep(VocabularyType):
     s01_pre_quality_check = VocabularyTerm(
         code="S01_PRE_QUALITY_CHECK",
         label="01 Pre-quality check",
+        label_de="01 Vorqualitätsprüfung",
         description="""Pre-quality check of the weld//Vorqualitätsprüfung der Schweißnaht""",
     )
 
     s02_chamfering_grinding = VocabularyTerm(
         code="S02_CHAMFERING_GRINDING",
         label="02 Chamfering / grinding",
+        label_de="02 Anfasen / Schleifen",
         description="""Chamfering / grinding//Anfasen / Schleifen""",
     )
 
     s03_3d_scan = VocabularyTerm(
         code="S03_3D_SCAN",
         label="03 3D scan",
+        label_de="03 3D-Scan",
         description="""3D scan of the specimen//3D-Scan der Probe""",
     )
 
     s04_weld_analysis = VocabularyTerm(
         code="S04_WELD_ANALYSIS",
         label="04 Weld analysis",
+        label_de="04 Nahtanalyse",
         description="""Weld analysis (GOM)//Nahtanalyse (GOM)""",
     )
 
     s05_series_assignment = VocabularyTerm(
         code="S05_SERIES_ASSIGNMENT",
         label="05 Series assignment",
+        label_de="05 Serienzuordnung",
         description="""Series assignment (randomisation)//Serienzuordnung (Randomisierung)""",
     )
 
     s06_geometry_before_installation = VocabularyTerm(
         code="S06_GEOMETRY_BEFORE_INSTALLATION",
         label="06 Geometry before installation",
+        label_de="06 Geometrie vor Einbau",
         description="""Geometry before installation//Geometrie vor Einbau""",
     )
 
     s07_strain_gauge_application = VocabularyTerm(
         code="S07_STRAIN_GAUGE_APPLICATION",
         label="07 Strain gauge application",
+        label_de="07 DMS-Applikation",
         description="""Strain gauge application//DMS-Applikation""",
     )
 
     s08_measuring_amplifier_test_rig = VocabularyTerm(
         code="S08_MEASURING_AMPLIFIER_TEST_RIG",
         label="08 Measuring amplifier / test rig",
+        label_de="08 Messverstärker / Prüfstand",
         description="""Measuring amplifier / test rig//Messverstärker / Prüfstand""",
     )
 
     s09_installation_stress = VocabularyTerm(
         code="S09_INSTALLATION_STRESS",
         label="09 Installation stress",
+        label_de="09 Einbaubeanspruchung",
         description="""Installation stress//Einbaubeanspruchung""",
     )
 
     s10_cyclic_fatigue_test = VocabularyTerm(
         code="S10_CYCLIC_FATIGUE_TEST",
         label="10 Cyclic fatigue test",
+        label_de="10 Zyklischer Ermüdungsversuch",
         description="""Cyclic fatigue test//Zyklischer Ermüdungsversuch""",
     )
 
     s11_evaluation = VocabularyTerm(
         code="S11_EVALUATION",
         label="11 Evaluation",
+        label_de="11 Auswertung",
         description="""Evaluation//Auswertung""",
     )
 
     s12_fracture_surface_analysis = VocabularyTerm(
         code="S12_FRACTURE_SURFACE_ANALYSIS",
         label="12 Fracture surface analysis",
+        label_de="12 Bruchflächenanalyse",
         description="""Fracture surface analysis//Bruchflächenanalyse""",
     )
 
     done = VocabularyTerm(
         code="DONE",
         label="Done",
+        label_de="Abgeschlossen",
         description="""All workflow steps completed//Alle Ablaufschritte abgeschlossen""",
     )
 
@@ -167,18 +180,21 @@ class FatigueLoadLevel(VocabularyType):
     high = VocabularyTerm(
         code="HIGH",
         label="High",
+        label_de="Hoch",
         description="""High load level//Hohes Lastniveau""",
     )
 
     medium = VocabularyTerm(
         code="MEDIUM",
         label="Medium",
+        label_de="Mittel",
         description="""Medium load level//Mittleres Lastniveau""",
     )
 
     low = VocabularyTerm(
         code="LOW",
         label="Low",
+        label_de="Niedrig",
         description="""Low load level//Niedriges Lastniveau""",
     )
 
@@ -193,18 +209,21 @@ class FatigueRecordingMode(VocabularyType):
     full_signal = VocabularyTerm(
         code="FULL_SIGNAL",
         label="Full signal",
+        label_de="Vollsignal",
         description="""Full signal recorded//Vollsignal aufgezeichnet""",
     )
 
     peak_counter = VocabularyTerm(
         code="PEAK_COUNTER",
         label="Peak counter",
+        label_de="Peak-Counter",
         description="""Peak counter//Peak-Counter""",
     )
 
     peak_valley = VocabularyTerm(
         code="PEAK_VALLEY",
         label="Peak-valley",
+        label_de="Peak-Valley",
         description="""Peak and valley values recorded//Peak-Valley-Werte aufgezeichnet""",
     )
 
@@ -219,23 +238,27 @@ class FatigueTerminationReason(VocabularyType):
     total_fracture = VocabularyTerm(
         code="TOTAL_FRACTURE",
         label="Total fracture",
+        label_de="Totalbruch",
         description="""Total fracture of the specimen//Totalbruch der Probe""",
     )
 
     crack_detected = VocabularyTerm(
         code="CRACK_DETECTED",
         label="Crack detected",
+        label_de="Riss detektiert",
         description="""Crack detected//Riss detektiert""",
     )
 
     run_out = VocabularyTerm(
         code="RUN_OUT",
         label="Run-out",
+        label_de="Durchläufer",
         description="""Run-out, cycle limit reached//Durchläufer, Zyklenzahl erreicht""",
     )
 
     manual_stop = VocabularyTerm(
         code="MANUAL_STOP",
         label="Manual stop",
+        label_de="Manueller Stopp",
         description="""Test stopped manually//Versuch manuell gestoppt""",
     )

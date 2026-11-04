@@ -40,6 +40,7 @@ Nur nötig, wenn es NEU, ERWEITERN oder NACHZIEHEN gibt. Gibt es nur GERÄT FEHL
 - [ ] checker: 0 Fehler, jede Warnung behoben oder erklärt
 - [ ] Jede Zeile im Issue hat eine Begründung aus dem PRD
 - [ ] Beschreibungen `English//Deutsch`, Sektionen Title Case ohne Ziffern, `mandatory`/`section` gesetzt
+- [ ] Jede neue Property hat `property_label_de`, jeder neue Begriff `label_de` (in openBIS dann „English//Deutsch“)
 - [ ] Der Antrag ist so kurz wie möglich (nichts, was NUTZEN wäre)
 
 ## Stopp

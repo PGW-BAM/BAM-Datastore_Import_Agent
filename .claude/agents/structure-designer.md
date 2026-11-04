@@ -30,7 +30,7 @@ masterdata-extender implements.
 
 1. **Subject first (P3).** Every data item that *describes the specimen* (identity, geometry, weld
    rating, distortion, series assignment, load level, test order) goes on the specimen type, grouped into
-   sections named after the workflow step number: `"01 Pre-quality check"`, `"06 Geometry"`, …
+   sections named after the workflow step (`"Initial Quality Check"`, `"Geometry Before Installation"`, …), in workflow order.
 2. **Group activities (P4).** Remaining steps are activities. Consecutive steps performed at the same
    workplace / with the same equipment / in one session become **one** step object with one section per workflow step, in workflow order
    (`"Strain Gauge Application"`, `"Measuring Amplifier And Test Rig"`, …). Section names: Title Case, letters
@@ -54,7 +54,10 @@ masterdata-extender implements.
    - `repeat: n` items become n properties (`…_POS_1`, `…_POS_2`, …) — never several numbers in one REAL.
    - `choice` items reference a vocabulary: an existing one from the catalog if its terms cover the
      choices, otherwise a new vocabulary (list its terms). Respect `domain_decisions` verbatim.
-   - Labels and section names English, descriptions `"English//Deutsch"` (bam-masterdata convention).
+   - Every name in both languages: `property_label` (English) + `property_label_de`, vocabulary terms `label` +
+     `label_de`, `section_names_de` for sections, `step_de` in `step_location_map`, `name_de`/`name_en` for objects
+     and object types; collection/object names (`$NAME`) as "Deutsch / Englisch". Descriptions `"English//Deutsch"`.
+     Sections stay English in openBIS (checker: Title Case, letters only).
 7. **Files (P7).** Map every file to an object (specimen / step / collection) and a **standard** dataset
    type from the catalog (RAW_DATA, PROCESSED_DATA, ANALYZED_DATA, ATTACHMENT, FIGURE, FIGURE.PLOT,
    SOURCE_CODE, MEASUREMENT_PROTOCOL_FILE). No new dataset types.
@@ -75,13 +78,14 @@ masterdata-extender implements.
      "properties": [
        {"attr": "initial_angular_distortion", "code": "FATIGUE.INITIAL_ANGULAR_DISTORTION",
         "data_type": "REAL", "property_label": "Initial angular distortion [°]",
-        "description": "…//…", "section": "01 Pre-quality check", "mandatory": false,
+        "property_label_de": "Winkelverzug initial [°]",
+        "description": "…//…", "section": "Initial Quality Check", "mandatory": false,
         "vocabulary_code": null, "object_code": null, "reuse_property": null,
         "source": "PRD §3 step 01"}
      ]}
   ],
   "vocabularies": [{"class_name": "…", "code": "…", "description": "…//…",
-                    "terms": [{"code": "…", "label": "…", "description": "…//…"}],
+                    "terms": [{"code": "…", "label": "…", "label_de": "…", "description": "…//…"}],
                     "existing": null, "decision_ref": null}],
   "reused_types": [{"code": "EXPERIMENTAL_STEP", "role": "Steps 03-04 3D scan + weld analysis"}],
   "inventory_links": [{"inventory": "ZEISS GOM ATOS 5", "type_code": "INSTRUMENT", "parent_of": "SCAN step"}],
@@ -89,7 +93,8 @@ masterdata-extender implements.
              "per_specimen": [{"code_pattern": "S1-01", "type": "…", "name_pattern": "…"},
                               {"code_pattern": "S1-01-TEST", "type": "…", "parents": ["specimen", "…"]}]},
   "dataset_mapping": [{"file": "…", "attach_to": "specimen|<step>|collection", "dataset_type": "RAW_DATA"}],
-  "step_location_map": [{"no": "01", "step": "…", "object": "specimen", "section": "01 Pre-quality check",
+  "section_names_de": {"Initial Quality Check": "Vorqualitätsprüfung"},
+  "step_location_map": [{"no": "01", "step": "…", "step_de": "…", "object": "specimen", "section": "Initial Quality Check",
                          "files": ["…"]}],
   "metrics": {"new": {…}, "legacy_live": {…}}
 }

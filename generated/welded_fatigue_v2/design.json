@@ -78,7 +78,8 @@
           "vocabulary_code": "WELDED_FATIGUE_WORKFLOW_STEP",
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §2 P5 / domain_decisions 'next step field' (principle-required, not a PRD data item)"
+          "source": "PRD §2 P5 / domain_decisions 'next step field' (principle-required, not a PRD data item)",
+          "property_label_de": "Nächster Schritt"
         },
         {
           "attr": "manufacturer_designation",
@@ -92,7 +93,8 @@
           "object_code": null,
           "reuse_property": null,
           "source": "PRD §4 subject",
-          "note": "Internal designation uses the inherited ALIAS (resolution Q4), so the manufacturer ID gets its own property."
+          "note": "Internal designation uses the inherited ALIAS (resolution Q4), so the manufacturer ID gets its own property.",
+          "property_label_de": "Herstellerbezeichnung (Original-ID)"
         },
         {
           "attr": "source_sheet",
@@ -105,7 +107,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §4 subject + §3 step 05 (same data item, placed once)"
+          "source": "PRD §4 subject + §3 step 05 (same data item, placed once)",
+          "property_label_de": "Herkunftsblech"
         },
         {
           "attr": "weld_type",
@@ -132,7 +135,8 @@
           "vocabulary_code": "WELDING.ISO_5817_QUALITY_LEVEL",
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §4 subject"
+          "source": "PRD §4 subject",
+          "property_label_de": "Angestrebte Bewertungsgruppe (ISO 5817)"
         },
         {
           "attr": "initial_angular_distortion",
@@ -145,7 +149,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 01"
+          "source": "PRD §3 step 01",
+          "property_label_de": "Winkelverzug initial [°]"
         },
         {
           "attr": "initial_edge_misalignment",
@@ -158,7 +163,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 01"
+          "source": "PRD §3 step 01",
+          "property_label_de": "Kantenversatz initial [mm]"
         },
         {
           "attr": "was_straightened",
@@ -171,7 +177,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 01"
+          "source": "PRD §3 step 01",
+          "property_label_de": "Wurde gerichtet"
         },
         {
           "attr": "angular_distortion_after_straightening",
@@ -184,7 +191,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 01"
+          "source": "PRD §3 step 01",
+          "property_label_de": "Winkelverzug nach dem Richten [°]"
         },
         {
           "attr": "edge_misalignment_after_straightening",
@@ -197,7 +205,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 01"
+          "source": "PRD §3 step 01",
+          "property_label_de": "Kantenversatz nach dem Richten [mm]"
         },
         {
           "attr": "defect_description",
@@ -224,7 +233,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 02"
+          "source": "PRD §3 step 02",
+          "property_label_de": "Nahtüberhöhungs-Bearbeitung / Schleifhinweise"
         },
         {
           "attr": "iso_5817_annex_c_rating",
@@ -237,7 +247,8 @@
           "vocabulary_code": "WELDING.ISO_5817_ANNEX_C_RATING",
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 04"
+          "source": "PRD §3 step 04",
+          "property_label_de": "Bewertungsgruppe ISO 5817 Anhang C"
         },
         {
           "attr": "load_level",
@@ -250,7 +261,8 @@
           "vocabulary_code": "FATIGUE.LOAD_LEVEL",
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 05"
+          "source": "PRD §3 step 05",
+          "property_label_de": "Lastniveau"
         },
         {
           "attr": "test_order",
@@ -263,7 +275,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 05 (INTEGER per decision 7)"
+          "source": "PRD §3 step 05 (INTEGER per decision 7)",
+          "property_label_de": "Prüfreihenfolge"
         },
         {
           "attr": "thickness_pos_1",
@@ -276,7 +289,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 06 (repeat 3)"
+          "source": "PRD §3 step 06 (repeat 3)",
+          "property_label_de": "Dicke Position 1 [mm]"
         },
         {
           "attr": "thickness_pos_2",
@@ -289,7 +303,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 06 (repeat 3)"
+          "source": "PRD §3 step 06 (repeat 3)",
+          "property_label_de": "Dicke Position 2 [mm]"
         },
         {
           "attr": "thickness_pos_3",
@@ -302,7 +317,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 06 (repeat 3)"
+          "source": "PRD §3 step 06 (repeat 3)",
+          "property_label_de": "Dicke Position 3 [mm]"
         },
         {
           "attr": "width_pos_1",
@@ -315,7 +331,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 06 (repeat 3)"
+          "source": "PRD §3 step 06 (repeat 3)",
+          "property_label_de": "Breite Position 1 [mm]"
         },
         {
           "attr": "width_pos_2",
@@ -328,7 +345,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 06 (repeat 3)"
+          "source": "PRD §3 step 06 (repeat 3)",
+          "property_label_de": "Breite Position 2 [mm]"
         },
         {
           "attr": "width_pos_3",
@@ -341,7 +359,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 06 (repeat 3)"
+          "source": "PRD §3 step 06 (repeat 3)",
+          "property_label_de": "Breite Position 3 [mm]"
         },
         {
           "attr": "mean_thickness",
@@ -354,7 +373,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 06"
+          "source": "PRD §3 step 06",
+          "property_label_de": "Mittlere Dicke [mm]"
         },
         {
           "attr": "mean_width",
@@ -367,9 +387,12 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 06"
+          "source": "PRD §3 step 06",
+          "property_label_de": "Mittlere Breite [mm]"
         }
-      ]
+      ],
+      "name_de": "Geschweißte Ermüdungsprobe",
+      "name_en": "Welded fatigue specimen"
     },
     {
       "class_name": "CyclicFatigueTest",
@@ -418,7 +441,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 07"
+          "source": "PRD §3 step 07",
+          "property_label_de": "DMS-Abstand zum Nahtübergang [mm]"
         },
         {
           "attr": "strain_gauge_distance_to_edge",
@@ -431,7 +455,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 07"
+          "source": "PRD §3 step 07",
+          "property_label_de": "DMS-Abstand zum Probenrand [mm]"
         },
         {
           "attr": "strain_gauge_application_time",
@@ -445,7 +470,8 @@
           "object_code": null,
           "reuse_property": null,
           "source": "PRD §3 step 07",
-          "note": "START_DATE (inherited) not reused: it spans the whole merged object 07-11 and is reserved for the step start (parser of steps 10/11 may fill START_DATE/END_DATE from IMC raw data); the application time matters on its own (adhesive curing)."
+          "note": "START_DATE (inherited) not reused: it spans the whole merged object 07-11 and is reserved for the step start (parser of steps 10/11 may fill START_DATE/END_DATE from IMC raw data); the application time matters on its own (adhesive curing).",
+          "property_label_de": "Zeitpunkt der DMS-Applikation"
         },
         {
           "attr": "sampling_frequency",
@@ -458,7 +484,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 08 (INTEGER per decision 7; requirements.json had 'real')"
+          "source": "PRD §3 step 08 (INTEGER per decision 7; requirements.json had 'real')",
+          "property_label_de": "Abtastfrequenz [Hz]"
         },
         {
           "attr": "recording_mode",
@@ -471,7 +498,8 @@
           "vocabulary_code": "FATIGUE.RECORDING_MODE",
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 08"
+          "source": "PRD §3 step 08",
+          "property_label_de": "Aufzeichnungsmodus"
         },
         {
           "attr": "recorded_channels",
@@ -484,7 +512,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 08"
+          "source": "PRD §3 step 08",
+          "property_label_de": "Erfasste Kanäle"
         },
         {
           "attr": "preload_force",
@@ -498,7 +527,8 @@
           "object_code": null,
           "reuse_property": null,
           "source": "PRD §3 step 09",
-          "note": "CREEP_TEST_PRELOAD (CreepTest) not reused: creep-test domain code without fixed unit."
+          "note": "CREEP_TEST_PRELOAD (CreepTest) not reused: creep-test domain code without fixed unit.",
+          "property_label_de": "Vorspannkraft [kN]"
         },
         {
           "attr": "beach_marks_active",
@@ -511,7 +541,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 10"
+          "source": "PRD §3 step 10",
+          "property_label_de": "Rastlinien (Markerlasten) aktiv"
         },
         {
           "attr": "termination_reason",
@@ -525,7 +556,8 @@
           "object_code": null,
           "reuse_property": null,
           "source": "PRD §3 step 10",
-          "note": "CREEP_TEST_END_OF_TEST_CRITERIUM terms do not cover the choices."
+          "note": "CREEP_TEST_END_OF_TEST_CRITERIUM terms do not cover the choices.",
+          "property_label_de": "Abbruchgrund"
         },
         {
           "attr": "cycles_gross",
@@ -539,7 +571,8 @@
           "object_code": null,
           "reuse_property": null,
           "source": "PRD §3 step 11",
-          "note": "FINAL_CYCLES (FcgStep) is REAL - data type mismatch."
+          "note": "FINAL_CYCLES (FcgStep) is REAL - data type mismatch.",
+          "property_label_de": "Bruttoschwingspielzahl"
         },
         {
           "attr": "cycles_net",
@@ -552,7 +585,8 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 11"
+          "source": "PRD §3 step 11",
+          "property_label_de": "Nettoschwingspielzahl"
         },
         {
           "attr": "cycles_to_10_percent_strain_gauge_drop",
@@ -565,9 +599,12 @@
           "vocabulary_code": null,
           "object_code": null,
           "reuse_property": null,
-          "source": "PRD §3 step 11 (kind text)"
+          "source": "PRD §3 step 11 (kind text)",
+          "property_label_de": "Zyklen bis 10 % DMS-Abfall je DMS"
         }
-      ]
+      ],
+      "name_de": "Zyklischer Ermüdungsversuch",
+      "name_en": "Cyclic fatigue test"
     }
   ],
   "vocabularies": [
@@ -579,67 +616,80 @@
         {
           "code": "S01_PRE_QUALITY_CHECK",
           "label": "01 Pre-quality check",
-          "description": "Pre-quality check of the weld//Vorqualitätsprüfung der Schweißnaht"
+          "description": "Pre-quality check of the weld//Vorqualitätsprüfung der Schweißnaht",
+          "label_de": "01 Vorqualitätsprüfung"
         },
         {
           "code": "S02_CHAMFERING_GRINDING",
           "label": "02 Chamfering / grinding",
-          "description": "Chamfering / grinding//Anfasen / Schleifen"
+          "description": "Chamfering / grinding//Anfasen / Schleifen",
+          "label_de": "02 Anfasen / Schleifen"
         },
         {
           "code": "S03_3D_SCAN",
           "label": "03 3D scan",
-          "description": "3D scan of the specimen//3D-Scan der Probe"
+          "description": "3D scan of the specimen//3D-Scan der Probe",
+          "label_de": "03 3D-Scan"
         },
         {
           "code": "S04_WELD_ANALYSIS",
           "label": "04 Weld analysis",
-          "description": "Weld analysis (GOM)//Nahtanalyse (GOM)"
+          "description": "Weld analysis (GOM)//Nahtanalyse (GOM)",
+          "label_de": "04 Nahtanalyse"
         },
         {
           "code": "S05_SERIES_ASSIGNMENT",
           "label": "05 Series assignment",
-          "description": "Series assignment (randomisation)//Serienzuordnung (Randomisierung)"
+          "description": "Series assignment (randomisation)//Serienzuordnung (Randomisierung)",
+          "label_de": "05 Serienzuordnung"
         },
         {
           "code": "S06_GEOMETRY_BEFORE_INSTALLATION",
           "label": "06 Geometry before installation",
-          "description": "Geometry before installation//Geometrie vor Einbau"
+          "description": "Geometry before installation//Geometrie vor Einbau",
+          "label_de": "06 Geometrie vor Einbau"
         },
         {
           "code": "S07_STRAIN_GAUGE_APPLICATION",
           "label": "07 Strain gauge application",
-          "description": "Strain gauge application//DMS-Applikation"
+          "description": "Strain gauge application//DMS-Applikation",
+          "label_de": "07 DMS-Applikation"
         },
         {
           "code": "S08_MEASURING_AMPLIFIER_TEST_RIG",
           "label": "08 Measuring amplifier / test rig",
-          "description": "Measuring amplifier / test rig//Messverstärker / Prüfstand"
+          "description": "Measuring amplifier / test rig//Messverstärker / Prüfstand",
+          "label_de": "08 Messverstärker / Prüfstand"
         },
         {
           "code": "S09_INSTALLATION_STRESS",
           "label": "09 Installation stress",
-          "description": "Installation stress//Einbaubeanspruchung"
+          "description": "Installation stress//Einbaubeanspruchung",
+          "label_de": "09 Einbaubeanspruchung"
         },
         {
           "code": "S10_CYCLIC_FATIGUE_TEST",
           "label": "10 Cyclic fatigue test",
-          "description": "Cyclic fatigue test//Zyklischer Ermüdungsversuch"
+          "description": "Cyclic fatigue test//Zyklischer Ermüdungsversuch",
+          "label_de": "10 Zyklischer Ermüdungsversuch"
         },
         {
           "code": "S11_EVALUATION",
           "label": "11 Evaluation",
-          "description": "Evaluation//Auswertung"
+          "description": "Evaluation//Auswertung",
+          "label_de": "11 Auswertung"
         },
         {
           "code": "S12_FRACTURE_SURFACE_ANALYSIS",
           "label": "12 Fracture surface analysis",
-          "description": "Fracture surface analysis//Bruchflächenanalyse"
+          "description": "Fracture surface analysis//Bruchflächenanalyse",
+          "label_de": "12 Bruchflächenanalyse"
         },
         {
           "code": "DONE",
           "label": "Done",
-          "description": "All workflow steps completed//Alle Ablaufschritte abgeschlossen"
+          "description": "All workflow steps completed//Alle Ablaufschritte abgeschlossen",
+          "label_de": "Abgeschlossen"
         }
       ],
       "existing": null,
@@ -702,17 +752,20 @@
         {
           "code": "HIGH",
           "label": "High",
-          "description": "High load level//Hohes Lastniveau"
+          "description": "High load level//Hohes Lastniveau",
+          "label_de": "Hoch"
         },
         {
           "code": "MEDIUM",
           "label": "Medium",
-          "description": "Medium load level//Mittleres Lastniveau"
+          "description": "Medium load level//Mittleres Lastniveau",
+          "label_de": "Mittel"
         },
         {
           "code": "LOW",
           "label": "Low",
-          "description": "Low load level//Niedriges Lastniveau"
+          "description": "Low load level//Niedriges Lastniveau",
+          "label_de": "Niedrig"
         }
       ],
       "existing": null,
@@ -726,17 +779,20 @@
         {
           "code": "FULL_SIGNAL",
           "label": "Full signal",
-          "description": "Full signal recorded//Vollsignal aufgezeichnet"
+          "description": "Full signal recorded//Vollsignal aufgezeichnet",
+          "label_de": "Vollsignal"
         },
         {
           "code": "PEAK_COUNTER",
           "label": "Peak counter",
-          "description": "Peak counter//Peak-Counter"
+          "description": "Peak counter//Peak-Counter",
+          "label_de": "Peak-Counter"
         },
         {
           "code": "PEAK_VALLEY",
           "label": "Peak-valley",
-          "description": "Peak and valley values recorded//Peak-Valley-Werte aufgezeichnet"
+          "description": "Peak and valley values recorded//Peak-Valley-Werte aufgezeichnet",
+          "label_de": "Peak-Valley"
         }
       ],
       "existing": null,
@@ -750,22 +806,26 @@
         {
           "code": "TOTAL_FRACTURE",
           "label": "Total fracture",
-          "description": "Total fracture of the specimen//Totalbruch der Probe"
+          "description": "Total fracture of the specimen//Totalbruch der Probe",
+          "label_de": "Totalbruch"
         },
         {
           "code": "CRACK_DETECTED",
           "label": "Crack detected",
-          "description": "Crack detected//Riss detektiert"
+          "description": "Crack detected//Riss detektiert",
+          "label_de": "Riss detektiert"
         },
         {
           "code": "RUN_OUT",
           "label": "Run-out",
-          "description": "Run-out, cycle limit reached//Durchläufer, Zyklenzahl erreicht"
+          "description": "Run-out, cycle limit reached//Durchläufer, Zyklenzahl erreicht",
+          "label_de": "Durchläufer"
         },
         {
           "code": "MANUAL_STOP",
           "label": "Manual stop",
-          "description": "Test stopped manually//Versuch manuell gestoppt"
+          "description": "Test stopped manually//Versuch manuell gestoppt",
+          "label_de": "Manueller Stopp"
         }
       ],
       "existing": null,
@@ -779,12 +839,14 @@
         {
           "code": "WELDING_BUTT_WELD",
           "label": "butt weld",
-          "description": "Butt weld//Stumpfstoß"
+          "description": "Butt weld//Stumpfstoß",
+          "label_de": "Stumpfstoß"
         },
         {
           "code": "WELDING_CRUCIFORM_WELD",
           "label": "cruciform weld",
-          "description": "Cruciform weld//Kreuzstoß"
+          "description": "Cruciform weld//Kreuzstoß",
+          "label_de": "Kreuzstoß"
         }
       ],
       "existing": "bam_masterdata/datamodel/welding/vocabularies.py:38",
@@ -800,12 +862,14 @@
         {
           "code": "STRAIN_GAUGE",
           "label": "Strain gauge",
-          "description": "Strain gauge//Dehnungsmessstreifen"
+          "description": "Strain gauge//Dehnungsmessstreifen",
+          "label_de": "Dehnungsmessstreifen (DMS)"
         },
         {
           "code": "CRACK_DETECTION_AGENT",
           "label": "Crack detection agent",
-          "description": "Crack detection agent (e.g. crack luminescence)//Rissprüfmittel (z. B. Risslumineszenz)"
+          "description": "Crack detection agent (e.g. crack luminescence)//Rissprüfmittel (z. B. Risslumineszenz)",
+          "label_de": "Rissprüfmittel"
         }
       ],
       "existing": "bam_masterdata/datamodel/vocabulary_types.py:252",
@@ -972,13 +1036,13 @@
       {
         "code": "SERIES_1_BUTT_WELD",
         "type": "COLLECTION",
-        "$NAME": "Series 1 - butt weld",
+        "$NAME": "Serie 1 – Stumpfstoß / Series 1 – butt weld",
         "$DEFAULT_OBJECT_TYPE": "SAMPLE.WELDED_FATIGUE_SPECIMEN"
       },
       {
         "code": "SERIES_1_CRUCIFORM_WELD",
         "type": "COLLECTION",
-        "$NAME": "Series 1 - cruciform weld",
+        "$NAME": "Serie 1 – Kreuzstoß / Series 1 – cruciform weld",
         "$DEFAULT_OBJECT_TYPE": "SAMPLE.WELDED_FATIGUE_SPECIMEN"
       }
     ],
@@ -986,7 +1050,7 @@
       {
         "code": "WORKFLOW_PLAN",
         "type": "SOP",
-        "$NAME": "Workflow plan",
+        "$NAME": "Ablaufplan / Workflow plan",
         "content": "step_location_map rendered as table in DESCRIPTION"
       }
     ],
@@ -1017,7 +1081,9 @@
         "type": "SAMPLE.WELDED_FATIGUE_SPECIMEN",
         "name_pattern": "S1B-01",
         "collection": "series collection",
-        "parents": []
+        "parents": [],
+        "name_de": "Probe",
+        "name_en": "Specimen"
       },
       {
         "code_pattern": "S1B-01-SCAN",
@@ -1031,7 +1097,9 @@
         "covers_steps": [
           "03",
           "04"
-        ]
+        ],
+        "name_de": "3D-Scan & Nahtanalyse",
+        "name_en": "3D scan & weld analysis"
       },
       {
         "code_pattern": "S1B-01-TEST",
@@ -1053,7 +1121,9 @@
           "09",
           "10",
           "11"
-        ]
+        ],
+        "name_de": "Zyklischer Ermüdungsversuch",
+        "name_en": "Cyclic fatigue test"
       },
       {
         "code_pattern": "S1B-01-FRACTURE",
@@ -1067,7 +1137,9 @@
         ],
         "covers_steps": [
           "12"
-        ]
+        ],
+        "name_de": "Bruchflächenanalyse",
+        "name_en": "Fracture surface analysis"
       }
     ],
     "link_rules": "Steps are children of the specimen only (depth 1); inventory objects are parents of steps; no step->step links; no OBJECT properties to inventory.",
@@ -1242,7 +1314,8 @@
         "FATIGUE.TARGET_QUALITY_LEVEL"
       ],
       "equipment": [],
-      "files": []
+      "files": [],
+      "step_de": "Probe (Identität)"
     },
     {
       "no": "01",
@@ -1260,7 +1333,8 @@
       "equipment": [],
       "files": [
         "Specimen photos"
-      ]
+      ],
+      "step_de": "Vorqualitätsprüfung der Schweißnaht"
     },
     {
       "no": "02",
@@ -1273,7 +1347,8 @@
       "equipment": [],
       "files": [
         "Post-processing report"
-      ]
+      ],
+      "step_de": "Anfasen / Schleifen"
     },
     {
       "no": "03",
@@ -1286,7 +1361,8 @@
       ],
       "files": [
         "3D scan raw data"
-      ]
+      ],
+      "step_de": "3D-Scan der Probe"
     },
     {
       "no": "04",
@@ -1301,7 +1377,8 @@
       ],
       "files": [
         "Evaluation export"
-      ]
+      ],
+      "step_de": "Nahtanalyse (GOM)"
     },
     {
       "no": "05",
@@ -1317,7 +1394,8 @@
       "equipment": [],
       "files": [
         "Randomisation script (collection)"
-      ]
+      ],
+      "step_de": "Serienzuordnung (Randomisierung)"
     },
     {
       "no": "06",
@@ -1337,7 +1415,8 @@
       "equipment": [
         "Caliper (no inventory object/link; named in SOP only)"
       ],
-      "files": []
+      "files": [],
+      "step_de": "Geometrie vor Einbau"
     },
     {
       "no": "07",
@@ -1358,7 +1437,8 @@
       "files": [
         "Strain gauge position drawing",
         "Setup photo"
-      ]
+      ],
+      "step_de": "DMS-Applikation"
     },
     {
       "no": "08",
@@ -1374,7 +1454,8 @@
         "IMC measuring amplifier",
         "Servo-hydraulic testing machine"
       ],
-      "files": []
+      "files": [],
+      "step_de": "Messverstärker / Prüfstand"
     },
     {
       "no": "09",
@@ -1389,7 +1470,8 @@
       ],
       "files": [
         "Bending moment raw data"
-      ]
+      ],
+      "step_de": "Einbaubeanspruchung"
     },
     {
       "no": "10",
@@ -1407,7 +1489,8 @@
         "Load programme",
         "Measurement raw data",
         "Monitoring images"
-      ]
+      ],
+      "step_de": "Zyklischer Ermüdungsversuch"
     },
     {
       "no": "11",
@@ -1424,7 +1507,8 @@
         "Cleaned measurement data",
         "Evaluation plots",
         "Conversion script"
-      ]
+      ],
+      "step_de": "Auswertung"
     },
     {
       "no": "12",
@@ -1440,7 +1524,8 @@
         "Macro photos",
         "Microscope images of crack origin",
         "Beach-mark evaluation"
-      ]
+      ],
+      "step_de": "Bruchflächenanalyse"
     },
     {
       "no": "P5",
@@ -1451,7 +1536,8 @@
         "FATIGUE.NEXT_STEP"
       ],
       "equipment": [],
-      "files": []
+      "files": [],
+      "step_de": "Ablaufstatus"
     }
   ],
   "metrics": {
@@ -1505,5 +1591,19 @@
     "Q6 series table: Annex C rating main column, target quality level additional column.",
     "Q7 cycles to 10 % strain gauge drop: MULTILINE_VARCHAR text.",
     "Q8 dev1 has project samples enabled: SOP WORKFLOW_PLAN at project level."
-  ]
+  ],
+  "section_names_de": {
+    "Workflow Status": "Ablaufstatus",
+    "Specimen Identification": "Probenidentifikation",
+    "Initial Quality Check": "Vorqualitätsprüfung",
+    "Chamfering And Grinding": "Anfasen und Schleifen",
+    "Weld Analysis": "Nahtanalyse",
+    "Series Assignment": "Serienzuordnung",
+    "Geometry Before Installation": "Geometrie vor Einbau",
+    "Strain Gauge Application": "DMS-Applikation",
+    "Measuring Amplifier And Test Rig": "Messverstärker und Prüfstand",
+    "Installation Stress": "Einbaubeanspruchung",
+    "Cyclic Fatigue Test": "Zyklischer Ermüdungsversuch",
+    "Evaluation": "Auswertung"
+  }
 }

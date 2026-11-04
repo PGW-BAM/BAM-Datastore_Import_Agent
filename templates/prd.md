@@ -18,7 +18,7 @@ Es gelten P1–P8 aus `workflow/README.md`. Abweichungen für dieses Projekt (mi
 
 ## 3. Ablauf
 
-| Nr. | Schritt | Erfasste Daten (Einheit, Auswahl, Pflicht) | Geräte / Material | Dateien |
+| Nr. | Schritt (Deutsch / Englisch) | Erfasste Daten (Deutsch / Englisch, Einheit, Auswahl, Pflicht) | Geräte / Material | Dateien |
 |---|---|---|---|---|
 | 01 | | | | |
 

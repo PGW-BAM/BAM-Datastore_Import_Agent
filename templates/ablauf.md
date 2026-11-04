@@ -3,7 +3,7 @@
 Die eine Quelle für den Ablauf. Entsteht in Schritt 2 aus Schema oder Erzählung und wird im Interview ergänzt.
 Quelle je Zeile: S = Schema, P = Person, V = Vorschlag des Agenten (bestätigt).
 
-| Nr. | Schritt | Was passiert | Erfasste Werte (Einheit, Bereich/Auswahl, Pflicht) | Geräte / Material | Dateien (Format, Herkunft) | Quelle |
+| Nr. | Schritt (Deutsch / Englisch) | Was passiert | Erfasste Werte (Deutsch / Englisch, Einheit, Bereich/Auswahl, Pflicht) | Geräte / Material | Dateien (Format, Herkunft) | Quelle |
 |---|---|---|---|---|---|---|
 | 01 | | | | | | |
 | 02 | | | | | | |

@@ -56,7 +56,7 @@ zuerst und schreibt sie zuletzt.
 | P5 | Ablauf sichtbar: Sektionen stehen in Ablauf-Reihenfolge, die Probe hat ein Feld „Next step“ (Auswahl mit Schrittnummern), ein Ablaufplan-Objekt beschreibt alle Schritte. Sektionsnamen selbst ohne Nummern (Regel des `checker`). |
 | P6 | Standard zuerst: Geräte, Materialien, Standard-Schritte, Collection- und Dataset-Typen aus bam-masterdata. Nicht standardisierte Typen auf der Instanz werden nicht weiterverwendet. |
 | P7 | Tabellen und Messreihen sind Dateien, keine Properties. |
-| P8 | Beschreibungen `English//Deutsch`, Labels und Sektionen englisch; Sektionen in Title Case, nur Buchstaben. |
+| P8 | Jeder Name auf Deutsch und Englisch: angezeigt als „Deutsch / Englisch“, in den Masterdaten `property_label` + `property_label_de` (Begriffe `label` + `label_de`), Beschreibungen `English//Deutsch`. Sektionen in openBIS englisch, Title Case, nur Buchstaben. |
 
 ## Dateien eines Projekts
 

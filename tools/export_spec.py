@@ -7,6 +7,9 @@ Loads every module in a generated datamodel folder with the *real* bam-masterdat
   extensions     EXTEND term additions (from extend.json next to the datamodel, optional)
   object_types   CREATE object types with ALL properties incl. inherited ones, in display order
 
+German names: label_de (property_label_de / VocabularyTerm.label_de). bam-masterdata writes them to openBIS
+as "English//Deutsch" (label + label_de), like the descriptions.
+
 The JSON is the input for the idempotent apply step (tools/openbis_apply.js, run in the
 signed-in browser session) or for `bam_masterdata` sync on an admin machine.
 
@@ -38,6 +41,7 @@ def prop(p) -> dict:
         "code": d["code"],
         "data_type": str(getattr(p.data_type, "value", p.data_type)),
         "label": d.get("property_label", d["code"]),
+        "label_de": d.get("property_label_de"),
         "description": d.get("description", ""),
         "section": d.get("section", ""),
         "mandatory": bool(d.get("mandatory", False)),
@@ -61,7 +65,8 @@ def main(folder: str) -> None:
                 vocabs.append({
                     "code": cls.defs.code,
                     "description": cls.defs.description,
-                    "terms": [{"code": t.code, "label": t.label, "description": t.description} for t in v.terms],
+                    "terms": [{"code": t.code, "label": t.label, "label_de": t.label_de, "description": t.description}
+                              for t in v.terms],
                 })
             elif issubclass(cls, ObjectType):
                 o = cls()

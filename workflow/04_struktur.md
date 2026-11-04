@@ -32,6 +32,8 @@ Prinzipien P1–P8 (`workflow/README.md`).
 - [ ] Höchstens eine Ebene Probe → Schritt, keine Ketten Schritt → Schritt
 - [ ] Tabellen und Messreihen sind Dateien (P7)
 - [ ] Sektionsnamen englisch, Title Case, nur Buchstaben (Regel des `checker`, siehe `AGENTS.md`)
+- [ ] Jeder neue Name hat beide Sprachen: `property_label_de`, `label_de` (Begriffe), `section_names_de`, `step_de`,
+      `name_de`/`name_en` (Objekte, Typen); Collection- und Objektnamen als „Deutsch / Englisch“. Die Prüfseite zeigt Lücken als „DE fehlt“
 - [ ] Jede fachliche Entscheidung aus dem PRD ist wörtlich wiederzufinden
 
 ## Stopp
