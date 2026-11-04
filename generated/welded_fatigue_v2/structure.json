@@ -318,7 +318,7 @@
     "START_DATE": "2026-08-03 09:00:00",
     "FINISHED_FLAG": "true",
     "NOTES": "DEMO - fictitious values//DEMO - fiktive Werte",
-    "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION": "ZEISS GOM ATOS 5 scan; weld analysis in GOM software, rating stored on the specimen (section 04)//3D-Scan mit ZEISS GOM ATOS 5; Nahtanalyse in der GOM-Software, Bewertung an der Probe (Sektion 04)"
+    "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION": "ZEISS GOM ATOS 5 scan; weld analysis in GOM software, rating stored on the specimen (section Weld Analysis)//3D-Scan mit ZEISS GOM ATOS 5; Nahtanalyse in der GOM-Software, Bewertung an der Probe (Sektion Weld Analysis)"
    },
    "parents": [
     "S1B-01",
@@ -386,7 +386,7 @@
     "START_DATE": "2026-08-03 10:00:00",
     "FINISHED_FLAG": "true",
     "NOTES": "DEMO - fictitious values//DEMO - fiktive Werte",
-    "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION": "ZEISS GOM ATOS 5 scan; weld analysis in GOM software, rating stored on the specimen (section 04)//3D-Scan mit ZEISS GOM ATOS 5; Nahtanalyse in der GOM-Software, Bewertung an der Probe (Sektion 04)"
+    "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION": "ZEISS GOM ATOS 5 scan; weld analysis in GOM software, rating stored on the specimen (section Weld Analysis)//3D-Scan mit ZEISS GOM ATOS 5; Nahtanalyse in der GOM-Software, Bewertung an der Probe (Sektion Weld Analysis)"
    },
    "parents": [
     "S1B-02",
@@ -431,7 +431,7 @@
     "START_DATE": "2026-08-04 09:00:00",
     "FINISHED_FLAG": "true",
     "NOTES": "DEMO - fictitious values//DEMO - fiktive Werte",
-    "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION": "ZEISS GOM ATOS 5 scan; weld analysis in GOM software, rating stored on the specimen (section 04)//3D-Scan mit ZEISS GOM ATOS 5; Nahtanalyse in der GOM-Software, Bewertung an der Probe (Sektion 04)"
+    "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION": "ZEISS GOM ATOS 5 scan; weld analysis in GOM software, rating stored on the specimen (section Weld Analysis)//3D-Scan mit ZEISS GOM ATOS 5; Nahtanalyse in der GOM-Software, Bewertung an der Probe (Sektion Weld Analysis)"
    },
    "parents": [
     "S1B-03",
@@ -476,7 +476,7 @@
     "START_DATE": "2026-08-04 10:00:00",
     "FINISHED_FLAG": "true",
     "NOTES": "DEMO - fictitious values//DEMO - fiktive Werte",
-    "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION": "ZEISS GOM ATOS 5 scan; weld analysis in GOM software, rating stored on the specimen (section 04)//3D-Scan mit ZEISS GOM ATOS 5; Nahtanalyse in der GOM-Software, Bewertung an der Probe (Sektion 04)"
+    "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION": "ZEISS GOM ATOS 5 scan; weld analysis in GOM software, rating stored on the specimen (section Weld Analysis)//3D-Scan mit ZEISS GOM ATOS 5; Nahtanalyse in der GOM-Software, Bewertung an der Probe (Sektion Weld Analysis)"
    },
    "parents": [
     "S1B-04",
@@ -520,7 +520,7 @@
     "START_DATE": "2026-08-05 09:00:00",
     "FINISHED_FLAG": "true",
     "NOTES": "DEMO - fictitious values//DEMO - fiktive Werte",
-    "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION": "ZEISS GOM ATOS 5 scan; weld analysis in GOM software, rating stored on the specimen (section 04)//3D-Scan mit ZEISS GOM ATOS 5; Nahtanalyse in der GOM-Software, Bewertung an der Probe (Sektion 04)"
+    "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION": "ZEISS GOM ATOS 5 scan; weld analysis in GOM software, rating stored on the specimen (section Weld Analysis)//3D-Scan mit ZEISS GOM ATOS 5; Nahtanalyse in der GOM-Software, Bewertung an der Probe (Sektion Weld Analysis)"
    },
    "parents": [
     "S1B-05",

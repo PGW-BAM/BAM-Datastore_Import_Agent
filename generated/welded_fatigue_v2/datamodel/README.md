@@ -23,7 +23,7 @@ base classes. Codes, sections, labels, descriptions, order, mandatory flags and 
 
 Display order caveat: bam-masterdata collects inherited properties BEFORE own ones (`instance.properties`, MRO order), so
 `spec.json` lists e.g. the specimen as General Information, Properties, BAM Information, Additional Information, Comments,
-then "Workflow status", "Specimen identification", 01..06. design.json `section_order` wants "Workflow status" first (and
+then "Workflow Status", "Specimen Identification", 01..06. design.json `section_order` wants "Workflow Status" first (and
 for the test type the inherited "Experimental Details"/"References"/... after section 11). This cannot be expressed in the
 declarative classes without redeclaring inherited properties; the apply step should order assignments by
 design.json `section_order` if that layout is required. Sample also contributes one inherited assignment with an empty
@@ -121,7 +121,7 @@ PR note (gap report, design remark 4): butt/cruciform are joint geometries rathe
 
 | Entity | Kind | Citation (file:line) | On instance | Role in design |
 |---|---|---|---|---|
-| `EXPERIMENTAL_STEP.WELDMENT_TYPE` (CONTROLLEDVOCABULARY → `WELDING.WELD_TYPE`) | PropertyType | bam_masterdata/datamodel/welding/object_types.py:409 (Weldment) | missing on instance (coord. live check: live Weldment has only generic step props) | Specimen "Weld geometry" (section Specimen identification) + series table column |
+| `EXPERIMENTAL_STEP.WELDMENT_TYPE` (CONTROLLEDVOCABULARY → `WELDING.WELD_TYPE`) | PropertyType | bam_masterdata/datamodel/welding/object_types.py:409 (Weldment) | missing on instance (coord. live check: live Weldment has only generic step props) | Specimen "Weld geometry" (section Specimen Identification) + series table column |
 | `DEFECT_DESCRIPTION` (MULTILINE_VARCHAR) | PropertyType | bam_masterdata/datamodel/object_types.py:7429 (Named, `SAMPLE_NDT.NAMED`) | UNCONFIRMED | Specimen step 01 "Gross weld defects" |
 
 ### Dataset types

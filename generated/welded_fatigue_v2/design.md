@@ -30,53 +30,53 @@ All step objects are children of the specimen only (depth 1), live in the series
 
 | No | Step | Object | Section | Data items (property codes) | Equipment | Files |
 |---|---|---|---|---|---|---|
-| 00 | Subject (identity) | specimen | General Information + Specimen identification | $NAME (final series designation), ALIAS (internal designation, inherited), FATIGUE.MANUFACTURER_DESIGNATION, FATIGUE.SOURCE_SHEET, EXPERIMENTAL_STEP.WELDMENT_TYPE, FATIGUE.TARGET_QUALITY_LEVEL | - | - |
-| 01 | Pre-quality check of the weld | specimen | 01 Pre-quality check | FATIGUE.INITIAL_ANGULAR_DISTORTION, FATIGUE.INITIAL_EDGE_MISALIGNMENT, FATIGUE.WAS_STRAIGHTENED, FATIGUE.ANGULAR_DISTORTION_AFTER_STRAIGHTENING, FATIGUE.EDGE_MISALIGNMENT_AFTER_STRAIGHTENING, DEFECT_DESCRIPTION | - | Specimen photos |
-| 02 | Chamfering / grinding | specimen | 02 Chamfering / grinding | FATIGUE.WELD_POST_TREATMENT_NOTES | - | Post-processing report |
+| 00 | Subject (identity) | specimen | General Information + Specimen Identification | $NAME (final series designation), ALIAS (internal designation, inherited), FATIGUE.MANUFACTURER_DESIGNATION, FATIGUE.SOURCE_SHEET, EXPERIMENTAL_STEP.WELDMENT_TYPE, FATIGUE.TARGET_QUALITY_LEVEL | - | - |
+| 01 | Pre-quality check of the weld | specimen | Initial Quality Check | FATIGUE.INITIAL_ANGULAR_DISTORTION, FATIGUE.INITIAL_EDGE_MISALIGNMENT, FATIGUE.WAS_STRAIGHTENED, FATIGUE.ANGULAR_DISTORTION_AFTER_STRAIGHTENING, FATIGUE.EDGE_MISALIGNMENT_AFTER_STRAIGHTENING, DEFECT_DESCRIPTION | - | Specimen photos |
+| 02 | Chamfering / grinding | specimen | Chamfering And Grinding | FATIGUE.WELD_POST_TREATMENT_NOTES | - | Post-processing report |
 | 03 | 3D scan of the specimen | S1B-01-SCAN (EXPERIMENTAL_STEP) | - | - | ZEISS GOM ATOS 5 (parent) | 3D scan raw data |
-| 04 | Weld analysis (GOM) | specimen (rating) + S1B-01-SCAN (files) | 04 Weld analysis | FATIGUE.ISO_5817_ANNEX_C_RATING | GOM software (text in SCAN step) | Evaluation export |
-| 05 | Series assignment (randomisation) | specimen + collection membership | 05 Series assignment | FATIGUE.LOAD_LEVEL, FATIGUE.TEST_ORDER, 'Assignment to test series' = specimen placed in the series collection (no property), 'Source sheet (bias avoidance)' = FATIGUE.SOURCE_SHEET (placed once, Specimen identification) | - | Randomisation script (collection) |
-| 06 | Geometry before installation | specimen | 06 Geometry before installation | FATIGUE.THICKNESS_POS_1, FATIGUE.THICKNESS_POS_2, FATIGUE.THICKNESS_POS_3, FATIGUE.WIDTH_POS_1, FATIGUE.WIDTH_POS_2, FATIGUE.WIDTH_POS_3, FATIGUE.MEAN_THICKNESS, FATIGUE.MEAN_WIDTH | Caliper (no inventory object/link; named in SOP only) | - |
-| 07 | Strain gauge application | S1B-01-TEST | 07 Strain gauge application | FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE, FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE, FATIGUE.STRAIN_GAUGE_APPLICATION_TIME | Strain gauge, Adhesive, Crack luminescence set, Luxonis OAK-4D-Pro | Strain gauge position drawing, Setup photo |
-| 08 | Measuring amplifier / test rig | S1B-01-TEST | 08 Measuring amplifier / test rig | FATIGUE.SAMPLING_FREQUENCY, FATIGUE.RECORDING_MODE, FATIGUE.RECORDED_CHANNELS | IMC measuring amplifier, Servo-hydraulic testing machine | - |
-| 09 | Installation stress | S1B-01-TEST | 09 Installation stress | FATIGUE.PRELOAD_FORCE | IMC measuring amplifier (same link as 08) | Bending moment raw data |
-| 10 | Cyclic fatigue test | S1B-01-TEST | 10 Cyclic fatigue test | FATIGUE.BEACH_MARKS_ACTIVE, FATIGUE.TERMINATION_REASON | Servo-hydraulic testing machine (same link as 08) | Load programme, Measurement raw data, Monitoring images |
-| 11 | Evaluation | S1B-01-TEST | 11 Evaluation | FATIGUE.CYCLES_GROSS, FATIGUE.CYCLES_NET, FATIGUE.CYCLES_TO_10_PERCENT_STRAIN_GAUGE_DROP | - | Cleaned measurement data, Evaluation plots, Conversion script |
+| 04 | Weld analysis (GOM) | specimen (rating) + S1B-01-SCAN (files) | Weld Analysis | FATIGUE.ISO_5817_ANNEX_C_RATING | GOM software (text in SCAN step) | Evaluation export |
+| 05 | Series assignment (randomisation) | specimen + collection membership | Series Assignment | FATIGUE.LOAD_LEVEL, FATIGUE.TEST_ORDER, 'Assignment to test series' = specimen placed in the series collection (no property), 'Source sheet (bias avoidance)' = FATIGUE.SOURCE_SHEET (placed once, Specimen Identification) | - | Randomisation script (collection) |
+| 06 | Geometry before installation | specimen | Geometry Before Installation | FATIGUE.THICKNESS_POS_1, FATIGUE.THICKNESS_POS_2, FATIGUE.THICKNESS_POS_3, FATIGUE.WIDTH_POS_1, FATIGUE.WIDTH_POS_2, FATIGUE.WIDTH_POS_3, FATIGUE.MEAN_THICKNESS, FATIGUE.MEAN_WIDTH | Caliper (no inventory object/link; named in SOP only) | - |
+| 07 | Strain gauge application | S1B-01-TEST | Strain Gauge Application | FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE, FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE, FATIGUE.STRAIN_GAUGE_APPLICATION_TIME | Strain gauge, Adhesive, Crack luminescence set, Luxonis OAK-4D-Pro | Strain gauge position drawing, Setup photo |
+| 08 | Measuring amplifier / test rig | S1B-01-TEST | Measuring Amplifier And Test Rig | FATIGUE.SAMPLING_FREQUENCY, FATIGUE.RECORDING_MODE, FATIGUE.RECORDED_CHANNELS | IMC measuring amplifier, Servo-hydraulic testing machine | - |
+| 09 | Installation stress | S1B-01-TEST | Installation Stress | FATIGUE.PRELOAD_FORCE | IMC measuring amplifier (same link as 08) | Bending moment raw data |
+| 10 | Cyclic fatigue test | S1B-01-TEST | Cyclic Fatigue Test | FATIGUE.BEACH_MARKS_ACTIVE, FATIGUE.TERMINATION_REASON | Servo-hydraulic testing machine (same link as 08) | Load programme, Measurement raw data, Monitoring images |
+| 11 | Evaluation | S1B-01-TEST | Evaluation | FATIGUE.CYCLES_GROSS, FATIGUE.CYCLES_NET, FATIGUE.CYCLES_TO_10_PERCENT_STRAIN_GAUGE_DROP | - | Cleaned measurement data, Evaluation plots, Conversion script |
 | 12 | Fracture surface analysis | S1B-01-FRACTURE (EXPERIMENTAL_STEP) | - | - | Macro camera, Digital microscope | Macro photos, Microscope images of crack origin, Beach-mark evaluation |
-| P5 | Workflow status | specimen | Workflow status | FATIGUE.NEXT_STEP | - | - |
+| P5 | Workflow Status | specimen | Workflow Status | FATIGUE.NEXT_STEP | - | - |
 
 ## 3.1 `SAMPLE.WELDED_FATIGUE_SPECIMEN` (WeldedFatigueSpecimen, inherits `Sample` - bam_masterdata/datamodel/object_types.py:3005, prefix `SAM.WFS`)
 
-Section order: Workflow status > General Information > Specimen identification > 01 Pre-quality check > 02 Chamfering / grinding > 04 Weld analysis > 05 Series assignment > 06 Geometry before installation > Properties > BAM Information > Additional Information > Comments
+Section order: Workflow Status > General Information > Specimen Identification > Initial Quality Check > Chamfering And Grinding > Weld Analysis > Series Assignment > Geometry Before Installation > Properties > BAM Information > Additional Information > Comments
 
 - Inherited, not duplicated: `$NAME` - The series designation (e.g. 'S1B-01') is the specimen's display name; no new property.
 - Inherited, not duplicated: `ALIAS` - Inherited Sample property 'Alternative Name' holds the internal BAM designation (resolution Q4); no new property.
 
 | Section | Code | Type | Label | Vocabulary | Reuse |
 |---|---|---|---|---|---|
-| Workflow status | `FATIGUE.NEXT_STEP` | CONTROLLEDVOCABULARY | Next step | WELDED_FATIGUE_WORKFLOW_STEP | new |
-| Specimen identification | `FATIGUE.MANUFACTURER_DESIGNATION` | VARCHAR | Manufacturer designation (original ID) |  | new |
-| Specimen identification | `FATIGUE.SOURCE_SHEET` | VARCHAR | Source sheet |  | new |
-| Specimen identification | `EXPERIMENTAL_STEP.WELDMENT_TYPE` | CONTROLLEDVOCABULARY | Type of weld | WELDING.WELD_TYPE | yes - EXPERIMENTAL_STEP.WELDMENT_TYPE (Weldment, bam_masterdata/datamodel/welding/object_types.py:409) |
-| Specimen identification | `FATIGUE.TARGET_QUALITY_LEVEL` | CONTROLLEDVOCABULARY | Target quality level (ISO 5817) | WELDING.ISO_5817_QUALITY_LEVEL | new |
-| 01 Pre-quality check | `FATIGUE.INITIAL_ANGULAR_DISTORTION` | REAL | Initial angular distortion [°] |  | new |
-| 01 Pre-quality check | `FATIGUE.INITIAL_EDGE_MISALIGNMENT` | REAL | Initial edge misalignment [mm] |  | new |
-| 01 Pre-quality check | `FATIGUE.WAS_STRAIGHTENED` | BOOLEAN | Was straightened |  | new |
-| 01 Pre-quality check | `FATIGUE.ANGULAR_DISTORTION_AFTER_STRAIGHTENING` | REAL | Angular distortion after straightening [°] |  | new |
-| 01 Pre-quality check | `FATIGUE.EDGE_MISALIGNMENT_AFTER_STRAIGHTENING` | REAL | Edge misalignment after straightening [mm] |  | new |
-| 01 Pre-quality check | `DEFECT_DESCRIPTION` | MULTILINE_VARCHAR | Defect description |  | yes - DEFECT_DESCRIPTION (Named, bam_masterdata/datamodel/object_types.py:7429) |
-| 02 Chamfering / grinding | `FATIGUE.WELD_POST_TREATMENT_NOTES` | MULTILINE_VARCHAR | Weld reinforcement treatment / grinding notes |  | new |
-| 04 Weld analysis | `FATIGUE.ISO_5817_ANNEX_C_RATING` | CONTROLLEDVOCABULARY | Quality level ISO 5817 Annex C | WELDING.ISO_5817_ANNEX_C_RATING | new |
-| 05 Series assignment | `FATIGUE.LOAD_LEVEL` | CONTROLLEDVOCABULARY | Load level | FATIGUE.LOAD_LEVEL | new |
-| 05 Series assignment | `FATIGUE.TEST_ORDER` | INTEGER | Test order |  | new |
-| 06 Geometry before installation | `FATIGUE.THICKNESS_POS_1` | REAL | Thickness position 1 [mm] |  | new |
-| 06 Geometry before installation | `FATIGUE.THICKNESS_POS_2` | REAL | Thickness position 2 [mm] |  | new |
-| 06 Geometry before installation | `FATIGUE.THICKNESS_POS_3` | REAL | Thickness position 3 [mm] |  | new |
-| 06 Geometry before installation | `FATIGUE.WIDTH_POS_1` | REAL | Width position 1 [mm] |  | new |
-| 06 Geometry before installation | `FATIGUE.WIDTH_POS_2` | REAL | Width position 2 [mm] |  | new |
-| 06 Geometry before installation | `FATIGUE.WIDTH_POS_3` | REAL | Width position 3 [mm] |  | new |
-| 06 Geometry before installation | `FATIGUE.MEAN_THICKNESS` | REAL | Mean thickness [mm] |  | new |
-| 06 Geometry before installation | `FATIGUE.MEAN_WIDTH` | REAL | Mean width [mm] |  | new |
+| Workflow Status | `FATIGUE.NEXT_STEP` | CONTROLLEDVOCABULARY | Next step | WELDED_FATIGUE_WORKFLOW_STEP | new |
+| Specimen Identification | `FATIGUE.MANUFACTURER_DESIGNATION` | VARCHAR | Manufacturer designation (original ID) |  | new |
+| Specimen Identification | `FATIGUE.SOURCE_SHEET` | VARCHAR | Source sheet |  | new |
+| Specimen Identification | `EXPERIMENTAL_STEP.WELDMENT_TYPE` | CONTROLLEDVOCABULARY | Type of weld | WELDING.WELD_TYPE | yes - EXPERIMENTAL_STEP.WELDMENT_TYPE (Weldment, bam_masterdata/datamodel/welding/object_types.py:409) |
+| Specimen Identification | `FATIGUE.TARGET_QUALITY_LEVEL` | CONTROLLEDVOCABULARY | Target quality level (ISO 5817) | WELDING.ISO_5817_QUALITY_LEVEL | new |
+| Initial Quality Check | `FATIGUE.INITIAL_ANGULAR_DISTORTION` | REAL | Initial angular distortion [°] |  | new |
+| Initial Quality Check | `FATIGUE.INITIAL_EDGE_MISALIGNMENT` | REAL | Initial edge misalignment [mm] |  | new |
+| Initial Quality Check | `FATIGUE.WAS_STRAIGHTENED` | BOOLEAN | Was straightened |  | new |
+| Initial Quality Check | `FATIGUE.ANGULAR_DISTORTION_AFTER_STRAIGHTENING` | REAL | Angular distortion after straightening [°] |  | new |
+| Initial Quality Check | `FATIGUE.EDGE_MISALIGNMENT_AFTER_STRAIGHTENING` | REAL | Edge misalignment after straightening [mm] |  | new |
+| Initial Quality Check | `DEFECT_DESCRIPTION` | MULTILINE_VARCHAR | Defect description |  | yes - DEFECT_DESCRIPTION (Named, bam_masterdata/datamodel/object_types.py:7429) |
+| Chamfering And Grinding | `FATIGUE.WELD_POST_TREATMENT_NOTES` | MULTILINE_VARCHAR | Weld reinforcement treatment / grinding notes |  | new |
+| Weld Analysis | `FATIGUE.ISO_5817_ANNEX_C_RATING` | CONTROLLEDVOCABULARY | Quality level ISO 5817 Annex C | WELDING.ISO_5817_ANNEX_C_RATING | new |
+| Series Assignment | `FATIGUE.LOAD_LEVEL` | CONTROLLEDVOCABULARY | Load level | FATIGUE.LOAD_LEVEL | new |
+| Series Assignment | `FATIGUE.TEST_ORDER` | INTEGER | Test order |  | new |
+| Geometry Before Installation | `FATIGUE.THICKNESS_POS_1` | REAL | Thickness position 1 [mm] |  | new |
+| Geometry Before Installation | `FATIGUE.THICKNESS_POS_2` | REAL | Thickness position 2 [mm] |  | new |
+| Geometry Before Installation | `FATIGUE.THICKNESS_POS_3` | REAL | Thickness position 3 [mm] |  | new |
+| Geometry Before Installation | `FATIGUE.WIDTH_POS_1` | REAL | Width position 1 [mm] |  | new |
+| Geometry Before Installation | `FATIGUE.WIDTH_POS_2` | REAL | Width position 2 [mm] |  | new |
+| Geometry Before Installation | `FATIGUE.WIDTH_POS_3` | REAL | Width position 3 [mm] |  | new |
+| Geometry Before Installation | `FATIGUE.MEAN_THICKNESS` | REAL | Mean thickness [mm] |  | new |
+| Geometry Before Installation | `FATIGUE.MEAN_WIDTH` | REAL | Mean width [mm] |  | new |
 
 - `FATIGUE.MANUFACTURER_DESIGNATION`: Internal designation uses the inherited ALIAS (resolution Q4), so the manufacturer ID gets its own property.
 - `EXPERIMENTAL_STEP.WELDMENT_TYPE`: Existing PropertyType bound to WELDING.WELD_TYPE (decision 2); label/description are fixed by the PropertyType. Kept reuse-first (resolution Q3).
@@ -84,24 +84,24 @@ Section order: Workflow status > General Information > Specimen identification >
 
 ## 3.2 `EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST` (CyclicFatigueTest, inherits `MechanicalTest` - bam_masterdata/datamodel/activities.py:2196, prefix `EXP.MECH.CYC_FAT`)
 
-Section order: General Information > 07 Strain gauge application > 08 Measuring amplifier / test rig > 09 Installation stress > 10 Cyclic fatigue test > 11 Evaluation > Experimental Details > References > Additional Information > Comments
+Section order: General Information > Strain Gauge Application > Measuring Amplifier And Test Rig > Installation Stress > Cyclic Fatigue Test > Evaluation > Experimental Details > References > Additional Information > Comments
 
 - Inherited, not duplicated: `OPERATOR / START_DATE / END_DATE / FINISHED_FLAG / NOTES` - Provided by ExperimentalStep; used as-is for the whole 07-11 session. Not mapped to any PRD data item.
 
 | Section | Code | Type | Label | Vocabulary | Reuse |
 |---|---|---|---|---|---|
-| 07 Strain gauge application | `FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE` | REAL | Strain gauge distance to weld toe [mm] |  | new |
-| 07 Strain gauge application | `FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE` | REAL | Strain gauge distance to edge [mm] |  | new |
-| 07 Strain gauge application | `FATIGUE.STRAIN_GAUGE_APPLICATION_TIME` | TIMESTAMP | Time of strain gauge application |  | new |
-| 08 Measuring amplifier / test rig | `FATIGUE.SAMPLING_FREQUENCY` | INTEGER | Sampling frequency [Hz] |  | new |
-| 08 Measuring amplifier / test rig | `FATIGUE.RECORDING_MODE` | CONTROLLEDVOCABULARY | Recording mode | FATIGUE.RECORDING_MODE | new |
-| 08 Measuring amplifier / test rig | `FATIGUE.RECORDED_CHANNELS` | VARCHAR | Recorded channels |  | new |
-| 09 Installation stress | `FATIGUE.PRELOAD_FORCE` | REAL | Preload force [kN] |  | new |
-| 10 Cyclic fatigue test | `FATIGUE.BEACH_MARKS_ACTIVE` | BOOLEAN | Beach marks (marker loads) active |  | new |
-| 10 Cyclic fatigue test | `FATIGUE.TERMINATION_REASON` | CONTROLLEDVOCABULARY | Termination reason | FATIGUE.TERMINATION_REASON | new |
-| 11 Evaluation | `FATIGUE.CYCLES_GROSS` | INTEGER | Gross number of cycles |  | new |
-| 11 Evaluation | `FATIGUE.CYCLES_NET` | INTEGER | Net number of cycles |  | new |
-| 11 Evaluation | `FATIGUE.CYCLES_TO_10_PERCENT_STRAIN_GAUGE_DROP` | MULTILINE_VARCHAR | Cycles to 10 % strain gauge drop per strain gauge |  | new |
+| Strain Gauge Application | `FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE` | REAL | Strain gauge distance to weld toe [mm] |  | new |
+| Strain Gauge Application | `FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE` | REAL | Strain gauge distance to edge [mm] |  | new |
+| Strain Gauge Application | `FATIGUE.STRAIN_GAUGE_APPLICATION_TIME` | TIMESTAMP | Time of strain gauge application |  | new |
+| Measuring Amplifier And Test Rig | `FATIGUE.SAMPLING_FREQUENCY` | INTEGER | Sampling frequency [Hz] |  | new |
+| Measuring Amplifier And Test Rig | `FATIGUE.RECORDING_MODE` | CONTROLLEDVOCABULARY | Recording mode | FATIGUE.RECORDING_MODE | new |
+| Measuring Amplifier And Test Rig | `FATIGUE.RECORDED_CHANNELS` | VARCHAR | Recorded channels |  | new |
+| Installation Stress | `FATIGUE.PRELOAD_FORCE` | REAL | Preload force [kN] |  | new |
+| Cyclic Fatigue Test | `FATIGUE.BEACH_MARKS_ACTIVE` | BOOLEAN | Beach marks (marker loads) active |  | new |
+| Cyclic Fatigue Test | `FATIGUE.TERMINATION_REASON` | CONTROLLEDVOCABULARY | Termination reason | FATIGUE.TERMINATION_REASON | new |
+| Evaluation | `FATIGUE.CYCLES_GROSS` | INTEGER | Gross number of cycles |  | new |
+| Evaluation | `FATIGUE.CYCLES_NET` | INTEGER | Net number of cycles |  | new |
+| Evaluation | `FATIGUE.CYCLES_TO_10_PERCENT_STRAIN_GAUGE_DROP` | MULTILINE_VARCHAR | Cycles to 10 % strain gauge drop per strain gauge |  | new |
 
 - `FATIGUE.STRAIN_GAUGE_APPLICATION_TIME`: START_DATE (inherited) not reused: it spans the whole merged object 07-11 and is reserved for the step start (parser of steps 10/11 may fill START_DATE/END_DATE from IMC raw data); the application time matters on its own (adhesive curing).
 - `FATIGUE.PRELOAD_FORCE`: CREEP_TEST_PRELOAD (CreepTest) not reused: creep-test domain code without fixed unit.

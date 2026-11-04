@@ -47,7 +47,7 @@ Checked and **not** reused (semantic look-alikes):
 
 | Entity | Kind | Citation (file:line) | On instance | Role in design |
 |---|---|---|---|---|
-| `EXPERIMENTAL_STEP.WELDMENT_TYPE` (CONTROLLEDVOCABULARY → `WELDING.WELD_TYPE`) | PropertyType | bam_masterdata/datamodel/welding/object_types.py:409 (Weldment) | missing on instance (coord. live check: live Weldment has only generic step props) | Specimen "Weld geometry" (section Specimen identification) + series table column |
+| `EXPERIMENTAL_STEP.WELDMENT_TYPE` (CONTROLLEDVOCABULARY → `WELDING.WELD_TYPE`) | PropertyType | bam_masterdata/datamodel/welding/object_types.py:409 (Weldment) | missing on instance (coord. live check: live Weldment has only generic step props) | Specimen "Weld geometry" (section Specimen Identification) + series table column |
 | `DEFECT_DESCRIPTION` (MULTILINE_VARCHAR) | PropertyType | bam_masterdata/datamodel/object_types.py:7429 (Named, `SAMPLE_NDT.NAMED`) | UNCONFIRMED | Specimen step 01 "Gross weld defects" |
 
 Inherited / used without new assignment (no action beyond instance sync): `$NAME` (object_types.py:3012), `ALIAS` (:3021),
@@ -119,12 +119,12 @@ the new model is provisioned (admin decision, not part of this pipeline).
 | Live entity | Kind | Citation | Replacement in design / proposal |
 |---|---|---|---|
 | `TEST_SPECIMEN` | ObjectType | dev1_inventory.md:25 | → migrated to `SAMPLE.WELDED_FATIGUE_SPECIMEN` (CREATE) |
-| `PRE_QUALITY_CHECK` | ObjectType | dev1_inventory.md:26 | → specimen section "01 Pre-quality check" (no own object) |
-| `CHAMFERING_GRINDING` | ObjectType | dev1_inventory.md:27 | → specimen section "02 Chamfering / grinding" |
+| `PRE_QUALITY_CHECK` | ObjectType | dev1_inventory.md:26 | → specimen section "Initial Quality Check" (no own object) |
+| `CHAMFERING_GRINDING` | ObjectType | dev1_inventory.md:27 | → specimen section "Chamfering And Grinding" |
 | `SPECIMEN_RECORDING` | ObjectType | dev1_inventory.md:28 | → `EXPERIMENTAL_STEP` (REUSE) object `<specimen>-SCAN`, instrument as parent |
-| `WELD_ANALYSIS` | ObjectType | dev1_inventory.md:29 | → specimen section "04 Weld analysis" + files on `<specimen>-SCAN` |
-| `SERIES_ASSIGNMENT` | ObjectType | dev1_inventory.md:30 | → specimen section "05 Series assignment" + collection membership |
-| `TEST_SETUP_GEOMETRY` | ObjectType | dev1_inventory.md:31 | → specimen section "06 Geometry before installation" (3 REAL per quantity instead of one) |
+| `WELD_ANALYSIS` | ObjectType | dev1_inventory.md:29 | → specimen section "Weld Analysis" + files on `<specimen>-SCAN` |
+| `SERIES_ASSIGNMENT` | ObjectType | dev1_inventory.md:30 | → specimen section "Series Assignment" + collection membership |
+| `TEST_SETUP_GEOMETRY` | ObjectType | dev1_inventory.md:31 | → specimen section "Geometry Before Installation" (3 REAL per quantity instead of one) |
 | `MONITORING_APPLICATION` | ObjectType | dev1_inventory.md:32 | → `…CYCLIC_FATIGUE_TEST` section 07; materials/camera as parents |
 | `AMPLIFIER_TEST_BENCH_SETTINGS` | ObjectType | dev1_inventory.md:33 | → `…CYCLIC_FATIGUE_TEST` section 08; amplifier/machine as parents |
 | `INSTALLATION_STRESS_MEASUREMENT` | ObjectType | dev1_inventory.md:34 | → `…CYCLIC_FATIGUE_TEST` section 09 |

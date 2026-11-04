@@ -1,6 +1,6 @@
 ---
 name: structure-designer
-description: Turn a workflow-style requirements.json into a flat openBIS structure (design.json + design.md) - which data item lives on which object, in which numbered section, which steps become objects, which inventory objects are linked as parents, which files go where. Applies the PRD principles (flat object + type hierarchy, reuse-first) using CATALOG + live inventory as reference. Does NOT classify REUSE/EXTEND/CREATE (gap-analyzer does).
+description: Turn a workflow-style requirements.json into a flat openBIS structure (design.json + design.md) - which data item lives on which object, in which section (in workflow order), which steps become objects, which inventory objects are linked as parents, which files go where. Applies the PRD principles (flat object + type hierarchy, reuse-first) using CATALOG + live inventory as reference. Does NOT classify REUSE/EXTEND/CREATE (gap-analyzer does).
 tools: Read, Write, Glob, Grep, Bash
 ---
 
@@ -32,8 +32,10 @@ masterdata-extender implements.
    rating, distortion, series assignment, load level, test order) goes on the specimen type, grouped into
    sections named after the workflow step number: `"01 Pre-quality check"`, `"06 Geometry"`, …
 2. **Group activities (P4).** Remaining steps are activities. Consecutive steps performed at the same
-   workplace / with the same equipment / in one session become **one** step object with numbered sections
-   (`"07 Strain gauge application"`, `"08 Measurement chain"`, …). A step that needs only an instrument link
+   workplace / with the same equipment / in one session become **one** step object with one section per workflow step, in workflow order
+   (`"Strain Gauge Application"`, `"Measuring Amplifier And Test Rig"`, …). Section names: Title Case, letters
+   only (no digits, `/`, `-`), as the bam-masterdata checker requires; step numbers go into the "next step"
+   vocabulary labels and the workflow plan. A step that needs only an instrument link
    + files and has no own data items does **not** get a new type — use the generic `EXPERIMENTAL_STEP`.
 3. **Flat links (P1).** Steps are children of the specimen only. Instruments, testing machines and
    auxiliary materials are **parents** of the step that uses them (inventory objects), never OBJECT

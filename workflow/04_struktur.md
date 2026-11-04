@@ -17,7 +17,9 @@ Prinzipien P1–P8 (`workflow/README.md`).
 2. **Struktur entwerfen** (`design.json` + `design.md`):
    - Hauptobjekt (meist die Probe) mit allen Eigenschaften, die die Probe beschreiben (P3)
    - Schritt-Objekte nur, wo Gerät, Zeitraum, Person und Dateien zusammengehören (P4). Mehrere Ablaufschritte
-     am selben Arbeitsplatz: ein Objekt, nummerierte Sektionen in Title Case („07 Strain Gauge Application“)
+     am selben Arbeitsplatz: ein Objekt, je Ablaufschritt eine Sektion in Ablauf-Reihenfolge, Name in Title Case
+     ohne Ziffern („Strain Gauge Application“). Die Schrittnummer steht im Begriff des „Next step“-Feldes
+     („07 Strain gauge application“) und im Ablaufplan
    - Collection = Serie; welche Spalten die Serientabelle zeigt
    - Geräte als Eltern aus dem Inventar (Identifier aus `inventory.md`)
    - Feld „Next step“ und ein Ablaufplan-Objekt (P5)
@@ -29,7 +31,7 @@ Prinzipien P1–P8 (`workflow/README.md`).
 - [ ] Jeder Ablaufschritt aus `ablauf.md` hat genau einen Ort
 - [ ] Höchstens eine Ebene Probe → Schritt, keine Ketten Schritt → Schritt
 - [ ] Tabellen und Messreihen sind Dateien (P7)
-- [ ] Sektionsnamen englisch und in Title Case
+- [ ] Sektionsnamen englisch, Title Case, nur Buchstaben (Regel des `checker`, siehe `AGENTS.md`)
 - [ ] Jede fachliche Entscheidung aus dem PRD ist wörtlich wiederzufinden
 
 ## Stopp

@@ -33,7 +33,7 @@ sind aber nicht nötig: maßgeblich sind die Schrittkarten unter `workflow/`.
 |---|---|
 | Codes | GROSSBUCHSTABEN_MIT_UNTERSTRICH; Namensraum mit Punkt nur wie in v0 üblich (z. B. `FATIGUE.LOAD_LEVEL`) |
 | Beschreibungen | zweisprachig `English//Deutsch`, ohne Leerzeichen um `//` |
-| Labels, Sektionen | englisch; Sektionen in **Title Case**, jedes Wort groß („07 Strain Gauge Application“), sonst warnt der `checker` |
+| Labels, Sektionen | englisch; Sektionen in **Title Case** und nur aus Buchstaben: jedes Wort groß, keine Ziffern, kein `/` oder `-` („Strain Gauge Application“, „Measuring Amplifier And Test Rig“), sonst warnt der `checker`. Schrittnummern stehen im Auswahlfeld „Next step“ und im Ablaufplan, nicht in Sektionen |
 | Pflichtangaben | `mandatory` und `section` immer setzen; Einheiten über `units` (Label wird zu „Length in [mm]“) |
 | Tabellen, Messreihen | als Datei, nicht als Properties |
 | Struktur | flach: Space → Projekt → Collection (= Serie) → Objekte; Schritte hängen direkt an der Probe |

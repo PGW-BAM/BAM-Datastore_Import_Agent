@@ -29,7 +29,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Next step",
         description="""Next workflow step to be carried out on this specimen//Nächster durchzuführender Ablaufschritt an dieser Probe""",
         mandatory=False,
-        section="Workflow status",
+        section="Workflow Status",
     )
 
     manufacturer_designation = PropertyTypeAssignment(
@@ -38,7 +38,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Manufacturer designation (original ID)",
         description="""Original specimen identifier assigned by the manufacturer//Originale Probenkennung des Herstellers""",
         mandatory=False,
-        section="Specimen identification",
+        section="Specimen Identification",
     )
 
     source_sheet = PropertyTypeAssignment(
@@ -47,7 +47,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Source sheet",
         description="""Plate/sheet the specimen was cut from; used to avoid bias in the series randomisation//Blech, aus dem die Probe entnommen wurde; dient der Bias-Vermeidung bei der Randomisierung""",
         mandatory=False,
-        section="Specimen identification",
+        section="Specimen Identification",
     )
 
     # REUSE existing PropertyType: EXPERIMENTAL_STEP.WELDMENT_TYPE (Weldment, bam_masterdata/datamodel/welding/object_types.py:409)
@@ -58,7 +58,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Type of weld",
         description="""Type of weldment made//Art der Schweißverbindung""",
         mandatory=False,
-        section="Specimen identification",
+        section="Specimen Identification",
     )
 
     target_quality_level = PropertyTypeAssignment(
@@ -68,7 +68,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Target quality level (ISO 5817)",
         description="""Quality level according to ISO 5817 the specimen was manufactured for//Angestrebte Bewertungsgruppe nach ISO 5817, für die die Probe gefertigt wurde""",
         mandatory=False,
-        section="Specimen identification",
+        section="Specimen Identification",
     )
 
     initial_angular_distortion = PropertyTypeAssignment(
@@ -77,7 +77,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Initial angular distortion [°]",
         description="""Angular distortion measured at incoming inspection [°]//Winkelverzug bei der Eingangsprüfung [°]""",
         mandatory=False,
-        section="01 Pre-quality check",
+        section="Initial Quality Check",
     )
 
     initial_edge_misalignment = PropertyTypeAssignment(
@@ -86,7 +86,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Initial edge misalignment [mm]",
         description="""Edge misalignment measured at incoming inspection [mm]//Kantenversatz bei der Eingangsprüfung [mm]""",
         mandatory=False,
-        section="01 Pre-quality check",
+        section="Initial Quality Check",
     )
 
     was_straightened = PropertyTypeAssignment(
@@ -95,7 +95,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Was straightened",
         description="""Specimen was straightened after the pre-quality check//Probe wurde nach der Vorqualitätsprüfung gerichtet""",
         mandatory=False,
-        section="01 Pre-quality check",
+        section="Initial Quality Check",
     )
 
     angular_distortion_after_straightening = PropertyTypeAssignment(
@@ -104,7 +104,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Angular distortion after straightening [°]",
         description="""Angular distortion after straightening [°]//Winkelverzug nach dem Richten [°]""",
         mandatory=False,
-        section="01 Pre-quality check",
+        section="Initial Quality Check",
     )
 
     edge_misalignment_after_straightening = PropertyTypeAssignment(
@@ -113,7 +113,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Edge misalignment after straightening [mm]",
         description="""Edge misalignment after straightening [mm]//Kantenversatz nach dem Richten [mm]""",
         mandatory=False,
-        section="01 Pre-quality check",
+        section="Initial Quality Check",
     )
 
     # REUSE existing PropertyType: DEFECT_DESCRIPTION (Named, bam_masterdata/datamodel/object_types.py:7429)
@@ -123,7 +123,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Defect description",
         description="""Defect Description//Beschreibung der Defekte""",
         mandatory=False,
-        section="01 Pre-quality check",
+        section="Initial Quality Check",
     )
 
     weld_post_treatment_notes = PropertyTypeAssignment(
@@ -132,7 +132,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Weld reinforcement treatment / grinding notes",
         description="""Documentation of weld reinforcement treatment and grinding//Dokumentation der Nahtüberhöhungs-Bearbeitung und Schleifhinweise""",
         mandatory=False,
-        section="02 Chamfering / grinding",
+        section="Chamfering And Grinding",
     )
 
     iso_5817_annex_c_rating = PropertyTypeAssignment(
@@ -142,7 +142,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Quality level ISO 5817 Annex C",
         description="""Quality level determined by the GOM weld analysis according to ISO 5817 Annex C//Mit der GOM-Nahtanalyse ermittelte Bewertungsgruppe nach ISO 5817 Anhang C""",
         mandatory=False,
-        section="04 Weld analysis",
+        section="Weld Analysis",
     )
 
     load_level = PropertyTypeAssignment(
@@ -152,7 +152,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Load level",
         description="""Load level the specimen is assigned to within the series//Lastniveau, dem die Probe in der Serie zugeordnet ist""",
         mandatory=False,
-        section="05 Series assignment",
+        section="Series Assignment",
     )
 
     test_order = PropertyTypeAssignment(
@@ -161,7 +161,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Test order",
         description="""Position of the specimen in the randomised test sequence//Position der Probe in der randomisierten Prüfreihenfolge""",
         mandatory=False,
-        section="05 Series assignment",
+        section="Series Assignment",
     )
 
     thickness_pos_1 = PropertyTypeAssignment(
@@ -170,7 +170,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Thickness position 1 [mm]",
         description="""Thickness measured at position 1 before installation [mm]//Dicke an Position 1 vor Einbau [mm]""",
         mandatory=False,
-        section="06 Geometry before installation",
+        section="Geometry Before Installation",
     )
 
     thickness_pos_2 = PropertyTypeAssignment(
@@ -179,7 +179,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Thickness position 2 [mm]",
         description="""Thickness measured at position 2 before installation [mm]//Dicke an Position 2 vor Einbau [mm]""",
         mandatory=False,
-        section="06 Geometry before installation",
+        section="Geometry Before Installation",
     )
 
     thickness_pos_3 = PropertyTypeAssignment(
@@ -188,7 +188,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Thickness position 3 [mm]",
         description="""Thickness measured at position 3 before installation [mm]//Dicke an Position 3 vor Einbau [mm]""",
         mandatory=False,
-        section="06 Geometry before installation",
+        section="Geometry Before Installation",
     )
 
     width_pos_1 = PropertyTypeAssignment(
@@ -197,7 +197,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Width position 1 [mm]",
         description="""Width measured at position 1 before installation [mm]//Breite an Position 1 vor Einbau [mm]""",
         mandatory=False,
-        section="06 Geometry before installation",
+        section="Geometry Before Installation",
     )
 
     width_pos_2 = PropertyTypeAssignment(
@@ -206,7 +206,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Width position 2 [mm]",
         description="""Width measured at position 2 before installation [mm]//Breite an Position 2 vor Einbau [mm]""",
         mandatory=False,
-        section="06 Geometry before installation",
+        section="Geometry Before Installation",
     )
 
     width_pos_3 = PropertyTypeAssignment(
@@ -215,7 +215,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Width position 3 [mm]",
         description="""Width measured at position 3 before installation [mm]//Breite an Position 3 vor Einbau [mm]""",
         mandatory=False,
-        section="06 Geometry before installation",
+        section="Geometry Before Installation",
     )
 
     mean_thickness = PropertyTypeAssignment(
@@ -224,7 +224,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Mean thickness [mm]",
         description="""Mean of the three thickness measurements [mm]//Mittelwert der drei Dickenmessungen [mm]""",
         mandatory=False,
-        section="06 Geometry before installation",
+        section="Geometry Before Installation",
     )
 
     mean_width = PropertyTypeAssignment(
@@ -233,7 +233,7 @@ class WeldedFatigueSpecimen(Sample):
         property_label="Mean width [mm]",
         description="""Mean of the three width measurements [mm]//Mittelwert der drei Breitenmessungen [mm]""",
         mandatory=False,
-        section="06 Geometry before installation",
+        section="Geometry Before Installation",
     )
 
 
@@ -250,7 +250,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Strain gauge distance to weld toe [mm]",
         description="""Distance between strain gauge and weld toe [mm]//Abstand des DMS zum Nahtübergang [mm]""",
         mandatory=False,
-        section="07 Strain gauge application",
+        section="Strain Gauge Application",
     )
 
     strain_gauge_distance_to_edge = PropertyTypeAssignment(
@@ -259,7 +259,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Strain gauge distance to edge [mm]",
         description="""Distance between strain gauge and specimen edge [mm]//Abstand des DMS zum Probenrand [mm]""",
         mandatory=False,
-        section="07 Strain gauge application",
+        section="Strain Gauge Application",
     )
 
     strain_gauge_application_time = PropertyTypeAssignment(
@@ -268,7 +268,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Time of strain gauge application",
         description="""Date and time the strain gauges were applied//Zeitpunkt der DMS-Applikation""",
         mandatory=False,
-        section="07 Strain gauge application",
+        section="Strain Gauge Application",
     )
 
     sampling_frequency = PropertyTypeAssignment(
@@ -277,7 +277,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Sampling frequency [Hz]",
         description="""Sampling frequency of the measuring amplifier [Hz]//Abtastfrequenz des Messverstärkers [Hz]""",
         mandatory=False,
-        section="08 Measuring amplifier / test rig",
+        section="Measuring Amplifier And Test Rig",
     )
 
     recording_mode = PropertyTypeAssignment(
@@ -287,7 +287,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Recording mode",
         description="""Data recording mode of the measuring amplifier//Aufzeichnungsmodus des Messverstärkers""",
         mandatory=False,
-        section="08 Measuring amplifier / test rig",
+        section="Measuring Amplifier And Test Rig",
     )
 
     recorded_channels = PropertyTypeAssignment(
@@ -296,7 +296,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Recorded channels",
         description="""Channels recorded by the measuring amplifier//Vom Messverstärker erfasste Kanäle""",
         mandatory=False,
-        section="08 Measuring amplifier / test rig",
+        section="Measuring Amplifier And Test Rig",
     )
 
     preload_force = PropertyTypeAssignment(
@@ -305,7 +305,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Preload force [kN]",
         description="""Preload force during installation (bending moment at 0.0 kN) [kN]//Vorspannkraft beim Einbau (Biegemoment bei 0,0 kN) [kN]""",
         mandatory=False,
-        section="09 Installation stress",
+        section="Installation Stress",
     )
 
     beach_marks_active = PropertyTypeAssignment(
@@ -314,7 +314,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Beach marks (marker loads) active",
         description="""Marker loads for beach marks were applied during the test//Markerlasten für Rastlinien waren während des Versuchs aktiv""",
         mandatory=False,
-        section="10 Cyclic fatigue test",
+        section="Cyclic Fatigue Test",
     )
 
     termination_reason = PropertyTypeAssignment(
@@ -324,7 +324,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Termination reason",
         description="""Reason the cyclic fatigue test was terminated//Grund für den Abbruch des zyklischen Ermüdungsversuchs""",
         mandatory=False,
-        section="10 Cyclic fatigue test",
+        section="Cyclic Fatigue Test",
     )
 
     cycles_gross = PropertyTypeAssignment(
@@ -333,7 +333,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Gross number of cycles",
         description="""Gross number of load cycles including marker loads//Bruttoschwingspielzahl inklusive Markerlasten""",
         mandatory=False,
-        section="11 Evaluation",
+        section="Evaluation",
     )
 
     cycles_net = PropertyTypeAssignment(
@@ -342,7 +342,7 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Net number of cycles",
         description="""Net number of load cycles//Nettoschwingspielzahl""",
         mandatory=False,
-        section="11 Evaluation",
+        section="Evaluation",
     )
 
     cycles_to_10_percent_strain_gauge_drop = PropertyTypeAssignment(
@@ -351,5 +351,5 @@ class CyclicFatigueTest(MechanicalTest):
         property_label="Cycles to 10 % strain gauge drop per strain gauge",
         description="""Number of cycles until a 10 % signal drop, listed per strain gauge//Zyklen bis 10 % DMS-Abfall, je DMS aufgelistet""",
         mandatory=False,
-        section="11 Evaluation",
+        section="Evaluation",
     )

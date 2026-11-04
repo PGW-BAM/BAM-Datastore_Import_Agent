@@ -50,11 +50,11 @@ zuerst und schreibt sie zuletzt.
 | P1 | Flache Objekt-Hierarchie: Space → Projekt → Collection (= Serie) → Objekte. Schritte hängen direkt an der Probe, keine Ketten Schritt → Schritt. |
 | P2 | Flache Typ-Hierarchie: neue Typen erben direkt von einer BAM-Basisklasse, so wenige neue Typen wie möglich. |
 | P3 | Was die Probe beschreibt, ist Property der Probe. Die Collection-Tabelle ist die Versuchsmatrix. |
-| P4 | Eigenes Schritt-Objekt nur, wo Gerät, Zeitraum, Bearbeiter*in und Dateien zusammengehören. Mehrere Ablaufschritte am selben Arbeitsplatz: ein Objekt mit nummerierten Sektionen. |
-| P5 | Ablauf sichtbar: Sektionen tragen die Schrittnummer, die Probe hat ein Feld „Next step“, ein SOP-/Ablaufplan-Objekt beschreibt alle Schritte. |
+| P4 | Eigenes Schritt-Objekt nur, wo Gerät, Zeitraum, Bearbeiter*in und Dateien zusammengehören. Mehrere Ablaufschritte am selben Arbeitsplatz: ein Objekt mit einer Sektion je Schritt, in Ablauf-Reihenfolge. |
+| P5 | Ablauf sichtbar: Sektionen stehen in Ablauf-Reihenfolge, die Probe hat ein Feld „Next step“ (Auswahl mit Schrittnummern), ein Ablaufplan-Objekt beschreibt alle Schritte. Sektionsnamen selbst ohne Nummern (Regel des `checker`). |
 | P6 | Standard zuerst: Geräte, Materialien, Standard-Schritte, Collection- und Dataset-Typen aus bam-masterdata. Nicht standardisierte Typen auf der Instanz werden nicht weiterverwendet. |
 | P7 | Tabellen und Messreihen sind Dateien, keine Properties. |
-| P8 | Beschreibungen `English//Deutsch`, Labels und Sektionen englisch (Title Case). |
+| P8 | Beschreibungen `English//Deutsch`, Labels und Sektionen englisch; Sektionen in Title Case, nur Buchstaben. |
 
 ## Dateien eines Projekts
 

@@ -25,7 +25,7 @@ Nur nötig, wenn es NEU, ERWEITERN oder NACHZIEHEN gibt. Gibt es nur GERÄT FEHL
    (enthält nur NEU; ERWEITERN steht im Issue-Text).
 5. **checker:**
    `bam_masterdata checker --file-path projects/<name>/datamodel --mode individual 2>&1 | sed 's/\x1b\[[0-9;]*m//g' > projects/<name>/request/checker.log`
-   Ziel: 0 Fehler. Warnungen entweder beheben (z. B. Sektionen in Title Case) oder im Issue erklären. Bekannte
+   Ziel: 0 Fehler. Warnungen entweder beheben (z. B. Sektionen in Title Case ohne Ziffern) oder im Issue erklären. Bekannte
    Warnungen, die aus dem Standard selbst kommen: `$ANNOTATIONS_STATE is deprecated`, `EXPERIMENTAL_STEP.MECHANICAL_TEST
    has the same properties as EXPERIMENTAL_STEP`.
 6. **Issue-Text** `request/issue.md` nach `templates/request/issue.md`: was, warum, Auswirkung, Python oder Excel,
@@ -39,7 +39,7 @@ Nur nötig, wenn es NEU, ERWEITERN oder NACHZIEHEN gibt. Gibt es nur GERÄT FEHL
 - [ ] Import-Test grün (`export_spec.py` läuft durch)
 - [ ] checker: 0 Fehler, jede Warnung behoben oder erklärt
 - [ ] Jede Zeile im Issue hat eine Begründung aus dem PRD
-- [ ] Beschreibungen `English//Deutsch`, Sektionen Title Case, `mandatory`/`section` gesetzt
+- [ ] Beschreibungen `English//Deutsch`, Sektionen Title Case ohne Ziffern, `mandatory`/`section` gesetzt
 - [ ] Der Antrag ist so kurz wie möglich (nichts, was NUTZEN wäre)
 
 ## Stopp
