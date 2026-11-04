@@ -1,7 +1,9 @@
 # Workflow: vom Laborablauf zur openBIS-Struktur
 
 Vier Phasen, acht Schritte, fünf Prüfpunkte (◆). Der Agent arbeitet in der Cloud nur mit Dateien. Was openBIS
-berührt, macht ein Mensch im BAM-Netz mit `notebooks/openbis_bruecke.ipynb`.
+berührt, macht ein Mensch im BAM-Netz mit `tools/bruecke.py` (ein Befehl) oder `notebooks/openbis_bruecke.ipynb`.
+Alles, was der Mensch tut, auf einer Seite: [MENSCH.md](MENSCH.md). Freigaben gibt er im Chat; Aufgaben bekommt er als
+`projects/<name>/AUFGABE.md`.
 
 | # | Schritt | Karte | Wer | openBIS | Ergebnis (in `projects/<name>/`) | Prüfpunkt |
 |---|---|---|---|---|---|---|
@@ -26,9 +28,9 @@ Mensch selbst an (als Data Store Steward/Group Admin im Equipment-Projekt des Fa
 | Zugang | Schritte | Wer |
 |---|---|---|
 | keiner | 1, 2, 4, 5, 6 | jeder Agent, auch in der Cloud |
-| openBIS lesen | 3, 7, 8 (Prüfung, Trockenlauf) | Mensch im BAM-Netz, Teil 1–3 im Notebook |
+| openBIS lesen | 3, 7, 8 (Prüfung, Trockenlauf) | Mensch im BAM-Netz: `bruecke.py … lesen/pruefen/trockenlauf` oder Notebook Teil 1–3 |
 | Admin | zwischen 6 und 7 | BAM-Admin über bam-masterdata (Issue + PR/Excel), Mail an datastore@bam.de |
-| openBIS schreiben | 8 | Mensch im BAM-Netz, Teil 4 im Notebook, nur nach ◆ E |
+| openBIS schreiben | 8 | Mensch im BAM-Netz: `bruecke.py … anlegen` oder Notebook Teil 4, nur nach ◆ E |
 
 Instanzen: zum Testen `https://playground.datastore.bam.de` (VPN), später die Hauptinstanz. Welche gilt,
 steht in `projects/<name>/project.yaml`.
@@ -62,6 +64,7 @@ zuerst und schreibt sie zuletzt.
 |---|---|---|
 | `project.yaml` | Anlage | Instanz, Space, Projekt, Equipment-Projekte, bam-masterdata-Stand |
 | `STATUS.md` | immer | Schritt, Prüfpunkte, wer, wann, offene Fragen |
+| `AUFGABE.md` | bei Bedarf | die eine offene Aufgabe für den Menschen (Vorlage `AUFGABE_VORLAGE.md`) |
 | `schema.*` | 2 (Eingabe) | draw.io, Mermaid, Bild oder PDF des Ablaufs (optional) |
 | `ablauf.md` | 2 | die eine Quelle für den Ablauf: nummerierte Schritte mit Daten, Geräten, Dateien |
 | `interview.md` | 2 | Frage, Antwort, Quelle; Vorschläge des Agenten markiert |
@@ -74,4 +77,4 @@ zuerst und schreibt sie zuletzt.
 | `request/` | 6 | `issue.md`, `mail.txt`, `masterdata.xlsx`, `checker.log` |
 | `delivery_check.md` | 7 | Soll/Ist: bereit oder was fehlt |
 | `structure.json` | 8 | Projekt, Collections, Objekte, Eltern-Links (Format: `tools/openbis_bridge.py`) |
-| `reports/apply_<datum>.json` | 8 (Notebook) | was angelegt oder übersprungen wurde |
+| `reports/dryrun_<datum>.json`, `reports/apply_<datum>.json` | 8 (Befehl/Notebook) | Plan des Trockenlaufs, was angelegt oder übersprungen wurde |

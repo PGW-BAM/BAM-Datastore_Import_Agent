@@ -45,4 +45,5 @@ nach und bringt eigene Ideen ein, schreibt aber nur auf, was die Person bestäti
 
 ## Stopp
 
-◆ **A**: Die Person liest `prd.md` und schreibt in `STATUS.md` „A freigegeben (Datum)“ oder ihre Änderungen.
+◆ **A**: Die Person liest `prd.md` und gibt im Chat frei („A freigegeben“) oder nennt Änderungen. Der Agent trägt
+die Freigabe wörtlich mit Datum in `STATUS.md` ein.

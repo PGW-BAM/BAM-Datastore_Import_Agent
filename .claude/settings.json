@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash \"$CLAUDE_PROJECT_DIR\"/tools/cloud_setup.sh",
+            "command": "bash \"$CLAUDE_PROJECT_DIR\"/tools/cloud_setup.sh --hook",
             "timeout": 600
           }
         ]

@@ -1,20 +1,22 @@
 #!/bin/bash
-# Prepare a cloud session (Claude Code on the web) for this repo. Called by the SessionStart hook in
-# .claude/settings.json on every start/resume; exits at once outside the cloud (CLAUDE_CODE_REMOTE is
-# "true" only on the cloud VM). Run it by hand with --force, e.g. in a multi-repo session where repo
-# hooks do not run, or with another agent that has no hooks.
+# Prepare a cloud agent session for this repo. Idempotent, about one second when everything is there.
+#
+#   bash tools/cloud_setup.sh          any agent, any cloud sandbox (Mistral Vibe, Codex, ...): just run it
+#   bash tools/cloud_setup.sh --hook   Claude Code SessionStart hook (.claude/settings.json): does nothing
+#                                      outside Claude's cloud VM (CLAUDE_CODE_REMOTE != true), e.g. on a laptop
+#   --force                            accepted for older instructions, same as no option
 #
 #   - bam-masterdata next to this repo (../bam-masterdata): shallow clone of the PINNED release if missing
 #   - Python deps for tools/ (export_spec.py imports bam_masterdata) and notebook checks:
 #     bam-masterdata editable, pybis==1.37.4, nbformat, pyyaml
 #
-# The pin lives in one place: BMD_REF below (override with BMD_REF=<tag> bash tools/cloud_setup.sh --force).
+# The pin lives in one place: BMD_REF below (override with BMD_REF=<tag> bash tools/cloud_setup.sh).
 # All committed catalogs/specs are built against it; bump it on purpose, then rebuild the catalog.
 #
 # Never blocks the session: problems are printed (the hook output lands in the agent's context) and the
 # script exits 0. No openBIS access and no credentials here - see CLOUD.md and workflow/README.md.
 
-[ "$CLAUDE_CODE_REMOTE" = "true" ] || [ "$1" = "--force" ] || exit 0
+if [ "$1" = "--hook" ] && [ "$CLAUDE_CODE_REMOTE" != "true" ]; then exit 0; fi
 
 BMD_REF="${BMD_REF:-v0.17.0}"
 ROOT="${CLAUDE_PROJECT_DIR:-$(cd "$(dirname "$0")/.." && pwd)}"
@@ -26,7 +28,7 @@ if [ ! -d "$BMD/.git" ]; then
   if ! git clone --quiet --depth 1 --branch "$BMD_REF" "$BMD_URL" "$BMD" 2>"$ERR"; then
     echo "cloud_setup: could not clone bam-masterdata $BMD_REF to $BMD:"
     sed 's/^/  /' "$ERR"
-    echo "  -> attach BAMresearch/bam-masterdata to the session, then: bash tools/cloud_setup.sh --force (CLOUD.md)"
+    echo "  -> attach BAMresearch/bam-masterdata to the session, then: bash tools/cloud_setup.sh (CLOUD.md)"
     exit 0
   fi
 fi
@@ -34,7 +36,7 @@ HAVE="$(git -C "$BMD" describe --tags --exact-match 2>/dev/null || git -C "$BMD"
 echo "cloud_setup: bam-masterdata $HAVE ($(git -C "$BMD" log -1 --format=%cs)) at $BMD"
 if [ "$HAVE" != "$BMD_REF" ]; then
   echo "cloud_setup: WARNING - expected pinned $BMD_REF, found $HAVE. Not touching an existing checkout;"
-  echo "  catalog citations may not match. To switch: remove $BMD and rerun with --force."
+  echo "  catalog citations may not match. To switch: remove $BMD and rerun."
 fi
 
 # Skip the install when a previous start already did it (resume, cached environment).

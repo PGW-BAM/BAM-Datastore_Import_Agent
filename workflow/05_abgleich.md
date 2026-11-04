@@ -40,7 +40,7 @@ nachgezogen oder als Gerät eingetragen werden muss.
 ## Stopp
 
 ◆ **C**: Die Person prüft die NEU-Zeilen. Leitfrage: „Würde ein vorhandener Typ mit 1–2 zusätzlichen Properties
-reichen?“ Freigabe in `STATUS.md`.
+reichen?“ Freigabe im Chat; der Agent trägt sie in `STATUS.md` ein.
 
 ## Hilfsmittel
 

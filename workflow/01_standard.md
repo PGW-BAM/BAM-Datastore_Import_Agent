@@ -12,7 +12,7 @@ genau zum gepinnten Stand.
 
 ## Tun
 
-1. Fehlt `../bam-masterdata` oder sind Pakete nicht installiert: `bash tools/cloud_setup.sh --force`.
+1. Fehlt `../bam-masterdata` oder sind Pakete nicht installiert: `bash tools/cloud_setup.sh`.
 2. Stand prüfen: `git -C ../bam-masterdata describe --tags` muss `v0.17.0` ergeben. Sonst meldet das
    Setup-Skript eine Warnung; dann nicht weiterarbeiten, sondern den Ordner neu anlegen lassen.
 3. Katalog nur neu bauen, wenn die SHA im Kopf von `generated/CATALOG.md` nicht zu

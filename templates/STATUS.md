@@ -1,6 +1,7 @@
 # Status: <name>
 
-Jeder Agent liest diese Datei zuerst und aktualisiert sie zuletzt. Freigaben (◆) trägt nur ein Mensch ein.
+Jeder Agent liest diese Datei zuerst und aktualisiert sie zuletzt. Freigaben (◆) trägt der Agent erst nach einer
+ausdrücklichen Freigabe im Chat ein, mit Zitat und Datum. Offene Aufgabe für den Menschen: `AUFGABE.md` (falls vorhanden).
 
 | # | Schritt | Stand | Datum | Ergebnis / Notiz |
 |---|---|---|---|---|

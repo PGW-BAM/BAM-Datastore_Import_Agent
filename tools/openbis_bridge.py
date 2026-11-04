@@ -201,6 +201,38 @@ def read_inventory(call, instance: str, projects: list[str] = ()) -> dict:
 
 
 # --------------------------------------------------------------------------------------------
+# project settings (projects/<name>/project.yaml), shared by tools/bruecke.py and the notebook
+
+
+def load_project(repo: Path, name: str) -> dict:
+    """Paths and settings of one project. Needs pyyaml."""
+    import yaml
+
+    pdir = Path(repo) / "projects" / name
+    cfg = yaml.safe_load((pdir / "project.yaml").read_text(encoding="utf-8"))
+    instance = cfg["instance"].rstrip("/")
+    return {
+        "name": name, "dir": pdir, "cfg": cfg, "instance": instance,
+        "structure": (pdir / cfg.get("structure", "structure.json")).resolve(),
+        "spec": (pdir / cfg.get("spec", "spec.json")).resolve(),
+        "inventory": pdir / f"inventory_{instance.split('//')[-1].split('.')[0]}.json",
+        "read_projects": [f"/{cfg['space']}/{cfg['project']}".upper()]
+        + [p.upper() for p in cfg.get("inventory_projects") or []],
+    }
+
+
+def read_json(path: Path):
+    path = Path(path)
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+
+
+def write_json(path: Path, data) -> None:
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+# --------------------------------------------------------------------------------------------
 # structure.json: resolve identifiers, validate
 
 

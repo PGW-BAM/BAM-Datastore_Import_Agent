@@ -1,4 +1,4 @@
-# Arbeiten mit Cloud-Sessions (Claude Code im Web)
+# Arbeiten mit Cloud-Agenten (Claude Code, Mistral Vibe, …)
 
 Cloud-Sessions laufen auf einer VM des Anbieters, **außerhalb des BAM-Netzes**. Daraus folgt eine feste Aufteilung:
 
@@ -38,7 +38,7 @@ für Instanzen, auf denen du selbst Admin bist (dev1).
 ### bam-masterdata
 
 Der Klon läuft über den GitHub-Proxy der Cloud-VM. Lehnt der Proxy ein nicht angehängtes Repo ab, meldet das Skript es beim Start.
-Dann `BAMresearch/bam-masterdata` als **zweites Repo** an die Session hängen und `bash tools/cloud_setup.sh --force` ausführen
+Dann `BAMresearch/bam-masterdata` als **zweites Repo** an die Session hängen und `bash tools/cloud_setup.sh` ausführen
 lassen. In Sessions mit mehreren Repos laufen Repo-Hooks nicht.
 
 Lokal liegt `bam-masterdata` ebenfalls unter `../bam-masterdata` (`/bam-sync`). Damit Agents dort ohne Rückfrage lesen dürfen,
@@ -107,6 +107,25 @@ Beide Skripte legen nur an, was fehlt. Sie ändern oder löschen nichts Bestehen
 `droppedProps`. Den Bericht als `generated/<stem>/apply_report_<JJJJ-MM-TT>.json` committen, dann kann der Agent in der nächsten
 Session prüfen, was angelegt oder übersprungen wurde. Unwiderrufliche Schritte (Papierkorb leeren, Typen löschen) bleiben
 Handarbeit nach Checkliste (`CLEANUP_<instanz>.md`).
+
+## Andere Cloud-Agenten
+
+Alles Wesentliche steht in `AGENTS.md`, das die meisten Agenten von selbst lesen. Plattformunabhängig gilt: als Erstes
+`bash tools/cloud_setup.sh`, Netz für `github.com`, `pypi.org`, `files.pythonhosted.org` (Doku: `bamresearch.github.io`),
+openBIS nie freigeben. Die Übergaben laufen über `AUFGABE.md`, `tools/bruecke.py` und das Repo, egal welcher Agent.
+
+**Mistral Vibe im Browser** (Stand 11/2026, aus Quellcode und README von `mistralai/mistral-vibe`; hier noch nicht
+ausprobiert):
+- Läuft in einer Cloud-Sandbox auf einem GitHub-Repo. CLI, VS-Code-Erweiterung und Browser nutzen dasselbe Agenten-Gerüst.
+- Liest `AGENTS.md` und Skills aus `.agents/skills/` und `.vibe/skills/` (Format „Agent Skills“, wie bei Claude).
+  Der Einstieg ist der Skill `bam-weiter`.
+- Führt in der Sandbox **keine** Projekt-Hooks oder -Einstellungen aus `.vibe/` aus. Deshalb ruft der Agent das
+  Setup laut `AGENTS.md` selbst auf.
+- Arbeitet auf eigenen Zweigen (`vibe/<name>`). Deshalb nennt jede `AUFGABE.md` den Zweig für `tools/bruecke.py --zweig`.
+- Ob die Sandbox `github.com` und PyPI erreicht, steht nicht in der öffentlichen Doku (`docs.mistral.ai` war aus
+  dieser Session nicht lesbar). Beim ersten Lauf zeigt die Ausgabe von `cloud_setup.sh`, ob Klon und Installation gehen.
+
+**Claude Code im Web:** wie oben beschrieben (Hook, Netz „Trusted“ plus Doku-Domains).
 
 ## Was in der Cloud nicht mitkommt
 

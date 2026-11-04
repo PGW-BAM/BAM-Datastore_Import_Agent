@@ -32,7 +32,7 @@ Nur nötig, wenn es NEU, ERWEITERN oder NACHZIEHEN gibt. Gibt es nur GERÄT FEHL
    Tabelle je Klasse mit Begründung aus dem PRD, NACHZIEHEN als eigener Abschnitt, vorgeschlagenes Label
    (`semver:minor` für neue Typen), checker-Ergebnis, kurze Mapping-Notizen (BFO/IAO), falls möglich.
 7. **Mail** `request/mail.txt` nach `templates/request/mail.txt`: an datastore@bam.de, kurz, verweist auf das Issue.
-8. `STATUS.md`: Schritt 6 „wartet auf D“.
+8. `STATUS.md`: Schritt 6 „wartet auf D“, `AUFGABE.md` schreiben (Links, Dateien, Mail-Text zum Kopieren).
 
 ## Prüfen
 
@@ -48,4 +48,5 @@ Nur nötig, wenn es NEU, ERWEITERN oder NACHZIEHEN gibt. Gibt es nur GERÄT FEHL
 1. Issue in https://github.com/BAMresearch/bam-masterdata/issues anlegen (Text aus `issue.md`, `masterdata.xlsx` anhängen).
    Optional selbst einen PR: Fork, Branch `<issue-nr>-<thema>`, Ziel `dev`.
 2. Issue-Link in `mail.txt` eintragen und an datastore@bam.de senden.
-3. In `STATUS.md`: „D gesendet (Datum), Issue <Link>, wartet auf Admin“.
+3. Im Chat melden: „D gesendet“ mit Issue-Link. Der Agent trägt „wartet auf Admin seit <Datum>, Issue <Link>“ in
+   `STATUS.md` ein.

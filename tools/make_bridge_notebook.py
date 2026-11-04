@@ -19,7 +19,9 @@ Läuft **im BAM-Netz** (VPN). Der KI-Agent in der Cloud kommt nicht an openBIS h
 
 Nichts wird geändert oder gelöscht, keine Typen werden angelegt. Der Token wird nur abgefragt und nirgends gespeichert.
 
-**Vorher:** `git pull` im Repo. **Nachher:** die neuen Dateien committen und pushen (Zelle ganz unten)."""),
+**Vorher:** `git pull` im Repo. **Nachher:** die neuen Dateien committen und pushen (Zelle ganz unten).
+
+Gleiche Logik als ein Befehl, mit git pull/push eingebaut: `python tools/bruecke.py <projekt> lesen|pruefen|trockenlauf|anlegen`."""),
 code("""# Einmalig, falls noch nicht installiert:
 # %pip install pybis==1.37.4 pyyaml"""),
 md("## Einstellungen"),
@@ -28,19 +30,13 @@ code("""PROJECT = "fb72_welded_fatigue"   # Ordner unter projects/
 import getpass, json, sys
 from datetime import date
 from pathlib import Path
-import yaml
 
 REPO = Path.cwd().parent if Path.cwd().name == "notebooks" else Path.cwd()
 sys.path.insert(0, str(REPO / "tools"))
 import openbis_bridge as ob
 
-P = REPO / "projects" / PROJECT
-cfg = yaml.safe_load((P / "project.yaml").read_text(encoding="utf-8"))
-STRUCTURE = (P / cfg.get("structure", "structure.json")).resolve()
-SPEC = (P / cfg.get("spec", "spec.json")).resolve()
-INSTANCE = cfg["instance"].rstrip("/")
-INV_FILE = P / f"inventory_{INSTANCE.split('//')[-1].split('.')[0]}.json"
-READ = [f"/{cfg['space']}/{cfg['project']}".upper()] + [p.upper() for p in cfg.get("inventory_projects") or []]
+prj = ob.load_project(REPO, PROJECT)
+P, INSTANCE, STRUCTURE, SPEC, INV_FILE, READ = (prj[k] for k in ("dir", "instance", "structure", "spec", "inventory", "read_projects"))
 print("Instanz:", INSTANCE)
 print("Lese Projekte:", READ)
 print("structure.json:", STRUCTURE if STRUCTURE.exists() else "(noch keine)")
@@ -58,7 +54,7 @@ del token
 print("angemeldet:", o.is_session_active())"""),
 md("## 1 Lesen (Schritt 3 und 7)"),
 code("""inv = ob.read_inventory(call, INSTANCE, READ)
-INV_FILE.write_text(json.dumps(inv, indent=1, ensure_ascii=False) + "\\n", encoding="utf-8")
+ob.write_json(INV_FILE, inv)
 print(f"{len(inv['objectTypes'])} Object-Types, {len(inv['vocabularies'])} Vokabulare, "
       f"{len(inv['collections'])} Collections und {len(inv['objects'])} Objekte in {len(READ)} Projekten")
 print("gespeichert:", INV_FILE.relative_to(REPO))"""),

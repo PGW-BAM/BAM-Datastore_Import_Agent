@@ -17,8 +17,15 @@ der die Struktur in deinem Space anlegt.
 | Anlegen | 8 Trockenlauf (◆ E) · Anlegen | Agent baut `structure.json`, du führst aus | schreiben |
 
 Der Agent arbeitet in der Cloud nur mit Dateien und hat keinen Zugang zu openBIS. Was die Instanz berührt, läuft
-im BAM-Netz über **ein** Notebook: [`notebooks/openbis_bruecke.ipynb`](notebooks/openbis_bruecke.ipynb)
-(Lesen, Prüfen, Trockenlauf, Anlegen). Test-Instanz: `https://playground.datastore.bam.de`.
+im BAM-Netz über einen Befehl, `python tools/bruecke.py <projekt> lesen|pruefen|trockenlauf|anlegen` (mit git pull/push),
+oder dasselbe als Notebook [`notebooks/openbis_bruecke.ipynb`](notebooks/openbis_bruecke.ipynb). Test-Instanz:
+`https://playground.datastore.bam.de`.
+
+**Was du selbst tust:** [workflow/MENSCH.md](workflow/MENSCH.md). Kurz: Fragen beantworten und freigeben im Chat; wenn
+der Agent etwas im BAM-Netz oder nach außen braucht, steht es fertig in `projects/<name>/AUFGABE.md`.
+
+**Plattformen:** Claude Code (Web) und Mistral Vibe (Browser) lesen `AGENTS.md` bzw. den Skill `bam-weiter`; andere
+Agenten `AGENTS.md`. Details: [CLOUD.md](CLOUD.md).
 
 ## Loslegen
 
@@ -26,7 +33,8 @@ im BAM-Netz über **ein** Notebook: [`notebooks/openbis_bruecke.ipynb`](notebook
 cp -r templates projects/<name>     # neues Projekt; dann project.yaml ausfüllen
 ```
 
-Dann einem Agenten sagen: „Arbeite an `projects/<name>`.“ Er liest `STATUS.md` und macht beim nächsten Schritt weiter.
+Dann einem Agenten sagen: „weiter mit `<name>`“ (Claude: `/bam-weiter <name>`). Er liest `STATUS.md` und macht beim
+nächsten Schritt weiter.
 
 Laufendes Projekt: [`projects/fb72_welded_fatigue/`](projects/fb72_welded_fatigue/) (Wöhlerversuche FB 7.2, Test
 auf dem Playground). Die Ergebnisse des ersten Laufs gegen dev1 liegen unter `generated/welded_fatigue_v2/`.
@@ -34,8 +42,8 @@ auf dem Playground). Die Ergebnisse des ersten Laufs gegen dev1 liegen unter `ge
 ## Voraussetzungen
 
 - **Cloud-Session:** nichts. `tools/cloud_setup.sh` legt beim Start `../bam-masterdata` (gepinnt auf `v0.17.0`) an und
-  installiert `bam-masterdata`, `pybis==1.37.4`, `nbformat`, `pyyaml`. Ohne Hook: `bash tools/cloud_setup.sh --force`.
-- **BAM-Netz (für das Notebook):** Python mit `pybis==1.37.4` und `pyyaml`, ein Klon dieses Repos, VPN.
+  installiert `bam-masterdata`, `pybis==1.37.4`, `nbformat`, `pyyaml`. Andere Agenten rufen `bash tools/cloud_setup.sh` selbst auf.
+- **BAM-Netz:** Python mit `pybis==1.37.4` und `pyyaml`, ein Klon dieses Repos, VPN (Einrichtung: `workflow/MENSCH.md`).
 - Tests: `python -m pytest tools/tests -q`
 
 ## Verzeichnisse

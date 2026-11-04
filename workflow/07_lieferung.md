@@ -11,8 +11,8 @@
 
 ## Tun: Mensch (BAM-Netz)
 
-Im Brücken-Notebook **Einstellungen**, **Anmelden**, **1 Lesen**, **2 Prüfen** ausführen. Das schreibt den neuen
-Export und `delivery_check.md`. Beides committen und pushen.
+`python tools/bruecke.py <name> pruefen` oder im Notebook **Einstellungen**, **Anmelden**, **1 Lesen**, **2 Prüfen**
+(dann committen und pushen). Das schreibt den neuen Export und `delivery_check.md`.
 
 ## Tun: Agent (Cloud)
 

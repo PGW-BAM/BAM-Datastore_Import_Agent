@@ -12,16 +12,19 @@ Eltern-Links gibt es nur dort.
 
 ## Tun: Mensch (BAM-Netz)
 
-1. `git pull`, dann `notebooks/openbis_bruecke.ipynb` öffnen, `PROJECT = "<name>"` setzen.
-2. Zellen **Einstellungen**, **Anmelden**, **1 Lesen** ausführen. Das Notebook schreibt
-   `projects/<name>/inventory_<instanz>.json`. Gelesen werden nur Masterdaten und die Projekte aus
-   `project.yaml` (eigenes Projekt + Equipment-Projekte), keine Messdaten.
-3. Datei committen und pushen.
+Der Agent hat die Aufgabe in `AUFGABE.md` beschrieben. Zwei gleichwertige Wege (Einrichtung: `workflow/MENSCH.md`):
+
+- **Befehl:** `python tools/bruecke.py <name> lesen` (holt vorher den Stand, lädt hinterher die Datei hoch)
+- **Notebook:** `git pull`, `notebooks/openbis_bruecke.ipynb`, `PROJECT = "<name>"`, Zellen **Einstellungen**,
+  **Anmelden**, **1 Lesen**, dann die Datei committen und pushen
+
+Ergebnis: `projects/<name>/inventory_<instanz>.json`. Gelesen werden nur Masterdaten und die Projekte aus
+`project.yaml` (eigenes Projekt + Equipment-Projekte), keine Messdaten.
 
 ## Tun: Agent (Cloud)
 
-1. Datei vorhanden? `collected` älter als 7 Tage oder `read_projects` passt nicht zu `project.yaml`: um einen neuen
-   Export bitten, nicht raten.
+1. Datei vorhanden? Fehlt sie, ist `collected` älter als 7 Tage oder passt `read_projects` nicht zu `project.yaml`:
+   `AUFGABE.md` schreiben (Vorlage `workflow/AUFGABE_VORLAGE.md`) und anhalten, nicht raten.
 2. `inventory.md` schreiben:
    - Kopf: Instanz, Zeitpunkt, Server-Version, gelesene Projekte
    - Standard-Typen, die für dieses Projekt wichtig sind: vorhanden / fehlt / veraltet (weniger Properties als im
@@ -38,5 +41,5 @@ Eltern-Links gibt es nur dort.
 
 ## Hilfsmittel
 
-- `notebooks/openbis_bruecke.ipynb` (Teil 1), `tools/openbis_bridge.py` (`read_inventory`)
+- `tools/bruecke.py lesen` oder `notebooks/openbis_bruecke.ipynb` (Teil 1); Logik in `tools/openbis_bridge.py` (`read_inventory`)
 - Ohne Python im BAM-Netz: `tools/openbis_inventory.js` in der Browser-Konsole des ELN (siehe `CLOUD.md`)

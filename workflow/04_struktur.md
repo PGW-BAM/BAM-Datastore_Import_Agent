@@ -37,7 +37,7 @@ Prinzipien P1–P8 (`workflow/README.md`).
 ## Stopp
 
 ◆ **B**: Die Fachseite liest `design.md`. Leitfrage: „Würde jemand im Labor die Serientabelle so lesen wollen?“
-Freigabe oder Änderungen in `STATUS.md`.
+Freigabe oder Änderungen im Chat; der Agent trägt sie in `STATUS.md` ein.
 
 ## Hilfsmittel
 

@@ -6,7 +6,7 @@ fehlt. Nichts wird geändert oder gelöscht, keine Typen.
 | | |
 |---|---|
 | Eingabe | `design.json`, aktueller Export, `delivery_check.md` („bereit“) |
-| Ausgabe | `structure.json` (Agent), `reports/apply_<datum>.json` (Notebook) |
+| Ausgabe | `structure.json` (Agent), `reports/dryrun_<datum>.json`, `reports/apply_<datum>.json` (Befehl/Notebook) |
 | Zugang | openBIS schreiben, **nur der Mensch**, nur nach ◆ E |
 | Prüfpunkt | ◆ **E**: der Trockenlauf ist freigegeben |
 
@@ -26,13 +26,15 @@ fehlt. Nichts wird geändert oder gelöscht, keine Typen.
    python tools/openbis_bridge.py validate projects/<name>/structure.json
    python tools/openbis_bridge.py check --inventory projects/<name>/inventory_<instanz>.json --structure projects/<name>/structure.json
    ```
-3. `STATUS.md`: „wartet auf E“.
+3. `STATUS.md`: „wartet auf Trockenlauf“, `AUFGABE.md` schreiben.
 
 ## Tun: Mensch (BAM-Netz)
 
-1. `git pull`, Notebook: **Einstellungen**, **Anmelden**, **1 Lesen**, **2 Prüfen**, **3 Trockenlauf**.
-2. ◆ **E** prüfen (unten). Dann in Teil **4** `FREIGABE = True` setzen und ausführen.
-3. Den neuen Bericht unter `reports/` committen und pushen.
+1. Trockenlauf: `python tools/bruecke.py <name> trockenlauf` oder Notebook Teil 1–3. Der Plan landet als
+   `reports/dryrun_<datum>.json` im Repo, der Agent prüft ihn mit dir.
+2. ◆ **E** (unten): Freigabe im Chat.
+3. Anlegen: `python tools/bruecke.py <name> anlegen` (zeigt den Plan noch einmal, fragt nach „ja“) oder Notebook
+   Teil 4 mit `FREIGABE = True`. Der Bericht `reports/apply_<datum>.json` geht ins Repo (Befehl: automatisch).
 
 ## Tun: Agent nach dem Anlegen
 

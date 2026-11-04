@@ -10,7 +10,7 @@ are built against that release. See `workflow/01_standard.md`.
 
 Behaviour (run from the repo root):
 1. Read the pin: `grep -o 'BMD_REF:-[^}]*' tools/cloud_setup.sh` → e.g. `v0.17.0`.
-2. If `../bam-masterdata/` does NOT exist: `bash tools/cloud_setup.sh --force` (clones the pinned tag,
+2. If `../bam-masterdata/` does NOT exist: `bash tools/cloud_setup.sh` (clones the pinned tag,
    installs the Python packages). If the clone fails in a cloud session: STOP and point to `CLOUD.md`.
 3. Else:
    - `git -C ../bam-masterdata status --porcelain` non-empty: STOP and report the modified files.
