@@ -249,7 +249,8 @@
         "type": "array"
        }
       }
-     }
+     },
+     "description": "Objects per main object (specimen, batch, component, simulation …). The FIRST entry is the main object; its name_de/name_en names it on the review pages. parents: '<code> (specimen)' or a code_pattern of another entry (process line), plus inventory parents; links: inventory objects linked by OBJECT fields."
     },
     "series_table": {
      "type": "array",
@@ -264,6 +265,10 @@
         "type": "string",
         "pattern": "//",
         "description": "English//Deutsch"
+       },
+       "source": {
+        "type": "string",
+        "description": "'main <PROPERTY>' (or 'specimen <PROPERTY>') for the main object, '<ENDING> <PROPERTY>' for another object per main object (ENDING = end of its code_pattern, e.g. TEST for S1-01-TEST)"
        }
       }
      }
@@ -415,6 +420,10 @@
          "items": {
           "type": "string"
          }
+        },
+        "before": {
+         "type": "boolean",
+         "description": "the main object is made from this object (pattern M3); drawn above it"
         }
        }
       }

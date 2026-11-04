@@ -49,11 +49,11 @@ zuerst und schreibt sie zuletzt.
 
 | # | Prinzip |
 |---|---|
-| P1 | Übersichtlich lesbar statt pauschal flach: Space → Projekt → Collection (= Serie) → Objekte; wie die Objekte einer Probe verbunden sind, wählt der Agent aus den Mustern in [strukturmuster.md](strukturmuster.md) (Prozesslinie, Probe als Mittelpunkt, Zustände des Materials, Bezüge als Felder …) und zeigt 2–4 Varianten. Eltern/Kind für Herkunft und Reihenfolge, Felder vom Typ OBJECT für „wurde benutzt“. Tiefe ist erlaubt, wenn sie eine Linie ist. |
+| P1 | Übersichtlich lesbar statt pauschal flach: Space → Projekt → Collection (= Serie) → Objekte; wie die Objekte eines Hauptobjekts (Probe, Charge, Bauteil, Simulation …) verbunden sind, wählt der Agent aus den Mustern in [strukturmuster.md](strukturmuster.md) (Prozesslinie, Hauptobjekt als Mittelpunkt, Zustände des Materials, Bezüge als Felder …) und zeigt 2–4 Varianten. Eltern/Kind für Herkunft und Reihenfolge, Felder vom Typ OBJECT für „wurde benutzt“. Tiefe ist erlaubt, wenn sie eine Linie ist. |
 | P2 | Flache Typ-Hierarchie: neue Typen erben direkt von einer BAM-Basisklasse, so wenige neue Typen wie möglich. |
-| P3 | Was die Probe beschreibt, ist Property der Probe. Die Collection-Tabelle ist die Versuchsmatrix. |
+| P3 | Was das Hauptobjekt beschreibt, ist Property des Hauptobjekts. Die Collection-Tabelle ist die Übersicht der Serie (Versuchsmatrix). |
 | P4 | Eigenes Schritt-Objekt nur, wo Gerät, Zeitraum, Bearbeiter*in und Dateien zusammengehören. Mehrere Ablaufschritte am selben Arbeitsplatz: ein Objekt mit einer Sektion je Schritt, in Ablauf-Reihenfolge. |
-| P5 | Ablauf sichtbar: Sektionen stehen in Ablauf-Reihenfolge, die Probe hat ein Feld „Next step“ (Auswahl mit Schrittnummern), ein Ablaufplan-Objekt beschreibt alle Schritte. Sektionsnamen selbst ohne Nummern (Regel des `checker`). |
+| P5 | Ablauf sichtbar: Sektionen stehen in Ablauf-Reihenfolge, das Hauptobjekt hat ein Feld „Next step“ (Auswahl mit Schrittnummern), ein Ablaufplan-Objekt (Typ `GENERAL_PROTOCOL`; `SOP` ist im Standard das förmliche E-Akten-Dokument mit zehn Pflichtfeldern) beschreibt alle Schritte. Sektionsnamen selbst ohne Nummern (Regel des `checker`). |
 | P6 | Standard zuerst: Geräte, Materialien, Standard-Schritte, Collection- und Dataset-Typen aus bam-masterdata. Nicht standardisierte Typen auf der Instanz werden nicht weiterverwendet. |
 | P7 | Tabellen und Messreihen sind Dateien, keine Properties. |
 | P8 | Jeder Name auf Deutsch und Englisch: angezeigt als „Deutsch / Englisch“, in den Masterdaten `property_label` + `property_label_de` (Begriffe `label` + `label_de`), Beschreibungen `English//Deutsch`. Sektionen in openBIS englisch, Title Case, nur Buchstaben. |

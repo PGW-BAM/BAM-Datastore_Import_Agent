@@ -22,9 +22,10 @@ Es gelten P1–P8 aus `workflow/README.md`. Abweichungen für dieses Projekt (mi
 |---|---|---|---|---|
 | 01 | | | | |
 
-## 4. Probe / Untersuchungsobjekt
+## 4. Hauptobjekt
 
-Bezeichnung, Kennungen (wer vergibt sie, Aufbau), beschreibende Eigenschaften.
+Worum dreht sich der Ablauf (Probe, Charge, Bauteil, Simulation …)? Bezeichnung Deutsch / Englisch, Kennungen (wer vergibt
+sie, Aufbau), beschreibende Eigenschaften. Entstehen unterwegs neue Objekte (Zwischenprodukte, Teilstücke)?
 
 ## 5. Inventar
 
@@ -32,7 +33,7 @@ Geräte und Materialien, die einmal im Inventar stehen und von Schritten verlink
 
 ## 6. Serien
 
-Was ist eine Serie (Collection), welche Spalten zeigt die Serientabelle pro Probe?
+Was ist eine Serie (Collection), welche Spalten zeigt die Serientabelle je Hauptobjekt?
 
 ## 7. Dateien
 

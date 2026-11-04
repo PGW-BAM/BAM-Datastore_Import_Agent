@@ -173,6 +173,9 @@ class Model:
         self.sections_de = {**SECTION_DE_STD, **(self.design.get("section_names_de") or {})}
         self.files = {de(x["file"])[0]: x["file"] for x in self.design.get("dataset_mapping", [])}
         self.devices = {de(x["inventory"])[0]: x["inventory"] for x in self.design.get("inventory_links", [])}
+        # the main object of the workflow (specimen, batch, component, simulation …): first object in layout.per_specimen
+        first = (self.design.get("layout", {}).get("per_specimen") or [{}])[0]
+        self.main = Name(first.get("name_de") or "Hauptobjekt", first.get("name_en") or "main object")
 
     def _note(self, n: Name, key: str) -> Name:
         if n.src == "missing":
@@ -240,7 +243,7 @@ class Model:
         for o in sorted(objs, key=lambda o: -len(o["code_pattern"])):
             if o["code_pattern"] in text:
                 return o
-        return objs[0] if objs and "specimen" in text else None
+        return objs[0] if objs and ("specimen" in text or text.strip().lower().startswith("main")) else None
 
 
 # --------------------------------------------------------------------------------------------
@@ -380,8 +383,11 @@ def step_range(steps: list[str]) -> str:
 
 def variant_shape(v: dict) -> str:
     """Small sketch of a variant: main object, the objects hanging on it (flat), a chain, or one object."""
-    objs = [{"name": Name(o.get("name_de"), o.get("name_en")), "steps": o.get("steps") or []} for o in v["objects"]]
-    main, rest = objs[0], objs[1:]
+    objs = [{"name": Name(o.get("name_de"), o.get("name_en")), "steps": o.get("steps") or [], "before": o.get("before")}
+            for o in v["objects"]]
+    main = objs[0]
+    before = [o for o in objs[1:] if o["before"]]  # the main object is made from these (pattern M3)
+    rest = [o for o in objs[1:] if not o["before"]]
 
     def box(o, cls=""):
         st = f'<small>{te("Schritte ", "Steps ")}{E(step_range(o["steps"]))}</small>' if o["steps"] else ""
@@ -403,6 +409,8 @@ def variant_shape(v: dict) -> str:
     else:  # long chain
         sketch = (f'<div class="vrow chain">{box(main, "main")}<span class="arrow">→</span>'
                   + '<span class="arrow">→</span>'.join(pill(o) for o in rest) + "</div>")
+    if before:
+        sketch = ("".join(box(o) for o in before) + f'<div class="arrow">↓ {t("daraus entsteht", "makes")}</div>' + sketch)
     names = ""
     if len(rest) > 5:
         names = (f'<details><summary>{t("Alle Objekte anzeigen", "Show all objects")}</summary><ol class="vlist">'
@@ -424,8 +432,8 @@ def variants_section(m: Model, num: str) -> str:
         tags = (f'<span class="rec">{t("(empfohlen)", "(recommended)")}</span>' if is_rec else "")
         marks = chip("unten ausgearbeitet", "new", "worked out below") if is_shown else ""
         figs = "".join(f'<div><b>{E(str(v[k]))}</b><span>{te(a, b)}</span></div>' for k, a, b in (
-            ("objects_per_specimen", "Objekte je Probe", "objects per specimen"),
-            ("max_link_depth", "Ebenen unter der Probe", "levels below the specimen"),
+            ("objects_per_specimen", f"Objekte je {m.main.de}", f"objects per {m.main.en.lower()}"),
+            ("max_link_depth", "Ebenen darunter", "levels below it"),
             ("new_object_types", "neue Objekttypen", "new object types"),
             ("new_dataset_types", "neue Datei-Typen", "new file types"),
             ("shared_parents", "Geräte als Eltern im Graphen", "instruments as parents in the graph")) if v.get(k) is not None)
@@ -472,8 +480,11 @@ def view_struktur(m: Model) -> str:
                           for c in cols)
     plan = "".join(f'<div class="node plan"><b>{E(o.get("$NAME") or o["code"])}</b><span>{t("einmal im Projekt", "once per project")}</span></div>'
                    for o in lay.get("project_objects", []))
-    probe = objs[0] if objs else {"name": Name("Probe", "Specimen"), "code_pattern": "", "kind": "probe"}
-    line = len(objs) > 2 and any(o["prev"] not in (None, probe["code_pattern"]) for o in objs[1:])
+    probe = objs[0] if objs else {"name": m.main, "code_pattern": "", "kind": "probe"}
+    up_codes = {p.split()[0] for p in probe.get("parents", []) if p.split()}
+    upstream = [o for o in objs[1:] if o["code_pattern"] in up_codes]  # the main object is made from these (M3)
+    objs_down = [o for o in objs[1:] if o not in upstream]
+    line = len(objs_down) > 1 and any(o["prev"] not in (None, probe["code_pattern"]) for o in objs_down)
 
     def node(o):
         return (f'<div class="node obj {o["kind"]}"><span class="dot"></span><b>{o["name"].html()}</b>'
@@ -482,18 +493,19 @@ def view_struktur(m: Model) -> str:
                 f'{"".join(chip(short(m.device_name(e).text, 60), "dev") for e in o["equipment"])}'
                 f'{"".join(chip(short(m.device_name(e).text, 60), "dev lnk") for e in o["fields"])}</div>')
     if line:
-        steps = "".join(f'<div class="arrow">↓ {t("danach", "then")}</div>{node(o)}' for o in objs[1:])
+        steps = "".join(f'<div class="arrow">↓ {t("danach", "then")}</div>{node(o)}' for o in objs_down)
         below = f'<div class="line">{steps}</div>'
-        intro = t("Eine Serie ist eine Collection. In jeder Serie steht jede Probe einmal. Ihre Versuchsschritte folgen als Linie "
+        intro = t(f"Eine Serie ist eine Collection. Darin steht jedes Objekt „{E(m.main.de)}“ einmal. Seine Ablaufschritte folgen als Linie "
                   "aufeinander, so wie sie im Labor stattfinden. Geräte und Material kommen aus dem Inventar des Fachbereichs.",
-                  "A series is a collection. Each specimen appears once in its series. Its test steps follow each other as a line, "
+                  f"A series is a collection. Each “{E(m.main.en)}” object appears once in it. Its workflow steps follow each other as a line, "
                   "in the order they happen in the lab. Instruments and materials come from the division's inventory.")
     else:
-        steps = "".join(node(o) for o in objs[1:])
-        below = f'<div class="arrow">↓ {t("hängen direkt daran", "attached directly")}</div><div class="row">{steps}</div>'
-        intro = t("Eine Serie ist eine Collection. In jeder Serie steht jede Probe einmal, und direkt an der Probe hängen ihre Versuchsschritte. "
+        steps = "".join(node(o) for o in objs_down)
+        below = (f'<div class="arrow">↓ {t("hängen direkt daran", "attached directly")}</div><div class="row">{steps}</div>'
+                 if objs_down else "")
+        intro = t(f"Eine Serie ist eine Collection. Darin steht jedes Objekt „{E(m.main.de)}“ einmal, und seine Ablaufschritte hängen direkt daran. "
                   "Geräte und Material kommen aus dem Inventar des Fachbereichs.",
-                  "A series is a collection. Each specimen appears once in its series, and its test steps hang directly on the specimen. "
+                  f"A series is a collection. Each “{E(m.main.en)}” object appears once in it, and its workflow steps hang directly on it. "
                   "Instruments and materials come from the division's inventory.")
     legend = t(f"{chip('Gerät', 'dev', 'instrument')} als Eltern verlinkt (im Graphen sichtbar)"
                f"{' · ' + chip('Gerät', 'dev lnk', 'instrument') + ' als Feld verlinkt (im Formular, nicht im Graphen)' if any(o['fields'] for o in objs) else ''}",
@@ -503,9 +515,9 @@ def view_struktur(m: Model) -> str:
 <p>{intro}</p>
 <div class="tree"><div class="node root"><span>Space</span><b>{E(space)}</b></div><div class="arrow">↓</div>
 <div class="node root"><span>{t("Projekt", "Project")}</span><b>{E(project)}</b></div><div class="arrow">↓</div>
-<div class="row">{collections}{plan}</div><div class="arrow">↓ {t("in jeder Serie, je Probe", "in every series, per specimen")}</div>
-<div class="specimen"><div class="node obj {probe['kind']} big"><span class="dot"></span><b>{probe['name'].html()}</b><code>{E(probe['code_pattern'])}</code>
-<span>{t("trägt alles, was die Probe beschreibt", "holds everything that describes the specimen")}</span></div>
+<div class="row">{collections}{plan}</div><div class="arrow">↓ {t(f"in jeder Serie, je {E(m.main.de)}", f"in every series, per {E(m.main.en.lower())}")}</div>
+<div class="specimen">{"".join(node(o) + '<div class="arrow">↓ ' + t("daraus entsteht", "makes") + '</div>' for o in upstream)}<div class="node obj {probe['kind']} big"><span class="dot"></span><b>{probe['name'].html()}</b><code>{E(probe['code_pattern'])}</code>
+<span>{t("Hauptobjekt: trägt alle beschreibenden Angaben", "main object: holds all describing data")}</span>{"".join(chip(short(m.device_name(e).text, 60), "dev") for e in probe.get("equipment", []))}{"".join(chip(short(m.device_name(e).text, 60), "dev lnk") for e in probe.get("fields", []))}</div>
 {below}</div></div>
 <p class="hint">{legend}</p>
 {feedback("aufbau", "Aufbau", "Build-up")}</section>""")
@@ -562,11 +574,18 @@ def view_struktur(m: Model) -> str:
     specimens = [o for o in st.get("objects", []) if objs and o.get("type") == objs[0]["type"]][:4]
     by_key = {o["key"]: o for o in st.get("objects", [])}
 
+    main_pattern = objs[0]["code_pattern"] if objs else ""
+
     def cell(src: str, sp: dict) -> str:
+        """source = '<object> <PROPERTY …>': object 'main'/'specimen' or the suffix of a per-object code (TEST for S1-01-TEST)."""
+        first = (src.split() or [""])[0]
         codes = re.findall(r"[A-Z$][A-Z0-9_.$]+", src)
         target = sp
-        if "TEST" in src.split()[0:2]:
-            target = by_key.get(f"{sp['key']}-TEST") or {}
+        other = next((o for o in objs[1:] if first and (o["code_pattern"].endswith("-" + first) or o["type"] == first)), None)
+        if other:
+            suffix = other["code_pattern"][len(main_pattern):] if other["code_pattern"].startswith(main_pattern) else "-" + first
+            target = by_key.get(f"{sp['key']}{suffix}") or {}
+            codes = codes[1:] if codes and codes[0] == first else codes
         for c in codes:
             v = (target.get("props") or {}).get(c)
             if v is not None:
@@ -577,10 +596,10 @@ def view_struktur(m: Model) -> str:
                    for c in cols_)
     rows_ = "".join("<tr>" + "".join(f"<td>{E(cell(c['source'], sp))}</td>" for c in cols_) + "</tr>" for sp in specimens)
     if not specimens:
-        rows_ = (f'<tr><td colspan="{max(len(cols_), 1)}">{t("Beispielzeilen folgen, sobald die Struktur mit Beispielproben steht (Schritt 8).", "Example rows follow once the structure with example specimens exists (step 8).")}</td></tr>')
+        rows_ = (f'<tr><td colspan="{max(len(cols_), 1)}">{t("Beispielzeilen folgen, sobald structure.json mit Beispielobjekten steht (Schritt 8).", "Example rows follow once structure.json with example objects exists (step 8).")}</td></tr>')
     body.append(f"""<section aria-labelledby="h4s">{section_head("5", "h4s", "So sieht die Serientabelle aus", "What the series table looks like")}
-<p>{t("Das ist die Tabelle, die man beim Öffnen einer Serie sieht. Die Werte sind Beispieldaten aus der Demo-Serie (fiktiv).",
-      "This is the table you see when you open a series. The values are example data from the demo series (fictitious).")}</p>
+<p>{t("Das ist die Tabelle, die man beim Öffnen einer Serie sieht. Die Werte sind Beispieldaten aus structure.json (fiktiv).",
+      "This is the table you see when you open a series. The values are example data from structure.json (fictitious).")}</p>
 <div class="tbl"><table><thead><tr>{head}</tr></thead><tbody>{rows_}</tbody></table></div>{feedback("tabelle", "Serientabelle", "Series table")}</section>""")
 
     # 6 vocabularies
@@ -602,9 +621,9 @@ def view_struktur(m: Model) -> str:
     # 7 terms in both languages
     body.append(f'<section aria-labelledby="h8s">{section_head("7", "h8s", "Begriffe in beiden Sprachen", "Terms in both languages")}'
                 f'<p>{t("Alle Namen oben stehen auf Deutsch und Englisch. Stimmen die Begriffe in beiden Sprachen? Schreiben Sie bei „ändern“ "
-                        "die gewünschten Begriffe einfach dazu, z. B. „Herkunftsblech → Ausgangsblech“.",
+                        "die gewünschten Begriffe einfach dazu, z. B. „alter Begriff → neuer Begriff“.",
                         "All names above are given in German and English. Are the terms right in both languages? With “change”, just write "
-                        "the terms you want, e.g. “Source sheet → Parent plate”.")}</p>'
+                        "the terms you want, e.g. “old term → new term”.")}</p>'
                 f'{feedback("begriffe", "Begriffe Deutsch / Englisch", "Terms German / English")}</section>')
 
     # 8 answer
@@ -625,9 +644,9 @@ def view_struktur(m: Model) -> str:
                 f"{chip('DE fehlt', 'miss', 'DE missing')} = German version still missing ({n if n else 'none here'}). "
                 f"{chip('nur EN', 'std', 'EN only')} = name from the BAM standard that exists only in English there."))
     header = f"""<header class="hero">{hero_top(m, "Prüfpunkt B · Struktur bestätigen", "Checkpoint B · Confirm the structure")}
-<p class="lead">{t("So würde der Agent Ihren Versuchsablauf in openBIS abbilden. Bitte lesen Sie die Seite von oben nach unten. "
+<p class="lead">{t("So würde der Agent Ihren Ablauf in openBIS abbilden. Bitte lesen Sie die Seite von oben nach unten. "
                    "Zuerst wählen Sie die Variante, danach bei jedem Teil <b>passt</b> oder <b>ändern</b>. Ganz unten entsteht daraus Ihr Text für den Chat.",
-                   "This is how the agent would map your test workflow in openBIS. Please read the page from top to bottom. "
+                   "This is how the agent would map your workflow in openBIS. Please read the page from top to bottom. "
                    "First choose the variant, then <b>fits</b> or <b>change</b> for each part. At the bottom this becomes your reply for the chat.")}</p>
 <ol class="ask">{"<li>" + t("Passt die empfohlene Variante, oder soll es eine andere werden?", "Does the recommended variant fit, or should it be a different one?") + "</li>" if d.get("variants") else ""}<li>{t("Hat jeder Ablaufschritt genau einen Ort?", "Does every workflow step have exactly one place?")}</li>
 <li>{t("Sind die Felder die, die im Labor wirklich notiert werden?", "Are these the fields that are actually recorded in the lab?")}</li>
@@ -1181,7 +1200,7 @@ def md_struktur(m: Model) -> str:
         L += ["## 1 Welche Struktur soll es werden? / Which structure should it be?", "",
               f"Empfohlen / recommended: **{rec['id']}**. Unten ausgearbeitet / worked out below: **{shown}**. "
               "Muster und Quellen: `workflow/strukturmuster.md`.", "",
-              "| | Variante / Variant | Objekte je Probe | Ebenen | neue Typen | Geräte als Eltern |", "|---|---|---|---|---|---|"]
+              f"| | Variante / Variant | Objekte je {m.main.de} | Ebenen | neue Typen | Geräte als Eltern |", "|---|---|---|---|---|---|"]
         for v in vs:
             tag = " **(empfohlen / recommended)**" if v is rec else ""
             L.append(f"| {v['id']} | {md_esc(v['name_de'])} / {md_esc(v['name_en'])}{tag} | {v.get('objects_per_specimen', '–')} | "
@@ -1299,7 +1318,7 @@ def md_trockenlauf(m: Model) -> str:
 CSS = """
 /* BAM Design System (00_BAM_Design_System): Petrol #002832 für Überschriften und dunkle Flächen, Cyan #00AFF0 als einziger
    Akzent, Rot nur für Warnungen; BAM-Hausschrift Klavika (lokal installiert), Barlow als Web-Ersatz; eckig, Pillen nur für Tags; nur heller Modus.
-   Objektfarben: Probe Petrol (gefüllt), Scan Steel, Versuch Cyan, Bruch Grau */
+   Objektfarben (Reihenfolge der Objekte je Hauptobjekt): 1 Petrol (gefüllt), 2 Steel, 3 Cyan, 4 Grau, weitere Grau */
 :root{color-scheme:light;
 --bam-petrol:#002832;--bam-cyan:#00aff0;--bam-steel:#00556a;--bam-red:#d2001f;--cyan-tint:#e0f5fd;--petrol-tint:#e6ebec;
 --gray-1:#f4f7f8;--gray-2:#e6ebec;--gray-3:#c9d3d6;--gray-4:#9fadb2;--gray-5:#66787f;

@@ -102,7 +102,9 @@ Englisch umschaltbar, Namen immer „Deutsch / Englisch“.
   | andere (Codex, Copilot, Cursor, …) | `AGENTS.md` | selbst `bash tools/cloud_setup.sh` oder als Setup-Skript der Umgebung eintragen |
 
   Details und Netz-Einstellungen: `CLOUD.md`.
-- **Tests:** `python -m pytest tools/tests -q`
+- **Tests:** `python -m pytest tools/tests -q`. Dazu gehört ein zweites, frei erfundenes Projekt aus einem anderen Bereich
+  (`tools/tests/fixtures/synthese/`, Synthese von Nanopartikeln), das alle Schritte und Prüfseiten durchläuft. Schlägt
+  `test_second_project.py` nach einer Änderung an den Werkzeugen fehl, war die Änderung vermutlich projektspezifisch.
 
 ## Wo was liegt
 
@@ -115,5 +117,6 @@ Englisch umschaltbar, Namen immer „Deutsch / Englisch“.
 | `tools/bruecke.py`, `notebooks/openbis_bruecke.ipynb` | die Werkzeuge im BAM-Netz (Befehl oder Notebook, gleiche Logik): Lesen, Prüfen, Trockenlauf, Anlegen |
 | `tools/` | Skripte: Katalog, Spec-Export, Brücke (`openbis_bridge.py`), Antragspaket (`build_request.py`), Prüfseiten (`render_review.py prd|struktur|antrag|trockenlauf`, HTML + Markdown), Cloud-Setup |
 | `generated/CATALOG.md`, `catalog.json` | Katalog des Standards (gepinnter Stand) |
-| `generated/welded_fatigue_v2/` | Referenzbeispiel FB 7.2 (Wöhlerversuche), entstanden vor dem Umbau |
+| `generated/welded_fatigue_v2/`, `projects/fb72_welded_fatigue/` | Referenzbeispiel FB 7.2 (Wöhlerversuche), **eingefroren**: Vorlage und Testfall, nicht weiter ausarbeiten |
+| `tools/tests/fixtures/` | Testprojekte aus anderen Bereichen (z. B. Synthese), mit denen geprüft wird, dass alles allgemein funktioniert |
 | `.claude/` | Claude-Agenten und Befehle (`/bam-*`) als Abkürzungen für einzelne Schritte |

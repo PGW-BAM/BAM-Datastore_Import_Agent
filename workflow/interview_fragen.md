@@ -15,9 +15,10 @@ Stichwort-Nachfragen, die zum Gesagten passen. Eigene Ergänzungen sind erwünsc
 
 ## Querschnitt (einmal pro Projekt)
 
-- **Probe / Untersuchungsobjekt:** Wie heißt es, welche Kennungen gibt es (Hersteller, intern, final)? Wer vergibt sie, wie sind sie aufgebaut?
-- **Serien:** Was bildet eine Serie (Collection)? Was soll die Tabelle der Serie pro Probe zeigen?
-- **Ablauf sichtbar:** Soll jede Probe zeigen, in welchem Schritt sie steht und was als Nächstes kommt?
+- **Hauptobjekt:** Worum dreht sich der Ablauf: Probe, Charge, Bauteil, Simulation, Messkampagne …? Wie heißt es auf Deutsch und Englisch, welche Kennungen gibt es (Hersteller, intern, final)? Wer vergibt sie, wie sind sie aufgebaut? Entstehen unterwegs neue Objekte (Zwischenprodukte, Teilstücke, Schliffe)?
+- **Serien:** Was bildet eine Serie (Collection)? Was soll die Tabelle der Serie je Hauptobjekt zeigen?
+- **Ablauf sichtbar:** Soll jedes Hauptobjekt zeigen, in welchem Schritt es steht und was als Nächstes kommt?
+- **Lesen später:** Wird eher der Weg *eines* Objekts verfolgt oder werden *viele* verglichen? (Entscheidet mit über das Strukturmuster, `strukturmuster.md`.)
 - **Personen:** Wer führt Schritte aus, muss das je Schritt erfasst werden?
 - **Normen und Richtlinien:** Welche Normen bestimmen Werte oder Auswahllisten (ISO, DIN, ASTM, Hausverfahren)?
 - **Dateien:** Rohdaten, bereinigte Daten, Auswertungen, Fotos: was davon gehört zu welchem Schritt?
@@ -40,4 +41,8 @@ Stichwort-Nachfragen, die zum Gesagten passen. Eigene Ergänzungen sind erwünsc
 | Kalibrierung | Was wird kalibriert, wie oft, wer? Gültig bis? Am Gerät im Inventar oder je Versuch? |
 | Software, Skript, Auswertung | Name und Version? Eingabe- und Ausgabedateien? Soll das Skript selbst abgelegt werden? |
 | Randomisierung, Reihenfolge | Wie wird zugeordnet (Skript, Los)? Was soll das vermeiden (Bias)? Reihenfolge als Feld? |
+| Synthese, Ansatz, Zwischenprodukt | Edukte mit Menge und Charge (Inventar)? Entsteht ein neues Objekt (Zwischenprodukt, Produkt)? Ausbeute? Reinigung, Trocknung? Protokoll/SOP? |
+| Charakterisierung, Analytik | Methode (DLS, REM, XRD …), Gerät (Inventar)? Welche Kennwerte als Feld, was als Datei? Gibt es Standard-Schritte im Katalog? |
+| Simulation, Rechnung, Modell | Software und Version, Eingabedateien, Parameter als Felder oder Datei? Rechner/Cluster? Welche Ergebnisse als Kennwerte? |
+| Bauteil, Prüfkörper aus Material | Aus welchem Material/Halbzeug entsteht es (Eltern)? Fertigungsschritte? Geometrie als Felder oder Zeichnung? |
 | Abbruch, Ergebnis, Status | Feste Auswahl der Abbruchgründe? Wer entscheidet? Was passiert mit Durchläufern? |

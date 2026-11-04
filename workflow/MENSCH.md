@@ -53,7 +53,8 @@ Der Befehl holt zuerst den neuesten Stand (`git pull`), arbeitet, und lädt dann
 | `trockenlauf` | wie `lesen` | nein | + `reports/dryrun_<datum>.json` |
 | `anlegen` | wie `lesen` | **ja**, nur was fehlt; fragt vorher nach „ja“, verweigert bei Lücken | + `reports/apply_<datum>.json` |
 
-Lieber mit Ansicht? Das Notebook `notebooks/openbis_bruecke.ipynb` macht dasselbe Zelle für Zelle. Dort danach selbst
+Lieber mit Ansicht? Das Notebook `notebooks/openbis_bruecke.ipynb` macht dasselbe Zelle für Zelle. In der ersten Zelle
+`PROJECT` auf den Projektnamen aus `AUFGABE.md` setzen. Danach selbst
 `git add projects/<name>`, `git commit`, `git push`.
 
 ## Antrag senden (◆ D)

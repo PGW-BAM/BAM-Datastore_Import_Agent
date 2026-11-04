@@ -32,6 +32,12 @@ to render until it passes).
 
 ## Design algorithm (follow in order)
 
+"Specimen" below means the **main object** of the workflow, whatever it is in the project (specimen, batch, component,
+simulation, measurement campaign …). Keys such as `per_specimen` or `objects_per_specimen` keep the word for
+compatibility; the review pages use the main object's `name_de`/`name_en` from the first `layout.per_specimen` entry.
+Examples below come from the frozen FB 7.2 reference (`generated/welded_fatigue_v2/`) and a synthesis test project
+(`tools/tests/fixtures/synthese/`); do not copy domain content from them.
+
 1. **Subject first (P3).** Every data item that *describes the specimen* (identity, geometry, weld
    rating, distortion, series assignment, load level, test order) goes on the specimen type, grouped into
    sections named after the workflow step (`"Initial Quality Check"`, `"Geometry Before Installation"`, …), in workflow order.
@@ -47,7 +53,7 @@ to render until it passes).
    (M4, as in the standard `CREEP_TEST`), unless the PRD says they are parents; never OBJECT properties to dummy catalog
    types. Avoid shared inventory objects with many links in the graph of one specimen.
 4. **Workflow visibility (P5).** Add to the specimen one CONTROLLEDVOCABULARY property "Next step" whose
-   vocabulary lists the workflow steps in order (`S01_…` … `S12_…`, `DONE`). Plan one `SOP` object
+   vocabulary lists the workflow steps in order (`S01_…` … `S12_…`, `DONE`). Plan one `GENERAL_PROTOCOL` object (not `SOP`: in the standard that is the formal e-file document with ten mandatory fields)
    "Workflow plan" per project holding the step→location table.
 5. **Base classes (P2).** Pick the closest existing base from catalog.json and inherit directly:
    specimen → `Sample`; mechanical test → `MechanicalTest` (if present); otherwise `ExperimentalStep`/

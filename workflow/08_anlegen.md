@@ -19,7 +19,10 @@ fehlt. Nichts wird geändert oder gelöscht, keine Typen.
    - `$NAME` von Collections, Ablaufplan, Schritten und Geräten als „Deutsch / Englisch“
      (z. B. „Serie 1 – Stumpfstoß / Series 1 – butt weld“); Eigennamen wie „ZEISS GOM ATOS 5“ einmal
    - Eltern: Schlüssel aus der Datei oder Identifier aus dem Export (`/SPACE/PROJEKT/CODE`)
-   - Pflichtfelder der Typen setzen (stehen im Export, `mandatory: true`)
+   - Link-Felder (Typ OBJECT, Muster M4): `"<FELD>": "@obj:<Schlüssel oder Identifier>"`; die Brücke schreibt den Identifier
+   - Pflichtfelder der Typen setzen (stehen im Export, `mandatory: true`). Häufig übersehen: `BAM_OE` (Organisationseinheit)
+     ist bei **jedem** Sample-Typ Pflicht; den Begriff aus dem Export nehmen (`vocabularies` → `BAM_OE`), nicht raten
+   - Ablaufplan als `GENERAL_PROTOCOL`, nicht `SOP` (das ist im Standard das förmliche E-Akten-Dokument mit Pflichtfeldern)
    - Lange Texte (Ablaufplan) als Datei daneben und `"@file:<datei>"`
    - **GERÄT FEHLT:** nur nach Zustimmung der Person als eigenes Objekt mit `collection` = Collection im
      Equipment-Projekt aufnehmen

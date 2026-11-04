@@ -25,7 +25,8 @@ Gleiche Logik als ein Befehl, mit git pull/push eingebaut: `python tools/bruecke
 code("""# Einmalig, falls noch nicht installiert:
 # %pip install pybis==1.37.4 pyyaml"""),
 md("## Einstellungen"),
-code("""PROJECT = "fb72_welded_fatigue"   # Ordner unter projects/
+code("""PROJECT = ""   # Ordner unter projects/, steht in AUFGABE.md (z. B. "fb72_welded_fatigue")
+assert PROJECT, "Bitte PROJECT eintragen: den Ordnernamen unter projects/ aus AUFGABE.md."
 
 import getpass, json, sys
 from datetime import date

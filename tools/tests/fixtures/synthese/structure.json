@@ -1,0 +1,147 @@
+{
+  "_note": "Fictitious test project (tools/tests/fixtures/synthese). Inventory objects are referenced by identifier. BAM_OE 'TEST_OE' is a placeholder term of the fake instance; a real project takes it from the export.",
+  "space": "TEST_SPACE",
+  "project": {
+    "code": "AG_NANO",
+    "description": "Synthesis of silver nanoparticles (test project)//Synthese von Silber-Nanopartikeln (Testprojekt)"
+  },
+  "collections": [
+    {
+      "code": "SERIES_CITRATE",
+      "type": "COLLECTION",
+      "props": {
+        "$NAME": "Citrat-Route / Citrate route",
+        "$DEFAULT_OBJECT_TYPE": "SAMPLE.NANOPARTICLE_BATCH"
+      }
+    }
+  ],
+  "objects": [
+    {
+      "key": "PLAN",
+      "code": "WORKFLOW_PLAN",
+      "type": "GENERAL_PROTOCOL",
+      "collection": null,
+      "props": {
+        "$NAME": "Ablaufplan / Workflow plan",
+        "FOR_WHAT": "Where each step of the synthesis workflow is documented//Wo jeder Schritt der Synthese dokumentiert wird"
+      }
+    },
+    {
+      "key": "AG-01-SYN",
+      "code": "AG-01-SYN",
+      "type": "EXPERIMENTAL_STEP.NANOPARTICLE_SYNTHESIS",
+      "collection": "SERIES_CITRATE",
+      "props": {
+        "$NAME": "AG-01 Synthese / Synthesis",
+        "NANO.MASS_SILVER_NITRATE": 152.0,
+        "NANO.MASS_SODIUM_CITRATE": 45,
+        "NANO.REACTION_TEMPERATURE": 100,
+        "NANO.REACTION_TIME": 15,
+        "NANO.BALANCE": "@obj:/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/BALANCE_01",
+        "INSTRUMENT": "@obj:/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/HEATING_STIRRER_01"
+      },
+      "parents": [
+        "/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/AGNO3_01",
+        "/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/NA3CITRATE_01"
+      ]
+    },
+    {
+      "key": "AG-01",
+      "code": "AG-01",
+      "type": "SAMPLE.NANOPARTICLE_BATCH",
+      "collection": "SERIES_CITRATE",
+      "props": {
+        "$NAME": "AG-01",
+        "NANO.TARGET_DIAMETER": 20,
+        "NANO.YIELD": 78.5,
+        "NANO.PARTICLE_SHAPE": "SPHERE",
+        "NANO.NEXT_STEP": "DONE",
+        "NANO.CENTRIFUGE": "@obj:/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/CENTRIFUGE_01",
+        "BAM_OE": "TEST_OE"
+      },
+      "parents": [
+        "AG-01-SYN"
+      ]
+    },
+    {
+      "key": "AG-01-DLS",
+      "code": "AG-01-DLS",
+      "type": "EXPERIMENTAL_STEP.DLS",
+      "collection": "SERIES_CITRATE",
+      "props": {
+        "$NAME": "AG-01 DLS",
+        "DLS.ZAVG": 17.6,
+        "DLS.PDI": 0.21
+      },
+      "parents": [
+        "AG-01",
+        "/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/DLS_01"
+      ]
+    },
+    {
+      "key": "AG-02-SYN",
+      "code": "AG-02-SYN",
+      "type": "EXPERIMENTAL_STEP.NANOPARTICLE_SYNTHESIS",
+      "collection": "SERIES_CITRATE",
+      "props": {
+        "$NAME": "AG-02 Synthese / Synthesis",
+        "NANO.MASS_SILVER_NITRATE": 150.5,
+        "NANO.MASS_SODIUM_CITRATE": 46,
+        "NANO.REACTION_TEMPERATURE": 98,
+        "NANO.REACTION_TIME": 30,
+        "NANO.BALANCE": "@obj:/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/BALANCE_01",
+        "INSTRUMENT": "@obj:/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/HEATING_STIRRER_01"
+      },
+      "parents": [
+        "/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/AGNO3_01",
+        "/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/NA3CITRATE_01"
+      ]
+    },
+    {
+      "key": "AG-02",
+      "code": "AG-02",
+      "type": "SAMPLE.NANOPARTICLE_BATCH",
+      "collection": "SERIES_CITRATE",
+      "props": {
+        "$NAME": "AG-02",
+        "NANO.TARGET_DIAMETER": 40,
+        "NANO.YIELD": 71.0,
+        "NANO.PARTICLE_SHAPE": "ROD",
+        "NANO.NEXT_STEP": "S05_TEM",
+        "NANO.CENTRIFUGE": "@obj:/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/CENTRIFUGE_01",
+        "BAM_OE": "TEST_OE"
+      },
+      "parents": [
+        "AG-02-SYN"
+      ]
+    },
+    {
+      "key": "AG-02-DLS",
+      "code": "AG-02-DLS",
+      "type": "EXPERIMENTAL_STEP.DLS",
+      "collection": "SERIES_CITRATE",
+      "props": {
+        "$NAME": "AG-02 DLS",
+        "DLS.ZAVG": 41.2,
+        "DLS.PDI": 0.28
+      },
+      "parents": [
+        "AG-02",
+        "/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/DLS_01"
+      ]
+    },
+    {
+      "key": "AG-01-TEM",
+      "code": "AG-01-TEM",
+      "type": "EXPERIMENTAL_STEP.TEM",
+      "collection": "SERIES_CITRATE",
+      "props": {
+        "$NAME": "AG-01 TEM"
+      },
+      "parents": [
+        "AG-01",
+        "/BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN/TEM_01"
+      ]
+    }
+  ]
+}

@@ -1,5 +1,8 @@
 # Status: fb72_welded_fatigue
 
+> **Eingefroren (2026-11-04):** Referenzbeispiel und Testfall für die allgemeinen Werkzeuge. Es wird nicht weiter
+> ausgearbeitet, solange die Person das nicht ausdrücklich wünscht. Offene Punkte unten bleiben als Stand stehen.
+
 Jeder Agent liest diese Datei zuerst und aktualisiert sie zuletzt. Freigaben (◆) trägt der Agent erst nach einer
 ausdrücklichen Freigabe im Chat ein, mit Zitat und Datum. Offene Aufgabe für den Menschen: `AUFGABE.md` (falls vorhanden).
 
@@ -25,6 +28,8 @@ Playground.
 | 8 | angelegt | offen | | |
 
 ## Offene Fragen
+
+- `structure.json` setzt `BAM_OE` (Pflichtfeld jedes Sample-Typs) noch nicht; der Trockenlauf wird das als Lücke melden. Begriff aus dem Playground-Export nehmen
 
 - Variante E: 3D-Scan und Bruchflächenanalyse sind Standard-`EXPERIMENTAL_STEP` ohne Link-Feld, deshalb bleiben Scanner, Makro-Kamera und Mikroskop dort Eltern (3 statt 0 geteilte Knoten). Alternative: zwei eigene Schritt-Typen mit Link-Feld (2 Typen mehr im Antrag). Entscheidung der Person offen
 - Link-Felder (Typ OBJECT) beim Anlegen: Die Brücke schreibt den Identifier des Inventar-Objekts. Auf dem Playground im Trockenlauf/Anlegen prüfen, ob openBIS 20.10 den Wert so annimmt

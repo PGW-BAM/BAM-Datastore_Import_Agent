@@ -20,11 +20,11 @@ Safety: apply() only CREATES what is missing (project, collections, objects). It
 deletes anything, and it never creates types. dry_run=True is the default.
 
 structure.json (written by the agent, see templates/structure.json):
-  {"space": "FB_72", "project": {"code": "WELDED_FATIGUE", "description": "..."},
+  {"space": "MY_SPACE", "project": {"code": "MY_PROJECT", "description": "..."},
    "collections": [{"code": "SERIES_1", "type": "COLLECTION", "props": {"$NAME": "..."}}],
    "objects": [{"key": "S1-01", "code": "S1-01", "type": "SAMPLE.X", "collection": "SERIES_1",
                 "props": {"$NAME": "S1-01", "NOTES": "@file:notes.txt"},
-                "parents": ["OTHER_KEY", "/BAM_EQUIPMENT/FB72_EQUIPMENT_OPEN/GOM_ATOS_5"]}]}
+                "parents": ["OTHER_KEY", "/BAM_EQUIPMENT/MY_EQUIPMENT_OPEN/SCANNER_01"]}]}
   collection: code in this project, "/SPACE/PROJECT/COLLECTION" elsewhere (e.g. the division's
   equipment project), or null for an object directly in this project. Prop values "@file:<path>"
   are read from a text file next to structure.json. parents: keys from this file or identifiers.

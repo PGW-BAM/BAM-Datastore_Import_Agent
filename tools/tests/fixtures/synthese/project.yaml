@@ -1,0 +1,18 @@
+# Testprojekt (frei erfunden): prüft, dass Werkzeuge, Formate und Prüfseiten für jeden Bereich funktionieren,
+# nicht nur für das FB-7.2-Beispiel. Kein echtes Projekt, nichts davon wird in openBIS angelegt.
+# Keine Zugangsdaten hier eintragen.
+
+name: synthese
+title: Synthese von Silber-Nanopartikeln (Testprojekt)
+title_en: Synthesis of silver nanoparticles (test project)
+division: FB 0.0
+summary_en: >-
+  Fictitious test project. Silver nanoparticles are synthesised in batches by citrate reduction, purified and
+  characterised by DLS and TEM. Each batch must be traceable to its reactants and synthesis conditions, and every
+  series must compare particle size and shape across batches.
+instance: https://playground.datastore.bam.de
+space: TEST_SPACE
+project: AG_NANO
+inventory_projects:
+  - /BAM_EQUIPMENT/TEST_EQUIPMENT_OPEN
+bam_masterdata: v0.17.0
