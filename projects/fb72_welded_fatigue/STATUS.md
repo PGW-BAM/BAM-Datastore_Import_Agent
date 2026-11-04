@@ -34,6 +34,8 @@ Playground.
 
 ## Verlauf
 
+- 2026-11-04: Prüfseiten für ◆ A (`review/prd.html`) und ◆ E (`review/trockenlauf.html`) ergänzt; zu jeder Prüfseite eine Markdown-Fassung (`review/*.md`). Die Brücke legt jetzt auch `reports/check_<datum>.json` ab. Seite E wartet auf den Trockenlauf (nach Schritt 3/7)
+
 - 2026-11-04: Vorgabe „möglichst flach“ aus den Regeln entfernt (Wunsch im Chat); Muster und Quellen in `workflow/strukturmuster.md`. Neue empfohlene Variante E „Prozesslinie, Geräte als Felder“ (Vorschlag), B entfällt. Offen: Das PRD (`BAM_PRD_Workflow_FB72_v2.md`) enthält noch P1 „Flache Objekt-Hierarchie“ und §5 „Geräte als Eltern“; E weicht davon ab und braucht die Zustimmung des Fachbereichs
 
 - 2026-11-04: Prüfseite B zeigt jetzt 4 Varianten der Datenstruktur (A flach gebündelt, empfohlen und ausgearbeitet; B ein Objekt je Schritt; C alles an der Probe; D Kette wie auf dev1). Überschrift und Fachbereich aus `project.yaml`. Die Varianten B und C sind Vorschläge des Agenten; eine neue Bestätigung von ◆ B ist für den Playground nicht nötig, aber möglich

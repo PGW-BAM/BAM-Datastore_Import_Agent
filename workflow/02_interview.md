@@ -49,5 +49,12 @@ nach und bringt eigene Ideen ein, schreibt aber nur auf, was die Person bestäti
 
 ## Stopp
 
-◆ **A**: Die Person liest `prd.md` und gibt im Chat frei („A freigegeben“) oder nennt Änderungen. Der Agent trägt
-die Freigabe wörtlich mit Datum in `STATUS.md` ein.
+◆ **A**: Prüfseite erzeugen und der Person zeigen (`AGENTS.md` → „Prüfseiten“):
+
+```bash
+python tools/render_review.py <name> prd     # -> review/prd.html + review/prd.md, committen und pushen
+```
+
+Die Seite zeigt den Ablauf als Schritte mit Geräten und Dateien, alle Abschnitte des PRD und Hinweise des Agenten
+(Namen ohne Englisch, openBIS-Codes, offene Punkte). Die Person gibt im Chat frei („A freigegeben“) oder nennt
+Änderungen. Der Agent trägt die Freigabe wörtlich mit Datum in `STATUS.md` ein.

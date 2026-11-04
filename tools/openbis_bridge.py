@@ -440,6 +440,14 @@ def check(inventory: dict, spec: dict | None = None, structure: dict | None = No
     }
 
 
+def save_report(pdir: Path, kind: str, data: dict) -> Path:
+    """reports/<kind>_<date>.json (kind: check, dryrun, apply). Same files from the command and the notebook;
+    tools/render_review.py <name> trockenlauf reads the newest check and dryrun report."""
+    out = Path(pdir) / "reports" / f"{kind}_{datetime.now().date().isoformat()}.json"
+    write_json(out, data)
+    return out
+
+
 WHO = {"admin": "Admin (Antrag, Schritt 6)", "you": "du (Inventar, Schritt 8)", "agent": "Agent (structure.json)"}
 
 

@@ -77,4 +77,5 @@ zuerst und schreibt sie zuletzt.
 | `request/` | 6 | `issue.md`, `mail.txt`, `masterdata.xlsx`, `checker.log` |
 | `delivery_check.md` | 7 | Soll/Ist: bereit oder was fehlt |
 | `structure.json` | 8 | Projekt, Collections, Objekte, Eltern-Links (Format: `tools/openbis_bridge.py`) |
-| `reports/dryrun_<datum>.json`, `reports/apply_<datum>.json` | 8 (Befehl/Notebook) | Plan des Trockenlaufs, was angelegt oder übersprungen wurde |
+| `reports/check_<datum>.json`, `reports/dryrun_<datum>.json`, `reports/apply_<datum>.json` | 7, 8 (Befehl/Notebook) | Prüfung, Plan des Trockenlaufs, was angelegt oder übersprungen wurde |
+| `review/<seite>.html`, `review/<seite>.md` | 2, 4, 6, 8 | Prüfseiten A (`prd`), B (`struktur`), C/D (`antrag`), E (`trockenlauf`), je als HTML und Markdown |

@@ -32,9 +32,10 @@ fehlt. Nichts wird geändert oder gelöscht, keine Typen.
 
 ## Tun: Mensch (BAM-Netz)
 
-1. Trockenlauf: `python tools/bruecke.py <name> trockenlauf` oder Notebook Teil 1–3. Der Plan landet als
-   `reports/dryrun_<datum>.json` im Repo, der Agent prüft ihn mit dir.
-2. ◆ **E** (unten): Freigabe im Chat.
+1. Trockenlauf: `python tools/bruecke.py <name> trockenlauf` oder Notebook Teil 1–3. Prüfung und Plan landen als
+   `reports/check_<datum>.json` und `reports/dryrun_<datum>.json` im Repo.
+2. Agent: `git pull`, dann `python tools/render_review.py <name> trockenlauf` → `review/trockenlauf.html` + `.md`,
+   committen, pushen, zeigen. ◆ **E** (unten): Freigabe im Chat; die Seite lässt sie erst zu, wenn keine Lücken mehr da sind.
 3. Anlegen: `python tools/bruecke.py <name> anlegen` (zeigt den Plan noch einmal, fragt nach „ja“) oder Notebook
    Teil 4 mit `FREIGABE = True`. Der Bericht `reports/apply_<datum>.json` geht ins Repo (Befehl: automatisch).
 

@@ -116,3 +116,27 @@ def test_zweig_switches_branch_and_pushes_there(tmp_path, monkeypatch):
     log = run("git", "--git-dir", str(remote), "log", "agent/work", "--format=%s", "-1").stdout
     assert log.startswith("demo: lesen")
     assert run("git", "--git-dir", str(remote), "log", "main", "--format=%s", "-1").stdout.strip() == "main"
+
+
+def test_dry_run_feeds_review_page_e(tmp_path):
+    import render_review as rr
+    p = make_project(tmp_path)
+    (p["dir"] / "project.yaml").write_text(YAML + 'title: Testablauf\ntitle_en: Test workflow\ndivision: FB 0.0\n'
+                                           'summary_en: test\nbam_masterdata: v0.17.0\n')
+    s = json.loads(p["structure"].read_text())
+    for c in s["collections"]:
+        c.setdefault("props", {})["$NAME"] = "Serie 1 / Series 1"  # names in both languages (schemas/structure)
+    p["structure"].write_text(json.dumps(s))
+    page = tmp_path / "e.html"
+    assert rr.main(["demo", "trockenlauf", "--repo", str(tmp_path), "--out", str(page)]) == 0
+    before = page.read_text(encoding="utf-8")
+    assert "Noch kein Trockenlauf" in before and 'data-block-de="Noch kein Trockenlauf' in before  # no approval possible yet
+
+    assert bruecke.run(p, "trockenlauf", fake()) == 0
+    assert list((p["dir"] / "reports").glob("check_*.json")) and list((p["dir"] / "reports").glob("dryrun_*.json"))
+    assert rr.main(["demo", "trockenlauf", "--repo", str(tmp_path), "--out", str(page)]) == 0
+    html = page.read_text(encoding="utf-8")
+    assert "Noch kein Trockenlauf" not in html and "data-block-de" not in html  # check is clean -> E can be approved
+    assert "wird angelegt" in html and "S1-01-TEST" in html and "FB 0.0" in html
+    md = page.with_suffix(".md").read_text(encoding="utf-8")
+    assert "E freigegeben" in md and "| Objekt | Typ |" in md

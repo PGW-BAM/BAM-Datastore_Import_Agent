@@ -64,9 +64,11 @@ spec = json.loads(SPEC.read_text(encoding="utf-8")) if SPEC.exists() else None
 structure = json.loads(STRUCTURE.read_text(encoding="utf-8")) if STRUCTURE.exists() else None
 rep = ob.check(inv, spec, structure)
 (P / "delivery_check.md").write_text(ob.render_check_md(rep) + "\\n", encoding="utf-8")
+ob.save_report(P, "check", rep)
 display(Markdown(ob.render_check_md(rep)))"""),
 md("## 3 Trockenlauf (Schritt 8)\nÄndert nichts. Prüfen Sie die Liste: Passt der Space, passt das Projekt, gibt es Konflikte?"),
 code("""plan = ob.apply(call, structure, STRUCTURE.parent, dry_run=True)
+print("gespeichert:", ob.save_report(P, "dryrun", plan).relative_to(REPO))
 print(f"würde anlegen: {len(plan['created'])}, schon da: {len(plan['skipped'])}, "
       f"verworfene Properties: {len(plan['droppedProps'])}")
 for i in plan["created"]: print("  +", i)

@@ -7,7 +7,7 @@ Chat, mit allem, was Sie kopieren müssen.
 | Aufgabe | Schritt | Wo | Aufwand |
 |---|---|---|---|
 | Fragen beantworten (Interview) | 2 | Chat | je Runde ein paar Minuten |
-| Freigeben (◆ A, B, C, E) | 2, 4, 5, 8 | Chat: „A freigegeben“ / „A approved“ oder Ihre Änderungen, oder Text von der Prüfseite | Lesen |
+| Freigeben (◆ A, B, C, E) | 2, 4, 5, 8 | Prüfseite lesen (`review/<seite>.html` im Browser oder `review/<seite>.md` direkt auf GitHub), dann im Chat: „A freigegeben“ / „A approved“, Ihre Änderungen oder der Text von der Prüfseite | Lesen |
 | openBIS lesen | 3, 7 | BAM-Netz: `python tools/bruecke.py <name> lesen` bzw. `pruefen` | 1 Minute |
 | Antrag senden (◆ D) | 6 | Browser (GitHub-Issue) + Mail an datastore@bam.de | 5 Minuten |
 | Trockenlauf und Anlegen | 8 | BAM-Netz: `… trockenlauf`, nach Freigabe `… anlegen` | 2 Minuten |

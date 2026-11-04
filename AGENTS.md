@@ -60,15 +60,21 @@ An den Prüfpunkten zeigst du der Person eine Prüfseite. Die Seite schreibst du
 
 | Prüfpunkt | Vorher | Seite erzeugen | Datei |
 |---|---|---|---|
+| ◆ A PRD | `prd.md` nach `templates/prd.md` (Abschnitte `## N. Titel`, Ablauf als Tabelle `Nr. \| Schritt \| …`) | `python tools/render_review.py <name> prd` | `projects/<name>/review/prd.html` |
 | ◆ B Struktur | `design.json` mit 2–4 `variants`, eine empfohlen (Format `schemas/design.schema.json`) | `python tools/render_review.py <name> struktur` | `projects/<name>/review/struktur.html` |
 | ◆ C/D Antrag | `python tools/build_request.py <name>` | `python tools/render_review.py <name> antrag` | `projects/<name>/review/antrag.html` |
-| ◆ A, ◆ E | noch keine Seite: `prd.md` bzw. die Ausgabe des Trockenlaufs zeigen | | |
+| ◆ E Trockenlauf | `structure.json`; der Mensch hat `bruecke.py <name> trockenlauf` laufen lassen (`reports/check_*.json`, `reports/dryrun_*.json`) | `python tools/render_review.py <name> trockenlauf` | `projects/<name>/review/trockenlauf.html` |
+
+Zu jeder Seite entsteht daneben eine Markdown-Fassung (`review/<seite>.md`) mit demselben Inhalt, lesbar direkt auf
+GitHub (ohne Knöpfe; die Antwort schreibt die Person dann selbst in den Chat). Seite E erlaubt keine Freigabe, solange
+kein Trockenlauf im Repo liegt oder die Prüfung Lücken meldet.
 
 1. Nach jedem Schreiben von `design.json` oder `structure.json`: `python tools/check_files.py <name>`. Meldet es Fehler,
    erzeugt auch `render_review.py` keine Seite. Dann die Dateien nach der Meldung korrigieren, nicht das Skript.
 2. Seite committen und pushen.
 3. Zeigen: Kann die Plattform Seiten anzeigen (Claude: Artifact, mit `--fragment`), dort veröffentlichen. Sonst (z. B.
-   Mistral Vibe) den Link auf die Datei im Repo nennen, mit dem Hinweis: „Auf GitHub öffnen, oben rechts *Download raw
+   Mistral Vibe) beide Links auf die Dateien im Repo nennen: die Markdown-Fassung `review/<seite>.md` („direkt auf GitHub
+   lesen“) und die HTML-Seite mit dem Hinweis: „Für Auswahl und Antworttext: auf GitHub öffnen, oben rechts *Download raw
    file*, dann die Datei im Browser öffnen.“
 4. Die Person antwortet mit dem Text, den die Seite erzeugt („B freigegeben (Variante A)“ / „B approved (variant A)“ oder
    eine Liste von Änderungen, auch „bitte Variante C ausarbeiten“).
@@ -107,7 +113,7 @@ Englisch umschaltbar, Namen immer „Deutsch / Englisch“.
 | `schemas/` | Formate der Projektdateien (`design`, `structure`, `project`), geprüft mit `tools/check_files.py` |
 | `projects/<name>/` | ein Projekt: Einstellungen, Status, alle Zwischenstände |
 | `tools/bruecke.py`, `notebooks/openbis_bruecke.ipynb` | die Werkzeuge im BAM-Netz (Befehl oder Notebook, gleiche Logik): Lesen, Prüfen, Trockenlauf, Anlegen |
-| `tools/` | Skripte: Katalog, Spec-Export, Brücke (`openbis_bridge.py`), Antragspaket (`build_request.py`), Prüfseiten (`render_review.py struktur|antrag`), Cloud-Setup |
+| `tools/` | Skripte: Katalog, Spec-Export, Brücke (`openbis_bridge.py`), Antragspaket (`build_request.py`), Prüfseiten (`render_review.py prd|struktur|antrag|trockenlauf`, HTML + Markdown), Cloud-Setup |
 | `generated/CATALOG.md`, `catalog.json` | Katalog des Standards (gepinnter Stand) |
 | `generated/welded_fatigue_v2/` | Referenzbeispiel FB 7.2 (Wöhlerversuche), entstanden vor dem Umbau |
 | `.claude/` | Claude-Agenten und Befehle (`/bam-*`) als Abkürzungen für einzelne Schritte |

@@ -98,6 +98,7 @@ def run(project: dict, action: str, call, yes: bool = False, despite_gaps: bool 
     rep = ob.check(inv, spec, structure)
     md = ob.render_check_md(rep)
     (project["dir"] / "delivery_check.md").write_text(md + "\n", encoding="utf-8")
+    ob.save_report(project["dir"], "check", rep)
     print(md)
     if action == "pruefen":
         return 0 if rep["ready"] else 2
@@ -106,7 +107,7 @@ def run(project: dict, action: str, call, yes: bool = False, despite_gaps: bool 
         print(f"Keine structure.json ({project['structure']}). Die schreibt der Agent in Schritt 8.")
         return 1
     plan = ob.apply(call, structure, project["structure"].parent, dry_run=True)
-    ob.write_json(project["dir"] / "reports" / f"dryrun_{today}.json", plan)
+    ob.save_report(project["dir"], "dryrun", plan)
     print(f"\nTrockenlauf: würde anlegen {len(plan['created'])}, schon da {len(plan['skipped'])}, "
           f"nicht zugewiesene Properties {len(plan['droppedProps'])}")
     for i in plan["created"]:
@@ -114,6 +115,7 @@ def run(project: dict, action: str, call, yes: bool = False, despite_gaps: bool 
     for i in plan["droppedProps"]:
         print("  ! nicht zugewiesen:", i)
     if action == "trockenlauf":
+        print(f"\nPrüfseite E erzeugt der Agent daraus: python tools/render_review.py {project['name']} trockenlauf")
         return 0
 
     if not rep["ready"] and not despite_gaps:

@@ -48,3 +48,27 @@ def test_new_properties_carry_property_label_de():
         for p in t["properties"]:
             if p["code"] in m.new_codes:
                 assert p.get("label_de"), p["code"]
+
+
+def test_prd_page_a_and_markdown_versions(tmp_path):
+    out = tmp_path / "prd.html"
+    assert rr.main(["fb72_welded_fatigue", "prd", "--out", str(out)]) == 0
+    html = out.read_text(encoding="utf-8")
+    for part in ("Prüfpunkt A", 'data-gate="A"', "Vorqualitätsprüfung der Schweißnaht", "ZEISS GOM ATOS 5",
+                 "Hinweise des Agenten", "WELDING.WELD_TYPE"):
+        assert part in html, part
+    assert html.count('class="step test"') == 12  # the workflow table becomes 12 step cards
+    for view in ("prd", "struktur", "antrag", "trockenlauf"):
+        o = tmp_path / f"{view}.html"
+        assert rr.main(["fb72_welded_fatigue", view, "--out", str(o)]) == 0
+        md = o.with_suffix(".md").read_text(encoding="utf-8")
+        assert md.startswith("# Wöhlerversuche an Schweißverbindungen / S-N tests on welded joints"), view
+        assert "<" not in md.split("\n")[0] and "freigegeben" in md
+    assert "(empfohlen / recommended)" in (tmp_path / "struktur.md").read_text(encoding="utf-8")
+
+
+def test_markdown_reader():
+    blocks = rr.md_blocks("Text **fett**\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n- x\n- y\n\n1. eins\n   weiter\n")
+    assert [b[0] for b in blocks] == ["p", "table", "ul", "ol"]
+    assert blocks[1][2] == [["1", "2"]] and blocks[3][1] == ["eins weiter"]
+    assert rr.split_top("a, b (x, y), –") == ["a", "b (x, y)"]

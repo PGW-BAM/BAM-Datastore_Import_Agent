@@ -119,7 +119,9 @@ class Model:
         self.structure = ob.read_json(self.project["structure"]) or {}
         self.catalog = ob.read_json(repo / "generated" / "catalog.json") or {"types": []}
         prd = (pdir / cfg.get("prd", "prd.md")).resolve()
-        first = next((l for l in prd.read_text(encoding="utf-8").splitlines() if l.startswith("# ")), "") if prd.exists() else ""
+        self.prd_text = prd.read_text(encoding="utf-8") if prd.exists() else ""
+        self.prd_rel = str(prd.relative_to(repo.resolve())) if prd.is_relative_to(repo.resolve()) else str(prd)
+        first = next((l for l in self.prd_text.splitlines() if l.startswith("# ")), "")
         prd_title = re.sub(r"^#\s*(PRD\s*(v\d+)?\s*:\s*)?", "", first).strip()
         # page heading from the project's own settings (title, title_en, division); the PRD heading only as fallback
         given = lambda k: str(cfg.get(k) or "").strip() if not str(cfg.get(k) or "").strip().startswith("<") else ""
@@ -674,7 +676,7 @@ def view_antrag(m: Model) -> str:
                     f'<td class="src">{E(p.get("source") or "")}</td></tr>')
     body.append(f'<section aria-labelledby="a2">{section_head("3", "a2", "Neue Felder", "New fields")}'
                 f'<p>{t("Jedes Feld mit seinem Typ, dem Abschnitt im Formular und der Stelle im PRD, aus der es stammt.", "Each field with its type, its section in the form and the place in the PRD it comes from.")}</p>'
-                f'<div class="tbl"><table class="wrap"><thead><tr><th>{t("Feld", "Field")}</th><th>{t("Art", "Kind")}</th><th>{t("Abschnitt", "Section")}</th>'
+                f'<div class="tbl"><table class="tw"><thead><tr><th>{t("Feld", "Field")}</th><th>{t("Art", "Kind")}</th><th>{t("Abschnitt", "Section")}</th>'
                 f'<th>{t("Objekttyp", "Object type")}</th><th>{t("Quelle", "Source")}</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
                 f'{feedback("felder", "Neue Felder", "New fields")}</section>')
 
@@ -779,6 +781,508 @@ def view_antrag(m: Model) -> str:
 # --------------------------------------------------------------------------------------------
 # page
 
+# --------------------------------------------------------------------------------------------
+# view: prd (Prüfpunkt A)
+
+
+def _inline(text: str) -> str:
+    """Markdown inline -> HTML (escaped): **bold**, *italic*, `code`, [text](url)."""
+    s = E(text)
+    s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+    s = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", s)
+    s = re.sub(r"(?<![*\w])\*(?!\s)(.+?)(?<!\s)\*(?!\w)", r"<i>\1</i>", s)
+    s = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", r'<a href="\2" target="_blank" rel="noopener">\1</a>', s)
+    return s
+
+
+def _cells(line: str) -> list[str]:
+    return [c.strip() for c in line.strip().strip("|").split("|")]
+
+
+def md_blocks(text: str) -> list[tuple]:
+    """Small, fixed Markdown reader: ('p', text), ('ul'|'ol', [items]), ('table', head, rows), ('quote', text), ('h', text)."""
+    out, lines, i = [], text.splitlines(), 0
+    while i < len(lines):
+        ln = lines[i].rstrip()
+        if not ln.strip() or re.match(r"^-{3,}$", ln.strip()):
+            i += 1
+            continue
+        if ln.lstrip().startswith("|") and i + 1 < len(lines) and re.match(r"^\s*\|?\s*:?-{3,}", lines[i + 1]):
+            head, rows, i = _cells(ln), [], i + 2
+            while i < len(lines) and lines[i].lstrip().startswith("|"):
+                rows.append(_cells(lines[i]))
+                i += 1
+            out.append(("table", head, rows))
+            continue
+        if re.match(r"^#{3,6}\s", ln):
+            out.append(("h", ln.lstrip("#").strip()))
+            i += 1
+            continue
+        if ln.startswith(">"):
+            buf = []
+            while i < len(lines) and lines[i].startswith(">"):
+                buf.append(lines[i][1:].strip())
+                i += 1
+            out.append(("quote", " ".join(buf)))
+            continue
+        m_ = re.match(r"^\s*([-*]|\d+\.)\s+", ln)
+        if m_:
+            kind, items = ("ol" if m_.group(1)[0].isdigit() else "ul"), []
+            while i < len(lines) and (re.match(r"^\s*([-*]|\d+\.)\s+", lines[i]) or
+                                      (lines[i].startswith("   ") and lines[i].strip() and items)):
+                if re.match(r"^\s*([-*]|\d+\.)\s+", lines[i]):
+                    items.append(re.sub(r"^\s*([-*]|\d+\.)\s+", "", lines[i]).strip())
+                else:
+                    items[-1] += " " + lines[i].strip()
+                i += 1
+            items = [x for x in items if x]
+            if items:
+                out.append((kind, items))
+            continue
+        buf = []
+        while i < len(lines) and lines[i].strip() and not lines[i].lstrip().startswith(("|", ">", "#")) \
+                and not re.match(r"^\s*([-*]|\d+\.)\s+", lines[i]):
+            buf.append(lines[i].strip())
+            i += 1
+        out.append(("p", " ".join(buf)))
+    return out
+
+
+def blocks_html(blocks: list[tuple]) -> str:
+    parts = []
+    for b in blocks:
+        if b[0] == "p":
+            parts.append(f"<p>{_inline(b[1])}</p>")
+        elif b[0] == "h":
+            parts.append(f"<h3>{_inline(b[1])}</h3>")
+        elif b[0] == "quote":
+            parts.append(f'<p class="muted">{_inline(b[1])}</p>')
+        elif b[0] in ("ul", "ol"):
+            parts.append(f"<{b[0]} class=\"plist\">" + "".join(f"<li>{_inline(x)}</li>" for x in b[1]) + f"</{b[0]}>")
+        else:
+            head = "".join(f"<th>{_inline(h)}</th>" for h in b[1])
+            rows = "".join("<tr>" + "".join(f"<td>{_inline(c)}</td>" for c in r) + "</tr>" for r in b[2])
+            parts.append(f'<div class="tbl"><table class="tw"><thead><tr>{head}</tr></thead><tbody>{rows}</tbody></table></div>')
+    return "".join(parts)
+
+
+def split_top(cell: str) -> list[str]:
+    """'a, b (x, y), c' -> ['a', 'b (x, y)', 'c']; '–' -> []."""
+    out, depth, cur = [], 0, ""
+    for ch in cell:
+        depth += ch in "([" ; depth -= ch in ")]"
+        if ch == "," and depth == 0:
+            out.append(cur.strip())
+            cur = ""
+        else:
+            cur += ch
+    out.append(cur.strip())
+    return [x for x in out if x and x not in ("–", "-", "—")]
+
+
+def prd_sections(m: Model) -> tuple[str, list[dict]]:
+    """(title, [{'no', 'title', 'blocks', 'steps'}]) from prd.md; '## N. Title' starts a section."""
+    text = m.prd_text
+    title = next((l[2:].strip() for l in text.splitlines() if l.startswith("# ")), "")
+    secs, cur = [], None
+    for ln in text.splitlines():
+        h = re.match(r"^##\s+(?:(\d+)\.\s*)?(.+)$", ln)
+        if h:
+            cur = {"no": h.group(1) or str(len(secs) + 1), "title": h.group(2).strip(), "body": []}
+            secs.append(cur)
+        elif cur is not None:
+            cur["body"].append(ln)
+    for s in secs:
+        s["blocks"] = md_blocks("\n".join(s["body"]))
+        s["steps"] = []
+        for b in s["blocks"]:
+            if b[0] == "table" and len(b[1]) >= 2 and re.match(r"^(nr|no)\.?$", b[1][0].strip().lower()) \
+                    and "schritt" in b[1][1].lower():
+                cols = [h.lower() for h in b[1]]
+                pick = lambda r, key: next((r[i] for i, c in enumerate(cols) if key in c and i < len(r)), "")
+                s["steps"] = [{"no": r[0], "name": r[1] if len(r) > 1 else "", "data": pick(r, "daten"),
+                               "equipment": split_top(pick(r, "ger")), "files": split_top(pick(r, "datei"))}
+                              for r in b[2] if any(c.strip() for c in r)]
+    return title, secs
+
+
+PRD_HINT_TYPES = re.compile(r"\b(?:EXPERIMENTAL_STEP|SAMPLE|INSTRUMENT|COLLECTION)(?:\.[A-Z_]+)*\b|\b[A-Z][A-Z0-9_]+\.[A-Z][A-Z0-9_.]+\b")
+
+
+def prd_hints(m: Model, secs: list[dict]) -> list[tuple[str, str]]:
+    """Things the agent points out (not blocking): names without English, openBIS type names, open points."""
+    hints = []
+    steps = [st for s in secs for st in s["steps"]]
+    mono = [st["no"] for st in steps if " / " not in st["name"]]
+    if mono:
+        hints.append((f"Schrittnamen wohl ohne englische Fassung („Deutsch / Englisch“): {', '.join(mono)}",
+                      f"Step names probably without an English version (“German / English”): {', '.join(mono)}"))
+    codes = sorted(set(PRD_HINT_TYPES.findall(m.prd_text)))
+    if codes:
+        hints.append((f"Das PRD nennt schon openBIS-Codes ({', '.join(codes[:6])}{' …' if len(codes) > 6 else ''}). Das ist erlaubt, wenn es eine fachliche Vorgabe ist; sonst entscheidet das erst Schritt 4/5.",
+                      f"The PRD already names openBIS codes ({', '.join(codes[:6])}{' …' if len(codes) > 6 else ''}). That is fine if it is a domain requirement; otherwise steps 4/5 decide."))
+    for s in secs:
+        if re.search(r"offen|später|open", s["title"], re.I):
+            items = [x for b in s["blocks"] if b[0] in ("ul", "ol") for x in b[1]]
+            if items:
+                hints.append((f"Noch offen ({len(items)}): " + "; ".join(items), f"Still open ({len(items)}): " + "; ".join(items)))
+    return hints
+
+
+def view_prd(m: Model) -> str:
+    if not m.prd_text:
+        return (f'<header class="hero">{hero_top(m, "Prüfpunkt A · Anforderungen freigeben", "Checkpoint A · Approve the requirements")}'
+                f'<p class="lead">{t("Noch kein PRD. Der Agent schreibt es im Interview (Schritt 2).", "No PRD yet. The agent writes it in the interview (step 2).")}</p></header>')
+    _, secs = prd_sections(m)
+    body = []
+    steps = [st for s in secs for st in s["steps"]]
+    n_files = sum(len(st["files"]) for st in steps)
+    n_dev = len({e for st in steps for e in st["equipment"]})
+    tiles = "".join(f'<div class="tile"><span>{te(a, b)}</span><b>{n}</b></div>' for a, b, n in (
+        ("Ablaufschritte", "workflow steps", len(steps)), ("Geräte und Material", "instruments and materials", n_dev),
+        ("Dateien", "files", n_files), ("Abschnitte", "sections", len(secs))))
+    hints = prd_hints(m, secs)
+    hint_html = ("<ul class=\"plist hints\">" + "".join(f"<li>{te(a, b)}</li>" for a, b in hints) + "</ul>") if hints else \
+        f'<p>{t("Keine Auffälligkeiten.", "Nothing stands out.")}</p>'
+    body.append(f'<section aria-labelledby="pa0">{section_head("✓", "pa0", "Auf einen Blick", "At a glance")}<div class="tiles">{tiles}</div>'
+                f'<h3>{t("Hinweise des Agenten", "Notes from the agent")}</h3>{hint_html}</section>')
+    for s in secs:
+        sid = f"pa{s['no']}"
+        if s["steps"]:
+            rows = "".join(f"""<li class="step test"><span class="no">{E(st['no'])}</span><div class="s-body"><h3>{_inline(st['name'])}</h3>
+{'<p class="items">' + _inline(st['data']) + '</p>' if st['data'] and st['data'] not in ('–', '-') else ''}
+<div class="chips">{''.join(chip(short(e, 60), 'dev') for e in st['equipment'])}{''.join(chip(short(f, 60), 'file') for f in st['files'])}</div></div></li>"""
+                           for st in s["steps"])
+            other = [b for b in s["blocks"] if not (b[0] == "table" and b[1] and re.match(r"^(nr|no)\.?$", b[1][0].strip().lower()))]
+            content = f'{blocks_html(other)}<ol class="timeline">{rows}</ol>'
+        else:
+            content = blocks_html(s["blocks"])
+        body.append(f'<section aria-labelledby="{sid}">{section_head(E(s["no"]), sid, s["title"], s["title"])}{content}'
+                    f'{feedback("prd-" + s["no"], s["title"], s["title"])}</section>')
+    body.append(answer_section("A"))
+    header = f"""<header class="hero">{hero_top(m, "Prüfpunkt A · Anforderungen freigeben", "Checkpoint A · Approve the requirements")}
+<p class="lead">{t("Das hat der Agent aus dem Interview aufgeschrieben (PRD). Daraus entsteht später die Struktur in openBIS. "
+                   "Bitte lesen Sie jeden Abschnitt und wählen Sie <b>passt</b> oder <b>ändern</b>. Ganz unten entsteht daraus Ihr Text für den Chat.",
+                   "This is what the agent wrote down from the interview (PRD). The structure in openBIS is built from it later. "
+                   "Please read each section and choose <b>fits</b> or <b>change</b>. At the bottom this becomes your reply for the chat.")}</p>
+<ol class="ask"><li>{t("Fehlt ein Ablaufschritt, oder ist die Reihenfolge falsch?", "Is a workflow step missing, or is the order wrong?")}</li>
+<li>{t("Hat jeder Messwert Einheit oder Auswahlliste und die Angabe, ob er Pflicht ist?", "Does every value have a unit or a choice list and whether it is mandatory?")}</li>
+<li>{t("Stehen alle Geräte und Dateien dabei?", "Are all instruments and files listed?")}</li>
+<li>{t("Sind die fachlichen Entscheidungen richtig wiedergegeben?", "Are the domain decisions stated correctly?")}</li></ol>
+<p class="names">{t("Der Text der Abschnitte steht so im PRD, wie er mit Ihnen erarbeitet wurde (meist auf Deutsch).",
+                      "The section text is shown as written in the PRD with you (mostly in German).")}</p>
+<p class="meta">{t("Datei", "File")} <code>{E(m.prd_rel)}</code> · {t("Projekt", "Project")} <code>{E(m.project["name"])}</code></p></header>"""
+    return "\n".join([header, *body])
+
+
+def answer_section(gate: str, block_de: str = "", block_en: str = "") -> str:
+    """block: why this checkpoint cannot be approved yet (the reply then says so instead of '<gate> freigegeben')."""
+    blk = f' data-block-de="{E(block_de)}" data-block-en="{E(block_en)}"' if block_de else ""
+    return f"""<section aria-labelledby="hans" class="answer" data-gate="{gate}"{blk}><h2 id="hans"><span class="n">✓</span>{t("Ihre Antwort an den Agenten", "Your reply to the agent")}</h2>
+<label for="fb-gesamt">{t("Noch etwas Allgemeines? (freiwillig)", "Anything else? (optional)")}</label><textarea id="fb-gesamt" rows="3"></textarea>
+<p id="state" class="state"></p>
+<pre id="out" class="out" aria-live="polite"></pre>
+<button type="button" data-copy="#out" class="primary">{t("Text kopieren", "Copy text")}</button>
+<p class="hint">{t("Den kopierten Text fügen Sie im Chat mit dem Agenten ein. Die Seite speichert nichts und schickt nichts ab.",
+                   "Paste the copied text into the chat with the agent. The page stores nothing and sends nothing.")}</p></section>"""
+
+
+# --------------------------------------------------------------------------------------------
+# view: trockenlauf (Prüfpunkt E)
+
+KIND_DE = {"object type": ("Objekttyp", "object type"), "property type": ("Feld", "field"), "assignment": ("Feld am Typ", "field on type"),
+           "vocabulary": ("Auswahlliste", "choice list"), "term": ("Begriff", "term"), "collection type": ("Collection-Typ", "collection type"),
+           "mandatory field": ("Pflichtfeld leer", "mandatory field empty"), "equipment": ("Gerät fehlt im Inventar", "instrument missing in inventory"),
+           "structure": ("structure.json", "structure.json")}
+WHO_DE = {"admin": ("Admin (Antrag, Schritt 6)", "admin (request, step 6)"), "you": ("Sie (Inventar)", "you (inventory)"),
+          "agent": ("Agent (structure.json)", "agent (structure.json)")}
+
+
+def newest(pdir: Path, kind: str) -> tuple[dict | None, str]:
+    files = sorted((pdir / "reports").glob(f"{kind}_*.json"))
+    return (ob.read_json(files[-1]), files[-1].name) if files else (None, "")
+
+
+class DryRun:
+    """Plan of step 8: structure.json plus the newest check and dry-run reports from the bridge."""
+
+    def __init__(self, m: Model):
+        pdir = m.project["dir"]
+        self.check, self.check_file = newest(pdir, "check")
+        self.plan, self.plan_file = newest(pdir, "dryrun")
+        st = m.structure or {}
+        try:
+            self.objs = ob._resolve(st) if st else []
+        except ValueError:
+            self.objs = []
+        created = {x.upper() for x in (self.plan or {}).get("created", [])}
+        skipped = {x.upper() for x in (self.plan or {}).get("skipped", [])}
+        self.status = lambda ident: ("neu" if ident.upper() in created else "da" if ident.upper() in skipped else "?")
+        self.space = st.get("space", "")
+        self.project = (st.get("project") or {}).get("code", "")
+        self.collections = st.get("collections", [])
+        self.dropped = (self.plan or {}).get("droppedProps", [])
+        self.missing = (self.check or {}).get("missing", [])
+        self.warnings = (self.check or {}).get("warnings", [])
+        self.instance = (self.check or {}).get("instance") or m.project.get("instance") or ""
+
+
+def type_label(m: Model, code: str) -> Name:
+    dt = next((x for x in m.design.get("object_types", []) if x["code"] == code), None)
+    if dt:
+        return Name(dt.get("name_de"), dt.get("name_en"))
+    ct = next((x for x in m.catalog.get("types", []) if x["code"] == code), None)
+    desc = ((ct or {}).get("defs") or {}).get("description") or ""
+    if "//" in desc:
+        en, d = de(desc)
+        return Name(d, en, "std")
+    return Name("", code, "std")
+
+
+def status_chip(s: str) -> str:
+    return {"neu": chip("wird angelegt", "new", "will be created"), "da": chip("schon da", "std", "exists"),
+            "?": chip("noch nicht geprüft", "must", "not checked yet")}[s]
+
+
+def view_trockenlauf(m: Model) -> str:
+    r = DryRun(m)
+    body = []
+    num = iter(str(i) for i in range(1, 10))
+    n_new = len((r.plan or {}).get("created", []))
+    n_have = len((r.plan or {}).get("skipped", []))
+    tiles = "".join(f'<div class="tile"><span>{te(a, b)}</span><b>{v}</b></div>' for a, b, v in (
+        ("wird angelegt", "will be created", n_new if r.plan else "?"), ("schon da", "exists already", n_have if r.plan else "?"),
+        ("fehlt noch (Prüfung)", "still missing (check)", len(r.missing) if r.check else "?"),
+        ("Felder kommen nicht an", "fields not stored", len(r.dropped) if r.plan else "?")))
+    where = (f'<dl class="kv"><dt>{t("Instanz", "Instance")}</dt><dd><code>{E(r.instance)}</code></dd>'
+             f'<dt>Space</dt><dd><code>{E(r.space)}</code></dd><dt>{t("Projekt", "Project")}</dt><dd><code>/{E(r.space)}/{E(r.project)}</code></dd>'
+             f'<dt>Collections</dt><dd>{"<br>".join(E((c.get("props") or {}).get("$NAME") or c["code"]) + " <code>" + E(c["code"]) + "</code>" for c in r.collections)}</dd></dl>')
+    if not r.plan:
+        state = t(f"Noch kein Trockenlauf im Repo. Aufgabe für Sie im BAM-Netz: <code>python tools/bruecke.py {E(m.project['name'])} trockenlauf</code> "
+                  "(oder Teil 2 und 3 im Notebook). Bis dahin zeigt die Seite nur den Plan aus <code>structure.json</code>.",
+                  f"No dry run in the repository yet. Your task in the BAM network: <code>python tools/bruecke.py {E(m.project['name'])} trockenlauf</code> "
+                  "(or parts 2 and 3 in the notebook). Until then the page only shows the plan from <code>structure.json</code>.")
+    elif r.missing:
+        state = t("Die Prüfung meldet Lücken. So lange legt die Brücke nichts an; zuerst die Lücken unten schließen.",
+                  "The check reports gaps. Until they are closed the bridge creates nothing; close the gaps below first.")
+    else:
+        state = t("Die Prüfung meldet keine Lücken. Nach Ihrer Freigabe legt die Brücke genau das an, was unten als „wird angelegt“ steht.",
+                  "The check reports no gaps. After your approval the bridge creates exactly what is marked “will be created” below.")
+    body.append(f'<section aria-labelledby="e1">{section_head(next(num), "e1", "Wohin wird geschrieben?", "Where will it be written?")}'
+                f'<p class="vnote">{state}</p><div class="tiles">{tiles}</div>{where}'
+                f'{feedback("ziel", "Instanz, Space und Projekt", "Instance, space and project")}</section>')
+
+    # 2 gaps
+    if r.check:
+        if r.missing:
+            rows = "".join(f'<tr><td>{te(*KIND_DE.get(x["kind"], (x["kind"], x["kind"])))}</td><td><code>{E(x["what"])}</code></td>'
+                           f'<td>{te(*WHO_DE.get(x["who"], (x["who"], x["who"])))}</td></tr>' for x in r.missing)
+            gaps = (f'<div class="tbl"><table class="tw"><thead><tr><th>{t("Was", "What")}</th><th>Code</th><th>{t("Wer", "Who")}</th></tr></thead>'
+                    f'<tbody>{rows}</tbody></table></div>')
+        else:
+            gaps = f'<p>{t("Keine Lücken: Typen, Felder, Auswahllisten und Geräte sind auf der Instanz vorhanden.", "No gaps: types, fields, choice lists and instruments exist on the instance.")}</p>'
+        warn = ("<details><summary>" + t(f"Hinweise ({len(r.warnings)})", f"Notes ({len(r.warnings)})") + "</summary><ul class=\"plist\">"
+                + "".join(f"<li><code>{E(w)}</code></li>" for w in r.warnings) + "</ul></details>") if r.warnings else ""
+        body.append(f'<section aria-labelledby="e2">{section_head(next(num), "e2", "Was auf der Instanz noch fehlt", "What is still missing on the instance")}'
+                    f'<p class="muted">{t("Prüfung", "Check")}: <code>reports/{E(r.check_file)}</code>, {t("Stand der Instanz", "instance as of")} {E(str(r.check.get("collected") or ""))}</p>'
+                    f'{gaps}{warn}</section>')
+
+    # 3 objects per collection
+    groups: dict[str, list] = {}
+    for o in r.objs:
+        groups.setdefault(o.get("_experiment") or o.get("_project") or "", []).append(o)
+    names = {o["key"]: ((o.get("props") or {}).get("$NAME") or o["code"]) for o in r.objs}
+    blocks = []
+    for coll, objs in groups.items():
+        rows = []
+        for o in objs:
+            par = ", ".join(names.get(p, p) for p in o.get("parents", []))
+            n_props = len([k for k in (o.get("props") or {}) if not k.startswith("$")])
+            rows.append(f'<tr><td><b>{E(names[o["key"]])}</b><br><code>{E(o["code"])}</code></td><td>{type_label(m, o["type"]).html()}</td>'
+                        f'<td>{E(short(par, 120)) or "–"}</td><td>{n_props}</td><td>{status_chip(r.status(o["_identifier"]))}</td></tr>')
+        blocks.append(f'<h3><code>{E(coll)}</code> <small>{t(f"{len(objs)} Objekte", f"{len(objs)} objects")}</small></h3>'
+                      f'<div class="tbl"><table class="tw"><thead><tr><th>{t("Objekt", "Object")}</th><th>{t("Typ", "Type")}</th>'
+                      f'<th>{t("Eltern", "Parents")}</th><th>{t("Felder", "Fields")}</th><th>Status</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>')
+    body.append(f'<section aria-labelledby="e3">{section_head(next(num), "e3", "Diese Objekte entstehen", "These objects are created")}'
+                f'<p>{t("Aus <code>structure.json</code>, geordnet nach Collection. Eltern werden vor ihren Kindern angelegt; was schon da ist, bleibt unverändert.", "From <code>structure.json</code>, grouped by collection. Parents are created before their children; what exists already stays unchanged.")}</p>'
+                f'{"".join(blocks) or "<p>" + t("Noch keine structure.json.", "No structure.json yet.") + "</p>"}'
+                f'{feedback("objekte", "Objekte und Eltern", "Objects and parents")}</section>')
+
+    # 4 dropped fields
+    if r.plan:
+        dr = ("<ul class=\"plist\">" + "".join(f"<li><code>{E(x)}</code></li>" for x in r.dropped) + "</ul>") if r.dropped else \
+            f'<p>{t("Alle Werte kommen an.", "All values are stored.")}</p>'
+        body.append(f'<section aria-labelledby="e4">{section_head(next(num), "e4", "Werte, die nicht gespeichert würden", "Values that would not be stored")}'
+                    f'<p>{t("Felder, die der Typ auf der Instanz (noch) nicht hat. Die Brücke lässt sie weg, statt abzubrechen.", "Fields the type does not have on the instance (yet). The bridge leaves them out instead of failing.")}</p>'
+                    f'{dr}<p class="muted">{t("Trockenlauf", "Dry run")}: <code>reports/{E(r.plan_file)}</code></p>'
+                    f'{feedback("werte", "Fehlende Werte", "Missing values")}</section>')
+    if not r.plan:
+        body.append(answer_section("E", "Noch kein Trockenlauf im Repo: E kann noch nicht freigegeben werden.",
+                                   "No dry run in the repository yet: E cannot be approved yet."))
+    elif r.missing:
+        body.append(answer_section("E", f"Die Prüfung meldet {len(r.missing)} Lücken: E kann erst danach freigegeben werden.",
+                                   f"The check reports {len(r.missing)} gaps: E can only be approved after that."))
+    else:
+        body.append(answer_section("E"))
+    header = f"""<header class="hero">{hero_top(m, "Prüfpunkt E · Trockenlauf freigeben", "Checkpoint E · Approve the dry run")}
+<p class="lead">{t("Das würde die Brücke in openBIS anlegen. Der Trockenlauf hat noch nichts geschrieben. Erst nach Ihrer Freigabe "
+                   "führen Sie <b>anlegen</b> aus.", "This is what the bridge would create in openBIS. The dry run has not written anything yet. "
+                   "Only after your approval do you run <b>create</b>.")}</p>
+<ol class="ask"><li>{t("Stimmen Instanz, Space und Projekt?", "Are instance, space and project right?")}</li>
+<li>{t("Sind das die Objekte, die entstehen sollen, mit den richtigen Eltern?", "Are these the objects that should be created, with the right parents?")}</li>
+<li>{t("Gehen keine wichtigen Werte verloren?", "Are no important values lost?")}</li></ol>
+<p class="meta">{t("Projekt", "Project")} <code>{E(m.project["name"])}</code></p></header>"""
+    return "\n".join([header, *body])
+
+
+# --------------------------------------------------------------------------------------------
+# Markdown versions (readable directly on GitHub, e.g. for Mistral Vibe). Same content, no buttons.
+
+
+def md_esc(s) -> str:
+    return str(s or "").replace("|", "\\|").replace("\n", " ")
+
+
+def md_head(m: Model, gate_de: str, gate_en: str, view: str) -> list[str]:
+    div = f"{m.division} · " if m.division else ""
+    return [f"# {m.title_de} / {m.title_en}", "", f"**{div}{gate_de} / {gate_en}**", "",
+            f"> Markdown-Fassung der Prüfseite. Mit Auswahl und Antworttext: `review/{view}.html` herunterladen und im Browser öffnen. "
+            "Hier antworten Sie direkt im Chat. / Markdown version of the review page; for buttons and the reply text, "
+            f"download `review/{view}.html` and open it in a browser. Here, reply directly in the chat.", ""]
+
+
+def md_answer(gate: str, parts: list[str], extra: str = "") -> list[str]:
+    return ["## Ihre Antwort / Your reply", "",
+            f"Schreiben Sie im Chat „{gate} freigegeben“{extra} oder eine Liste der Änderungen, je Teil eine Zeile. / "
+            f"Write “{gate} approved”{extra} in the chat, or a list of changes, one line per part.", "",
+            "Teile / Parts: " + " · ".join(parts), ""]
+
+
+def md_struktur(m: Model) -> str:
+    d, lay = m.design, m.design.get("layout", {})
+    L = md_head(m, "Prüfpunkt B · Struktur bestätigen", "Checkpoint B · Confirm the structure", "struktur")
+    vs = d.get("variants") or []
+    rec = next((v for v in vs if v.get("recommended")), vs[0] if vs else None)
+    shown = d.get("variant") or (rec or {}).get("id")
+    if vs:
+        L += ["## 1 Welche Struktur soll es werden? / Which structure should it be?", "",
+              f"Empfohlen / recommended: **{rec['id']}**. Unten ausgearbeitet / worked out below: **{shown}**. "
+              "Muster und Quellen: `workflow/strukturmuster.md`.", "",
+              "| | Variante / Variant | Objekte je Probe | Ebenen | neue Typen | Geräte als Eltern |", "|---|---|---|---|---|---|"]
+        for v in vs:
+            tag = " **(empfohlen / recommended)**" if v is rec else ""
+            L.append(f"| {v['id']} | {md_esc(v['name_de'])} / {md_esc(v['name_en'])}{tag} | {v.get('objects_per_specimen', '–')} | "
+                     f"{v.get('max_link_depth', '–')} | {v.get('new_object_types', '–')} | {v.get('shared_parents', '–')} |")
+        L.append("")
+        for v in vs:
+            nms = [o["name_de"] for o in v["objects"]]
+            sketch = (" → ".join(nms) if v["shape"] == "chain" else
+                      f"{nms[0]} ← " + " · ".join(nms[1:]) if v["shape"] == "flat" and len(nms) > 1 else nms[0])
+            L += [f"### {v['id']} {v['name_de']} / {v['name_en']}{' (empfohlen / recommended)' if v is rec else ''}", "",
+                  v["summary_de"], "", f"*{v['summary_en']}*", "", f"Aufbau / build-up: {sketch}", ""]
+            L += [f"- ＋ {x['de']} / *{x['en']}*" for x in v["pros"]] + [f"- – {x['de']} / *{x['en']}*" for x in v["cons"]] + [""]
+    objs = m.objects()
+    L += ["## 2 So ist Ihr Projekt aufgebaut / How your project is built", "",
+          f"`{lay.get('project', '')}` → " + ", ".join(f"{c.get('$NAME') or c['code']} (`{c['code']}`)" for c in lay.get("collections", [])), ""]
+    for o in objs:
+        prev = next((x["name"].text for x in objs if x["code_pattern"] == o["prev"]), "")
+        devs = ", ".join(m.device_name(e).text for e in o["equipment"] + o["fields"])
+        L.append(f"- **{o['name'].text}** `{o['code_pattern']}`" + (f" ← {prev}" if prev else "")
+                 + (f" · Schritte / steps {step_range(o.get('covers_steps', []))}" if o.get("covers_steps") else "")
+                 + (f" · {devs}" if devs else ""))
+    L += ["", "## 3 Wo landet welcher Ablaufschritt? / Where does each workflow step go?", "",
+          "| Nr. | Schritt / Step | Objekt / Object | Sektion / Section | Geräte, Dateien |", "|---|---|---|---|---|"]
+    for s in d.get("step_location_map", []):
+        o = m.object_for(s.get("object", ""))
+        sec = s.get("section") if s.get("section") not in (None, "-") else ""
+        secn = " + ".join(m.section_name(x.strip()).text for x in sec.split("+")) if sec else ""
+        L.append(f"| {s.get('no')} | {md_esc(Name(s.get('step_de'), s.get('step')).text)} | {md_esc(o['name'].text if o else s.get('object'))} | "
+                 f"{md_esc(secn)} | {md_esc(', '.join([m.device_name(e).text for e in s.get('equipment', [])] + [m.file_name(f).text for f in s.get('files', [])]))} |")
+    L += ["", "## 4 Welche Felder bekommt jedes Objekt? / Which fields does each object get?", ""]
+    for x in form_types(m):
+        L += [f"### {m.type_name(x).text} (`{x['code']}`)", "", "| Sektion / Section | Feld / Field | Typ | Pflicht | neu |", "|---|---|---|---|---|"]
+        for p in x.get("properties", []):
+            if p["code"].startswith("$") and p["code"] != "$NAME":
+                continue
+            dt = p.get("data_type") or m.props.get(p["code"], {}).get("type")
+            L.append(f"| {md_esc(m.section_name(p.get('section') or '').text)} | {md_esc(m.prop_name(p['code']).text)} | {TYPE_DE.get(dt, dt or '')} | "
+                     f"{'ja' if p.get('mandatory') else ''} | {'neu' if p['code'] in m.new_codes else ''} |")
+        L.append("")
+    L += ["## 5 Serientabelle / Series table", "", "Spalten / columns: " + " · ".join(
+        Name(de(c["column"])[1], de(c["column"])[0]).text for c in lay.get("series_table", [])), ""]
+    L += ["## 6 Auswahllisten / Choice lists", ""]
+    for code, v in m.vocab.items():
+        if v["status"] == "standard":
+            continue
+        en, dd = de(v.get("description"))
+        new = v.get("new_terms", set())
+        L.append(f"- **{Name(dd, en).text}** (`{code}`, {'neu' if v['status'] == 'neu' else 'ergänzt / extended'}): "
+                 + " · ".join(("**" + m.term_name(code, x["code"]).text + "**") if x["code"] in new else m.term_name(code, x["code"]).text
+                              for x in v["terms"]))
+    L.append("")
+    L += md_answer("B", ["Variante", "Aufbau", "Zuordnung der Schritte", "Felder je Objekt", "Serientabelle", "Auswahllisten", "Begriffe"],
+                   f" (Variante {rec['id'] if rec else ''})" if vs else "")
+    return "\n".join(L)
+
+
+def md_antrag(m: Model) -> str:
+    r = m.request
+    L = md_head(m, "Prüfpunkte C und D · Antrag prüfen und senden", "Checkpoints C and D · Review and send the request", "antrag")
+    if not r:
+        return "\n".join(L + [f"Noch kein Antragspaket: `python tools/build_request.py {m.project['name']}`.", ""])
+    L += ["## Das beantragen Sie / What you request", "",
+          f"- neue Objekttypen / new object types: {len(r['new_types'])}", f"- neue Felder / new fields: {len(r['new_properties'])}",
+          f"- neue Auswahllisten / new choice lists: {len(r['new_vocabularies'])}",
+          f"- ergänzte Begriffe / added terms: {sum(len(e['terms']) for e in r['extensions'])}", "",
+          "## Neue Objekttypen / New object types", ""]
+    L += [f"- **{Name(x.get('name_de'), x.get('name_en')).text}** (`{x['code']}`)" for x in r["new_types"]] + [""]
+    L += ["## Neue Felder / New fields", "", "| Code | Name | Typ |", "|---|---|---|"]
+    for p in r["new_properties"]:
+        L.append(f"| `{p.get('code')}` | {md_esc(Name(p.get('label_de'), p.get('label')).text)} | {md_esc(p.get('data_type'))} |")
+    L += ["", f"Dateien zum Senden / files to send: `request/issue.md`, `request/mail.txt`, `request/masterdata.xlsx`.", ""]
+    L += md_answer("C", ["neue Typen", "neue Felder", "Auswahllisten", "Wiederverwendung"])
+    L += ["Nach dem Senden / after sending: „D gesendet: <Link des Issues>“.", ""]
+    return "\n".join(L)
+
+
+def md_prd(m: Model) -> str:
+    L = md_head(m, "Prüfpunkt A · Anforderungen freigeben", "Checkpoint A · Approve the requirements", "prd")
+    if not m.prd_text:
+        return "\n".join(L + ["Noch kein PRD (Schritt 2).", ""])
+    _, secs = prd_sections(m)
+    hints = prd_hints(m, secs)
+    L += ["## Hinweise des Agenten / Notes from the agent", ""] + ([f"- {a}" for a, _ in hints] or ["- keine / none"]) + [""]
+    L += [f"Den vollständigen Text lesen Sie in `{m.prd_rel}`. Abschnitte / sections:", ""]
+    L += [f"{s['no']}. {s['title']}" + (f" ({len(s['steps'])} Schritte)" if s["steps"] else "") for s in secs] + [""]
+    L += md_answer("A", [s["title"] for s in secs])
+    return "\n".join(L)
+
+
+def md_trockenlauf(m: Model) -> str:
+    r = DryRun(m)
+    L = md_head(m, "Prüfpunkt E · Trockenlauf freigeben", "Checkpoint E · Approve the dry run", "trockenlauf")
+    if not r.plan:
+        L += [f"**Noch kein Trockenlauf.** Im BAM-Netz: `python tools/bruecke.py {m.project['name']} trockenlauf`. "
+              "Bis dahin nur der Plan aus `structure.json`. / No dry run yet; only the plan from `structure.json`.", ""]
+    L += ["## Wohin / Where", "", f"- Instanz / instance: `{r.instance}`", f"- Projekt / project: `/{r.space}/{r.project}`",
+          "- Collections: " + ", ".join(f"`{c['code']}`" for c in r.collections), ""]
+    if r.check:
+        L += [f"## Was noch fehlt / Still missing ({len(r.missing)})", ""]
+        L += [f"- {KIND_DE.get(x['kind'], (x['kind'],))[0]}: `{x['what']}` – {WHO_DE.get(x['who'], (x['who'],))[0]}" for x in r.missing] or ["- nichts / nothing"]
+        L.append("")
+    L += ["## Objekte / Objects", "", "| Objekt | Typ | Eltern / Parents | Status |", "|---|---|---|---|"]
+    names = {o["key"]: ((o.get("props") or {}).get("$NAME") or o["code"]) for o in r.objs}
+    st = {"neu": "wird angelegt", "da": "schon da", "?": "noch nicht geprüft"}
+    for o in r.objs:
+        L.append(f"| {md_esc(names[o['key']])} `{o['code']}` | {md_esc(type_label(m, o['type']).text)} | "
+                 f"{md_esc(', '.join(names.get(p, p) for p in o.get('parents', [])) or '–')} | {st[r.status(o['_identifier'])]} |")
+    if r.plan:
+        L += ["", f"## Werte, die nicht gespeichert würden / Values not stored ({len(r.dropped)})", ""] + \
+             ([f"- `{x}`" for x in r.dropped] or ["- keine / none"])
+    L += [""] + md_answer("E", ["Instanz, Space und Projekt", "Objekte und Eltern", "Fehlende Werte"])
+    return "\n".join(L)
+
+
 CSS = """
 /* BAM Design System (00_BAM_Design_System): Petrol #002832 für Überschriften und dunkle Flächen, Cyan #00AFF0 als einziger
    Akzent, Rot nur für Warnungen; BAM-Hausschrift Klavika (lokal installiert), Barlow als Web-Ersatz; eckig, Pillen nur für Tags; nur heller Modus.
@@ -856,7 +1360,7 @@ html:not(.lang-en) .l-en,html.lang-en .l-de{display:none}
 .cb-head button{padding:6px 14px;font-size:13px}.copyblock .out{max-height:260px;overflow:auto}.sendsteps{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:22px}
 .send{background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--bam-petrol);padding:24px}.send.locked .send-body{display:none}.send:not(.locked) .locked-msg{display:none}
 .locked-msg{color:var(--muted)}input[type=url]{font:inherit;width:100%;border:1px solid var(--line);border-radius:2px;padding:10px;margin:6px 0}
-table.wrap td{white-space:normal;vertical-align:top}td.src{font-size:13px;color:var(--muted)}.muted{color:var(--muted);font-size:14px}.sel{user-select:all}
+table.tw td{white-space:normal;vertical-align:top}table.tw td,table.tw th{overflow-wrap:break-word;hyphens:auto}table.tw td:first-child{white-space:nowrap}td.src{font-size:13px;color:var(--muted)}.muted{color:var(--muted);font-size:14px}.sel{user-select:all}
 a{color:var(--accent-strong)}a:hover{color:var(--bam-petrol)}
 .hero-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
 .lang{display:flex}.lang button{background:transparent;color:#fff;border-color:var(--gray-4);padding:6px 14px;font-size:14px}
@@ -884,6 +1388,9 @@ a{color:var(--accent-strong)}a:hover{color:var(--bam-petrol)}
 .cons li::before{content:"–";position:absolute;left:4px;color:var(--warning);font-weight:600}
 .vlist{margin:6px 0 0;padding-left:0;list-style:none;font-size:14px;display:flex;flex-direction:column;gap:2px}.vlist code{display:inline-block;min-width:3em}
 .vnote{background:var(--cyan-tint);border-left:3px solid var(--bam-cyan);padding:12px 16px;font-weight:500;color:var(--bam-petrol)}
+.plist{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px;max-width:75ch}.hints li{color:var(--warning)}
+.kv{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;margin:0;background:var(--paper);border:1px solid var(--line);padding:16px 20px}
+.kv dt{color:var(--muted)}.kv dd{margin:0}section h3 small{font-weight:400;color:var(--muted);font-size:14px}
 @media (max-width:640px){.step{grid-template-columns:40px 1fr}.hero{padding:24px 20px}}
 @media (prefers-reduced-motion:reduce){button{transition:none}}
 """
@@ -913,12 +1420,14 @@ JS = """
       var t=f.querySelector('textarea');t.hidden=s.v!=='chg';if(t.value!==(s.t||''))t.value=s.t||'';
       if(!s.v)open++; if(s.v==='chg')changes.push('- '+label+': '+((s.t||'').trim()||T.dflt));});
     if(gen.value!==(st._g||''))gen.value=st._g||'';
+    var ans=document.querySelector('[data-gate]')||{dataset:{}}, blk=(lang==='en'?ans.dataset.blockEn:ans.dataset.blockDe)||'';
     var g=(st._g||'').trim(), txt='', state, chosen=st._v||rec, other=!!vsec&&chosen!==shown, cn='';
     vrs.forEach(function(r){r.checked=r.value===chosen;r.parentNode.classList.toggle('chosen',r.checked);if(r.checked)cn=r.dataset.name;});
     if(vsec)document.getElementById('v-note').hidden=!other;
     if(other){changes.unshift('- '+T.vchg.replace('%c',chosen).replace('%n',cn).replace('%s',shown));
       txt=gate+T.not+'\\n'+changes.join('\\n')+(g?'\\n\\n'+T.also+g:'');state=T.vother;}
     else if(open){state=T.open.replace('%o',open).replace('%n',fbs.length);}
+    else if(!changes.length&&blk){txt=gate+T.not+'\\n- '+blk+(g?'\\n\\n'+T.also+g:'');state=blk;}
     else if(!changes.length){txt=gate+T.app+(vsec?' ('+T.vn+' '+shown+')':'')+(g?'\\n\\n'+T.note+g:'');state=T.ok;}
     else{txt=gate+T.not+'\\n'+changes.join('\\n')+(g?'\\n\\n'+T.also+g:'');state=changes.length+(changes.length>1?T.many:T.one);}
     document.getElementById('state').textContent=state;
@@ -965,7 +1474,11 @@ def page(title: str, body: str, fragment: bool) -> str:
             + inner.replace("<div class=\"wrap\">", "</head>\n<body>\n<div class=\"wrap\">", 1) + "</body>\n</html>\n")
 
 
-VIEWS = {"struktur": ("Strukturvorschlag", view_struktur), "antrag": ("Masterdaten-Antrag", view_antrag)}
+# view -> (page name, HTML, Markdown, (files to check if present, files that must exist))
+VIEWS = {"prd": ("Anforderungen", view_prd, md_prd, (("project",), ())),
+         "struktur": ("Strukturvorschlag", view_struktur, md_struktur, (("project", "design"), ("design",))),
+         "antrag": ("Masterdaten-Antrag", view_antrag, md_antrag, (("project", "design"), ())),
+         "trockenlauf": ("Trockenlauf", view_trockenlauf, md_trockenlauf, (("project", "design", "structure"), ()))}
 
 
 def main(argv=None) -> int:
@@ -977,7 +1490,7 @@ def main(argv=None) -> int:
     ap.add_argument("--repo", type=Path, default=REPO, help=argparse.SUPPRESS)
     a = ap.parse_args(argv)
     import check_files
-    need = {"struktur": (("project", "design"), ("design",)), "antrag": (("project", "design"), ())}[a.ansicht]
+    label, fn, md_fn, need = VIEWS[a.ansicht]
     errors, notes = check_files.check_project(a.repo, a.projekt, *need)
     for n in notes:
         print("Hinweis:", n)
@@ -987,11 +1500,14 @@ def main(argv=None) -> int:
             print("  -", e)
         return 1
     m = Model(a.repo, a.projekt)
-    label, fn = VIEWS[a.ansicht]
     out = a.out or m.project["dir"] / "review" / f"{a.ansicht}.html"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(page(f"{label} · {m.title_de}", fn(m), a.fragment), encoding="utf-8")
     print(out)
+    if not a.fragment:  # same content as Markdown, readable directly on GitHub
+        md = out.with_suffix(".md")
+        md.write_text(md_fn(Model(a.repo, a.projekt)) + "\n", encoding="utf-8")
+        print(md)
     return 0
 
 
