@@ -110,7 +110,7 @@ Englisch umschaltbar, Namen immer „Deutsch / Englisch“.
 
 | Pfad | Inhalt |
 |---|---|
-| `workflow/` | Überblick, eine Karte pro Schritt, Interview-Fragen, `strukturmuster.md` (Muster für viele Schritte), `MENSCH.md` (Aufgaben des Menschen) |
+| `workflow/` | Überblick, eine Karte pro Schritt, Interview-Fragen, `strukturmuster.md` (Muster für viele Schritte), `MENSCH.md` (Aufgaben des Menschen), `START_PROMPT.md` (erste Nachricht an einen neuen Agenten) |
 | `templates/` | Vorlagen für ein neues Projekt (Kopiervorlage) |
 | `schemas/` | Formate der Projektdateien (`design`, `structure`, `project`), geprüft mit `tools/check_files.py` |
 | `projects/<name>/` | ein Projekt: Einstellungen, Status, alle Zwischenstände |

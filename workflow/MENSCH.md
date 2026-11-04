@@ -14,6 +14,8 @@ Chat, mit allem, was Sie kopieren müssen.
 
 Danach schreiben Sie im Chat „erledigt“ (oder was schiefging). Der Agent holt sich die Ergebnisse aus dem Repo.
 
+**Mit einem neuen Agenten anfangen** (z. B. Mistral Vibe): die erste Nachricht steht in [START_PROMPT.md](START_PROMPT.md).
+
 ## Einmal einrichten (Rechner im BAM-Netz)
 
 ```bash
