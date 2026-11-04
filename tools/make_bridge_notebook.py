@@ -12,7 +12,7 @@ Läuft **im BAM-Netz** (VPN). Der KI-Agent in der Cloud kommt nicht an openBIS h
 
 | Teil | Wann (Workflow-Schritt) | Was | Schreibt in openBIS? |
 |---|---|---|---|
-| 1 Lesen | 3 und 7 | Typen, Properties, Vokabulare, Geräte deines Fachbereichs, vergebene Codes | nein |
+| 1 Lesen | 3 und 7 | Typen, Properties, Vokabulare, Geräte Ihres Fachbereichs, vergebene Codes | nein |
 | 2 Prüfen | 7 und vor 8 | Soll (`spec.json`, `structure.json`) gegen Ist | nein |
 | 3 Trockenlauf | 8 | zeigt, was angelegt würde | nein |
 | 4 Anlegen | 8, nach **Prüfpunkt E** | legt nur Fehlendes an (Projekt, Collections, Objekte) | **ja** |
@@ -41,7 +41,7 @@ print("Instanz:", INSTANCE)
 print("Lese Projekte:", READ)
 print("structure.json:", STRUCTURE if STRUCTURE.exists() else "(noch keine)")
 print("spec.json:", SPEC if SPEC.exists() else "(noch keine)")"""),
-md("## Anmelden\nToken leer lassen, um dich mit BAM-Benutzername und Passwort anzumelden."),
+md("## Anmelden\nLassen Sie das Token leer, um sich mit BAM-Benutzername und Passwort anzumelden."),
 code("""token = getpass.getpass("openBIS Personal Access Token (leer = Passwort-Login): ").strip()
 if token:
     o, call = ob.connect(INSTANCE, token)
@@ -65,7 +65,7 @@ structure = json.loads(STRUCTURE.read_text(encoding="utf-8")) if STRUCTURE.exist
 rep = ob.check(inv, spec, structure)
 (P / "delivery_check.md").write_text(ob.render_check_md(rep) + "\\n", encoding="utf-8")
 display(Markdown(ob.render_check_md(rep)))"""),
-md("## 3 Trockenlauf (Schritt 8)\nÄndert nichts. Lies die Liste: Passt der Space, passt das Projekt, gibt es Konflikte?"),
+md("## 3 Trockenlauf (Schritt 8)\nÄndert nichts. Prüfen Sie die Liste: Passt der Space, passt das Projekt, gibt es Konflikte?"),
 code("""plan = ob.apply(call, structure, STRUCTURE.parent, dry_run=True)
 print(f"würde anlegen: {len(plan['created'])}, schon da: {len(plan['skipped'])}, "
       f"verworfene Properties: {len(plan['droppedProps'])}")

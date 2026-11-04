@@ -1,10 +1,10 @@
-# Deine Aufgabe: Playground einmal auslesen
+# Ihre Aufgabe: Playground einmal auslesen
 
 Projekt `fb72_welded_fatigue` · Schritt 3 · vom Agenten am 2026-11-04
 
 **Wo:** Rechner im BAM-Netz (VPN) · **Dauer:** etwa 10 Minuten beim ersten Mal, danach 1 Minute
-**Warum:** Ich muss wissen, welche Typen, Properties und Geräte es auf `playground.datastore.bam.de` wirklich gibt und wie
-dort dein Space und die Equipment-Projekte heißen. In `project.yaml` stehen noch die Pfade von dev1. Das Lesen ändert
+**Warum:** Der Agent muss wissen, welche Typen, Properties und Geräte es auf `playground.datastore.bam.de` wirklich gibt und wie
+dort Ihr Space und die Equipment-Projekte heißen. In `project.yaml` stehen noch die Pfade von dev1. Das Lesen ändert
 nichts in openBIS.
 
 ## So geht es
@@ -34,9 +34,9 @@ nichts in openBIS.
 
    Erwartet: eine Zeile `gelesen: … Object-Types, … Objekte in 3 Projekten` und `git: hochgeladen`. Dass die Projekte aus
    `project.yaml` auf dem Playground noch nicht passen, ist in Ordnung: Der Export enthält auch die Liste aller Projekte,
-   die du sehen darfst. Daraus suche ich die richtigen heraus.
+   die Sie sehen dürfen. Daraus sucht der Agent die richtigen heraus.
 
 ## Danach
 
-Im Chat „erledigt“ schreiben, oder was schiefging (Ausgabe einfügen, ohne Token/Passwort).
+Schreiben Sie im Chat „erledigt“, oder was schiefging (Ausgabe einfügen, ohne Token/Passwort).
 Hilfe zur Einrichtung und bei Fehlern: `workflow/MENSCH.md`.

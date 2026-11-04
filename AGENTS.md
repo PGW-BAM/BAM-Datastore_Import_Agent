@@ -26,7 +26,7 @@ Kurzform für Agenten mit Skills oder Slash-Befehlen: Skill `bam-weiter` (`.agen
 2. **Keine Zugangsdaten.** Keine Tokens, Passwörter oder Benutzer-Kennungen in Dateien, Commits oder im Chat.
 3. **Prüfpunkte sind Stopps.** Bei ◆ A–E hältst du an, stellst im Chat zusammengefasst zur Freigabe, was zu prüfen
    ist, und schreibst „wartet auf Freigabe“ in `STATUS.md`. Weiter erst nach einer ausdrücklichen Freigabe im Chat
-   („A freigegeben“). Du trägst sie wörtlich mit Datum in `STATUS.md` ein. Änderungswünsche sind keine Freigabe.
+   („A freigegeben“ oder „A approved“, auch als Text von einer Prüfseite). Du trägst sie wörtlich mit Datum in `STATUS.md` ein. Änderungswünsche sind keine Freigabe.
 4. **Aufgaben für den Menschen** (openBIS lesen/anlegen, Antrag senden) stehen immer in `projects/<name>/AUFGABE.md`
    (Vorlage `workflow/AUFGABE_VORLAGE.md`) und gleichzeitig im Chat, mit allen Befehlen, Links und Texten zum
    Kopieren. Arbeitest du nicht auf dem Standard-Zweig, steht der vollständige Befehl mit `--zweig <dein Zweig>` drin
@@ -52,6 +52,12 @@ Kurzform für Agenten mit Skills oder Slash-Befehlen: Skill `bam-weiter` (`.agen
 | Pflichtangaben | `mandatory` und `section` immer setzen; Einheiten über `units` (Label wird zu „Length in [mm]“) |
 | Tabellen, Messreihen | als Datei, nicht als Properties |
 | Struktur | flach: Space → Projekt → Collection (= Serie) → Objekte; Schritte hängen direkt an der Probe |
+
+## Texte für Menschen
+
+Prüfseiten, `AUFGABE.md`, `workflow/MENSCH.md` und Mails sprechen die Person mit **„Sie“** an (BAM-Konvention: förmlich,
+sachlich). Prüfseiten entstehen nur mit `tools/render_review.py`: BAM-Stil (Klavika, Petrol/Cyan), Seitentexte auf Deutsch und
+Englisch umschaltbar, Namen immer „Deutsch / Englisch“.
 
 ## Umgebung
 
