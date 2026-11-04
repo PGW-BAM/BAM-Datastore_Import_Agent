@@ -114,16 +114,27 @@ Alles Wesentliche steht in `AGENTS.md`, das die meisten Agenten von selbst lesen
 `bash tools/cloud_setup.sh`, Netz für `github.com`, `pypi.org`, `files.pythonhosted.org` (Doku: `bamresearch.github.io`),
 openBIS nie freigeben. Die Übergaben laufen über `AUFGABE.md`, `tools/bruecke.py` und das Repo, egal welcher Agent.
 
-**Mistral Vibe im Browser** (Stand 11/2026, aus Quellcode und README von `mistralai/mistral-vibe`; hier noch nicht
-ausprobiert):
-- Läuft in einer Cloud-Sandbox auf einem GitHub-Repo. CLI, VS-Code-Erweiterung und Browser nutzen dasselbe Agenten-Gerüst.
-- Liest `AGENTS.md` und Skills aus `.agents/skills/` und `.vibe/skills/` (Format „Agent Skills“, wie bei Claude).
-  Der Einstieg ist der Skill `bam-weiter`.
-- Führt in der Sandbox **keine** Projekt-Hooks oder -Einstellungen aus `.vibe/` aus. Deshalb ruft der Agent das
-  Setup laut `AGENTS.md` selbst auf.
-- Arbeitet auf eigenen Zweigen (`vibe/<name>`). Deshalb nennt jede `AUFGABE.md` den Zweig für `tools/bruecke.py --zweig`.
-- Ob die Sandbox `github.com` und PyPI erreicht, steht nicht in der öffentlichen Doku (`docs.mistral.ai` war aus
-  dieser Session nicht lesbar). Beim ersten Lauf zeigt die Ausgabe von `cloud_setup.sh`, ob Klon und Installation gehen.
+**Mistral Vibe im Browser („Vibe Code Web“)**, Stand 11/2026 nach https://docs.mistral.ai/vibe/code/vibe-code-web/get-started
+und den Unterseiten Sandbox environment, Sessions, Limits and lifecycle, GitHub repositories and permissions; noch nicht
+selbst ausprobiert:
+
+| Thema | Vibe Code Web | Folge für dieses Repo |
+|---|---|---|
+| Anleitung | dasselbe Agenten-Gerüst wie die Vibe-CLI: liest `AGENTS.md` und Skills aus `.agents/skills/` | Einstieg Skill `bam-weiter`, Regeln aus `AGENTS.md` |
+| Setup | Standard-Linux-Image mit git, gängigen Sprachen und Paketmanagern. Eigene Setup-Skripte, Secrets und Umgebungsvariablen gibt es noch nicht (geplant) | der Agent ruft `bash tools/cloud_setup.sh` selbst auf; wir brauchen keine Secrets |
+| Netz | ausgehendes Internet, von Mistral verwaltet; keine eigene Allowlist | Klon von bam-masterdata und PyPI sollten gehen; openBIS ist ohnehin nur im BAM-Netz erreichbar |
+| GitHub | Mistral GitHub App; ein Projekt umfasst Repos **eines** Besitzers (hier `PGW-BAM`). bam-masterdata (öffentlich) wird per https geklont, nicht angehängt | GitHub App für `PGW-BAM` installieren und das Repo auswählen |
+| Ergebnis | jede Sitzung arbeitet auf einem Zweig und öffnet einen Pull Request gegen den Basis-Zweig | siehe „Zweige“ unten |
+| Lebensdauer | höchstens 24 h, Abbruch nach 3 h ohne Antwort; eine beendete Sitzung lässt sich **nicht** fortsetzen | Zustand nach jedem Schritt und jeder Interview-Runde committen und pushen; eine neue Sitzung macht bei `STATUS.md` weiter |
+| Kontingent | kostenlos 2 Sitzungen am Tag, bezahlt 100; Modell Mistral Medium 3.5 | |
+
+**Zweige (alle Plattformen).** Cloud-Agenten arbeiten auf eigenen Zweigen und liefern Pull Requests. Am einfachsten
+bleibt der gemeinsame Stand auf `main`:
+1. An jedem Stopp (Prüfpunkt oder `AUFGABE.md`) pusht der Agent. Du prüfst den Pull Request und mergst ihn.
+2. `tools/bruecke.py` läuft dann ohne `--zweig` auf `main` und lädt die Ergebnisse dorthin hoch.
+3. Die nächste Agenten-Sitzung startest du auf `main`. Sie findet `STATUS.md` und die Ergebnisse vor.
+Ohne Merge geht es auch: Dann nennt `AUFGABE.md` den Zweig (`--zweig`), und die nächste Sitzung muss auf genau diesem
+Zweig starten.
 
 **Claude Code im Web:** wie oben beschrieben (Hook, Netz „Trusted“ plus Doku-Domains).
 

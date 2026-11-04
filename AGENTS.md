@@ -14,7 +14,9 @@ Kurzform für Agenten mit Skills oder Slash-Befehlen: Skill `bam-weiter` (`.agen
    Schritt dran ist und ob ein Prüfpunkt auf Freigabe wartet.
 2. Neues Projekt: wie in `workflow/README.md` → „Neues Projekt“ anlegen.
 3. Öffne die Karte des aktuellen Schritts (`workflow/0N_*.md`) und arbeite sie ab: Eingabe → Tun → Prüfen → Stopp.
-4. Trag das Ergebnis in `STATUS.md` ein (Datum, was entstanden ist, offene Fragen).
+4. Trag das Ergebnis in `STATUS.md` ein (Datum, was entstanden ist, offene Fragen), dann **committen und pushen**.
+   Sitzungen können jederzeit enden (Mistral Vibe: 3 h ohne Antwort); der nächste Agent macht nur mit dem weiter, was im
+   Repo steht. Zweige und Pull Requests: `CLOUD.md` → „Zweige“.
 
 ## Feste Regeln
 
@@ -32,7 +34,8 @@ Kurzform für Agenten mit Skills oder Slash-Befehlen: Skill `bam-weiter` (`.agen
    offene Aufgabe pro Projekt; erledigt → Datei löschen. Alles, was der Mensch tun kann: `workflow/MENSCH.md`.
 5. **Nichts erfinden.** Ins Modell kommt nur, was die Person im Interview bestätigt hat oder im PRD steht.
    Eigene Ideen sind willkommen, aber immer als **Vorschlag** markiert, bis sie bestätigt sind.
-6. **Nichts nach außen schicken.** Issue anlegen, Mail senden, PR öffnen macht der Mensch (Prüfpunkt D).
+6. **Nichts nach außen schicken.** Issue oder PR bei `BAMresearch/bam-masterdata`, Mail an datastore@bam.de: das macht
+   der Mensch (Prüfpunkt D). Zweige und Pull Requests in diesem Repo sind normale Arbeit des Agenten.
 7. **Standard zuerst.** Vor jedem neuen Typ, Property oder Vokabular im Katalog (`generated/CATALOG.md`)
    suchen. Neu ist nur, was es dort wirklich nicht gibt.
 8. **bam-masterdata ist gepinnt** auf `v0.17.0` (`BMD_REF` in `tools/cloud_setup.sh`) und es zählt nur
@@ -60,7 +63,7 @@ Kurzform für Agenten mit Skills oder Slash-Befehlen: Skill `bam-weiter` (`.agen
   | Plattform | liest | Setup |
   |---|---|---|
   | Claude Code (Web) | `CLAUDE.md` → diese Datei, `.claude/` | SessionStart-Hook ruft `cloud_setup.sh --hook` |
-  | Mistral Vibe (Browser) | `AGENTS.md`, Skills in `.agents/skills/` | selbst `bash tools/cloud_setup.sh` (Projekt-Hooks laufen in der Vibe-Sandbox nicht) |
+  | Mistral Vibe (Browser) | `AGENTS.md`, Skills in `.agents/skills/` | selbst `bash tools/cloud_setup.sh` (noch keine Setup-Skripte; Projekt-Hooks laufen nicht). Sitzungen enden nach höchstens 24 h bzw. 3 h ohne Antwort |
   | andere (Codex, Copilot, Cursor, …) | `AGENTS.md` | selbst `bash tools/cloud_setup.sh` oder als Setup-Skript der Umgebung eintragen |
 
   Details und Netz-Einstellungen: `CLOUD.md`.

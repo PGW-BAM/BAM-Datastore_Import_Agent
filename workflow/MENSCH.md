@@ -38,8 +38,10 @@ cd BAM-Datastore_Import_Agent
 python tools/bruecke.py <name> <aktion> --zweig <zweig>   # aktion: lesen | pruefen | trockenlauf | anlegen
 ```
 
-Den genauen Befehl, inklusive Zweig, gibt dir der Agent in `AUFGABE.md` und im Chat. Cloud-Agenten arbeiten meist auf
-einem eigenen git-Zweig; `--zweig` wechselt vorher dorthin, damit Projektdateien und Ergebnisse am selben Ort sind.
+Den genauen Befehl gibt dir der Agent in `AUFGABE.md` und im Chat. Cloud-Agenten arbeiten auf eigenen Zweigen und
+öffnen Pull Requests. Am einfachsten: den Pull Request mergen, dann läuft alles auf `main`, ohne `--zweig`. Sonst
+wechselt `--zweig <zweig>` vorher auf den Zweig des Agenten. Die nächste Agenten-Sitzung startest du auf `main` bzw. auf
+diesem Zweig (`CLOUD.md` → „Zweige“).
 
 Der Befehl holt zuerst den neuesten Stand (`git pull`), arbeitet, und lädt dann **nur** die Ergebnisdateien von
 `projects/<name>/` hoch (`git commit` + `git push`). Mit `--ohne-git` passiert das nicht.

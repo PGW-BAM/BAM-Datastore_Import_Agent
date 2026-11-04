@@ -28,7 +28,8 @@ nach und bringt eigene Ideen ein, schreibt aber nur auf, was die Person bestäti
    Eigene Ideen immer als **Vorschlag** kennzeichnen. Die Person entscheidet ja/nein.
 3. **Nach jeder Runde festhalten.** In `interview.md` Frage, Antwort und Quelle (Person / Schema / Vorschlag
    bestätigt / Vorschlag abgelehnt) anhängen, `ablauf.md` ergänzen, kurz zusammenfassen: verstanden / offen.
-   So kann jede neue Session oder ein anderer Agent bei „offen“ weitermachen.
+   Dann committen und pushen: Sitzungen können ablaufen, während die Person nachdenkt. So kann jede neue Session oder
+   ein anderer Agent bei „offen“ weitermachen.
 4. **Querschnittsfragen** am Ende: Probe und Kennungen, Serien, Inventar, Personen, Dateien, Auswertung
    (Abschnitt „Querschnitt“ in [interview_fragen.md](interview_fragen.md)).
 5. **PRD schreiben** nach `templates/prd.md`: Ziel, Ablauf-Tabelle, Probe, Inventar, Serien, Dateien, fachliche
