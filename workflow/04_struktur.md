@@ -36,7 +36,16 @@ Prinzipien P1–P8 (`workflow/README.md`).
 
 ## Stopp
 
-◆ **B**: Die Fachseite liest `design.md`. Leitfrage: „Würde jemand im Labor die Serientabelle so lesen wollen?“
+◆ **B**: Prüfseite erzeugen und der Person zeigen, nicht `design.md`:
+
+```bash
+python tools/render_review.py <name> struktur      # -> projects/<name>/review/struktur.html, committen
+```
+
+Die Seite zeigt Aufbau, Ablauf → Ort, Formulare, Serientabelle und Auswahllisten. Zu jedem Teil gibt es „passt / ändern“,
+daraus entsteht ein Text, den die Person in den Chat kopiert. Zeigen: wo die Plattform Seiten anzeigen kann (Claude:
+Artifact mit `--fragment`), sonst Link auf die Datei im Repo mit dem Hinweis „herunterladen und im Browser öffnen“.
+Leitfrage: „Würde jemand im Labor die Serientabelle so lesen wollen?“
 Freigabe oder Änderungen im Chat; der Agent trägt sie in `STATUS.md` ein.
 
 ## Hilfsmittel

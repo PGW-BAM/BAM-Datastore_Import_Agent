@@ -12,5 +12,6 @@ bam_masterdata: v0.17.0
 
 # Die Dateien stammen aus dem Lauf auf dev1 (vor dem Umbau) und liegen noch unter generated/:
 prd: ../../BAM_PRD_Workflow_FB72_v2.md
+design: ../../generated/welded_fatigue_v2/design.json
 structure: ../../generated/welded_fatigue_v2/structure.json
 spec: ../../generated/welded_fatigue_v2/spec.json

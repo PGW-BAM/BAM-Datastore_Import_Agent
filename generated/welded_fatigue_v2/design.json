@@ -1232,7 +1232,7 @@
       "no": "00",
       "step": "Subject (identity)",
       "object": "specimen",
-      "section": "General Information + Specimen identification",
+      "section": "General Information + Specimen Identification",
       "data_items": [
         "$NAME (final series designation)",
         "ALIAS (internal designation, inherited)",
