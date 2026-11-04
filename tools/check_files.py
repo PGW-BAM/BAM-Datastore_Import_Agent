@@ -65,7 +65,9 @@ def check_project(repo: Path, name: str, kinds=KINDS, required=()) -> tuple[list
         except json.JSONDecodeError as e:
             errors.append(f"{kind}.json ist kein gültiges JSON: {e}")
             continue
-        errors += _schema_errors(data, kind)
+        errors += [e if "'variants' is a required" not in e else
+                   "design: variants fehlt: 2-4 Varianten der Datenstruktur, eine mit \"recommended\": true "
+                   "(workflow/04_struktur.md, Beispiel generated/welded_fatigue_v2/design.json)" for e in _schema_errors(data, kind)]
         if kind == "structure":
             errors += [f"structure: {x}" for x in ob.validate_structure(data)]
         if kind == "design":
@@ -75,6 +77,14 @@ def check_project(repo: Path, name: str, kinds=KINDS, required=()) -> tuple[list
                 "BAM Information", "Properties"))
             if missing:
                 errors.append("design: section_names_de: deutscher Name fehlt für " + ", ".join(missing))
+            variants = data.get("variants") or []
+            ids = [v.get("id") for v in variants]
+            if variants and sum(bool(v.get("recommended")) for v in variants) != 1:
+                errors.append("design: variants: genau eine Variante braucht \"recommended\": true")
+            if len(set(ids)) != len(ids):
+                errors.append("design: variants: jede Variante braucht eine eigene id (A, B, C …)")
+            if variants and data.get("variant") and data["variant"] not in ids:
+                errors.append(f"design: variant: \"{data['variant']}\" ist keine der Varianten ({', '.join(map(str, ids))})")
             for v in data.get("vocabularies", []):
                 for t in v.get("terms", []):
                     if not t.get("label_de") and any(c.islower() for c in t.get("label", "")):

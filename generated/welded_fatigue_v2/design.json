@@ -1605,5 +1605,396 @@
     "Installation Stress": "Einbaubeanspruchung",
     "Cyclic Fatigue Test": "Zyklischer Ermüdungsversuch",
     "Evaluation": "Auswertung"
-  }
+  },
+  "variant": "A",
+  "variants": [
+    {
+      "id": "A",
+      "recommended": true,
+      "shape": "flat",
+      "source": "Vorschlag des Agenten nach P1–P8",
+      "name_de": "Flach, Schritte gebündelt",
+      "name_en": "Flat, steps grouped",
+      "summary_de": "Die Probe trägt alles, was sie beschreibt. Ein eigenes Schritt-Objekt gibt es nur dort, wo Gerät, Zeitraum, Person und Dateien zusammengehören; alle hängen direkt an der Probe.",
+      "summary_en": "The specimen holds everything that describes it. A separate step object exists only where instrument, time span, person and files belong together; all of them hang directly on the specimen.",
+      "objects": [
+        {
+          "name_de": "Probe",
+          "name_en": "Specimen",
+          "steps": [
+            "01",
+            "02",
+            "04",
+            "05",
+            "06"
+          ]
+        },
+        {
+          "name_de": "3D-Scan & Nahtanalyse",
+          "name_en": "3D scan & weld analysis",
+          "steps": [
+            "03",
+            "04"
+          ]
+        },
+        {
+          "name_de": "Zyklischer Ermüdungsversuch",
+          "name_en": "Cyclic fatigue test",
+          "steps": [
+            "07",
+            "08",
+            "09",
+            "10",
+            "11"
+          ]
+        },
+        {
+          "name_de": "Bruchflächenanalyse",
+          "name_en": "Fracture surface analysis",
+          "steps": [
+            "12"
+          ]
+        }
+      ],
+      "objects_per_specimen": 4,
+      "max_link_depth": 1,
+      "new_object_types": 2,
+      "new_dataset_types": 0,
+      "pros": [
+        {
+          "de": "Nur 4 Objekte je Probe, alle eine Ebene unter der Probe",
+          "en": "Only 4 objects per specimen, all one level below it"
+        },
+        {
+          "de": "Geräte hängen an dem Schritt, bei dem sie benutzt werden (PRD §5)",
+          "en": "Instruments hang on the step where they are used (PRD §5)"
+        },
+        {
+          "de": "Nur 2 neue Objekttypen zu beantragen",
+          "en": "Only 2 new object types to request"
+        }
+      ],
+      "cons": [
+        {
+          "de": "Die Schritte 07–11 haben kein eigenes Objekt, sondern je eine Sektion im Formular „Zyklischer Ermüdungsversuch“",
+          "en": "Steps 07–11 have no object of their own but one section each in the “Cyclic fatigue test” form"
+        },
+        {
+          "de": "Die Schritte 01, 02, 05 und 06 stehen direkt im Formular der Probe",
+          "en": "Steps 01, 02, 05 and 06 are recorded directly in the specimen form"
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "shape": "flat",
+      "source": "Vorschlag des Agenten",
+      "name_de": "Flach, ein Objekt je Ablaufschritt",
+      "name_en": "Flat, one object per workflow step",
+      "summary_de": "Jeder Ablaufschritt 01–12 wird ein eigenes Objekt. Alle hängen direkt an der Probe, es gibt keine Kette.",
+      "summary_en": "Each workflow step 01–12 becomes an object of its own. All of them hang directly on the specimen, there is no chain.",
+      "objects": [
+        {
+          "name_de": "Probe",
+          "name_en": "Specimen",
+          "steps": []
+        },
+        {
+          "name_de": "Vorqualitätsprüfung der Schweißnaht",
+          "name_en": "Pre-quality check of the weld",
+          "steps": [
+            "01"
+          ]
+        },
+        {
+          "name_de": "Anfasen / Schleifen",
+          "name_en": "Chamfering / grinding",
+          "steps": [
+            "02"
+          ]
+        },
+        {
+          "name_de": "3D-Scan der Probe",
+          "name_en": "3D scan of the specimen",
+          "steps": [
+            "03"
+          ]
+        },
+        {
+          "name_de": "Nahtanalyse (GOM)",
+          "name_en": "Weld analysis (GOM)",
+          "steps": [
+            "04"
+          ]
+        },
+        {
+          "name_de": "Serienzuordnung (Randomisierung)",
+          "name_en": "Series assignment (randomisation)",
+          "steps": [
+            "05"
+          ]
+        },
+        {
+          "name_de": "Geometrie vor Einbau",
+          "name_en": "Geometry before installation",
+          "steps": [
+            "06"
+          ]
+        },
+        {
+          "name_de": "DMS-Applikation",
+          "name_en": "Strain gauge application",
+          "steps": [
+            "07"
+          ]
+        },
+        {
+          "name_de": "Messverstärker / Prüfstand",
+          "name_en": "Measuring amplifier / test rig",
+          "steps": [
+            "08"
+          ]
+        },
+        {
+          "name_de": "Einbaubeanspruchung",
+          "name_en": "Installation stress",
+          "steps": [
+            "09"
+          ]
+        },
+        {
+          "name_de": "Zyklischer Ermüdungsversuch",
+          "name_en": "Cyclic fatigue test",
+          "steps": [
+            "10"
+          ]
+        },
+        {
+          "name_de": "Auswertung",
+          "name_en": "Evaluation",
+          "steps": [
+            "11"
+          ]
+        },
+        {
+          "name_de": "Bruchflächenanalyse",
+          "name_en": "Fracture surface analysis",
+          "steps": [
+            "12"
+          ]
+        }
+      ],
+      "objects_per_specimen": 13,
+      "max_link_depth": 1,
+      "pros": [
+        {
+          "de": "Jeder Schritt hat eigenes Datum, eigene Person und eigene Dateien",
+          "en": "Every step has its own date, person and files"
+        },
+        {
+          "de": "Trotzdem flach: von jedem Schritt ist es ein Klick zur Probe",
+          "en": "Still flat: every step is one click from the specimen"
+        }
+      ],
+      "cons": [
+        {
+          "de": "13 Objekte je Probe anzulegen und zu pflegen",
+          "en": "13 objects per specimen to create and maintain"
+        },
+        {
+          "de": "Mehr neue Typen zu beantragen, oder viele Schritte nur als allgemeiner Versuchsschritt ohne eigene Felder",
+          "en": "More new types to request, or many steps only as a generic experimental step without fields of their own"
+        },
+        {
+          "de": "Schritte am selben Prüfstand (07–11) werden auf fünf Objekte verteilt",
+          "en": "Steps on the same test rig (07–11) are spread over five objects"
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "shape": "single",
+      "source": "Vorschlag des Agenten",
+      "name_de": "Alles an der Probe",
+      "name_en": "Everything on the specimen",
+      "summary_de": "Es gibt nur das Objekt Probe. Alle Werte stehen in Sektionen der Probe, alle Dateien hängen an ihr.",
+      "summary_en": "There is only the specimen object. All values are in sections of the specimen, all files are attached to it.",
+      "objects": [
+        {
+          "name_de": "Probe",
+          "name_en": "Specimen",
+          "steps": [
+            "01",
+            "02",
+            "03",
+            "04",
+            "05",
+            "06",
+            "07",
+            "08",
+            "09",
+            "10",
+            "11",
+            "12"
+          ]
+        }
+      ],
+      "objects_per_specimen": 1,
+      "max_link_depth": 0,
+      "new_object_types": 1,
+      "new_dataset_types": 0,
+      "pros": [
+        {
+          "de": "Ein Objekt je Probe: alles auf einer Seite",
+          "en": "One object per specimen: everything on one page"
+        },
+        {
+          "de": "Am wenigsten anzulegen und zu beantragen",
+          "en": "Least to create and to request"
+        }
+      ],
+      "cons": [
+        {
+          "de": "Widerspricht dem PRD: Geräte sollen am Versuchsschritt verlinkt werden (§5)",
+          "en": "Contradicts the PRD: instruments are to be linked to the test step (§5)"
+        },
+        {
+          "de": "Man sieht nicht mehr, bei welchem Schritt welches Gerät, welche Person und welcher Zeitraum dazugehört",
+          "en": "You can no longer see which instrument, person and time span belong to which step"
+        },
+        {
+          "de": "Ein sehr langes Formular, Dateien aller Schritte an einem Objekt",
+          "en": "A very long form, files of all steps on one object"
+        }
+      ]
+    },
+    {
+      "id": "D",
+      "shape": "chain",
+      "source": "bisheriges Modell auf dev1 (generated/live/dev1_inventory.md)",
+      "name_de": "Kette wie bisher auf dev1",
+      "name_en": "Chain as before on dev1",
+      "summary_de": "So ist das Modell auf der Übungsinstanz dev1 bisher aufgebaut: Probe → Schritt 1 → Schritt 2 → … → Schritt 12, jeder Schritt ein eigener Typ.",
+      "summary_en": "This is how the model on the test instance dev1 is built so far: specimen → step 1 → step 2 → … → step 12, every step a type of its own.",
+      "objects": [
+        {
+          "name_de": "Probe",
+          "name_en": "Specimen",
+          "steps": []
+        },
+        {
+          "name_de": "Vorqualitätsprüfung der Schweißnaht",
+          "name_en": "Pre-quality check of the weld",
+          "steps": [
+            "01"
+          ]
+        },
+        {
+          "name_de": "Anfasen / Schleifen",
+          "name_en": "Chamfering / grinding",
+          "steps": [
+            "02"
+          ]
+        },
+        {
+          "name_de": "3D-Scan der Probe",
+          "name_en": "3D scan of the specimen",
+          "steps": [
+            "03"
+          ]
+        },
+        {
+          "name_de": "Nahtanalyse (GOM)",
+          "name_en": "Weld analysis (GOM)",
+          "steps": [
+            "04"
+          ]
+        },
+        {
+          "name_de": "Serienzuordnung (Randomisierung)",
+          "name_en": "Series assignment (randomisation)",
+          "steps": [
+            "05"
+          ]
+        },
+        {
+          "name_de": "Geometrie vor Einbau",
+          "name_en": "Geometry before installation",
+          "steps": [
+            "06"
+          ]
+        },
+        {
+          "name_de": "DMS-Applikation",
+          "name_en": "Strain gauge application",
+          "steps": [
+            "07"
+          ]
+        },
+        {
+          "name_de": "Messverstärker / Prüfstand",
+          "name_en": "Measuring amplifier / test rig",
+          "steps": [
+            "08"
+          ]
+        },
+        {
+          "name_de": "Einbaubeanspruchung",
+          "name_en": "Installation stress",
+          "steps": [
+            "09"
+          ]
+        },
+        {
+          "name_de": "Zyklischer Ermüdungsversuch",
+          "name_en": "Cyclic fatigue test",
+          "steps": [
+            "10"
+          ]
+        },
+        {
+          "name_de": "Auswertung",
+          "name_en": "Evaluation",
+          "steps": [
+            "11"
+          ]
+        },
+        {
+          "name_de": "Bruchflächenanalyse",
+          "name_en": "Fracture surface analysis",
+          "steps": [
+            "12"
+          ]
+        }
+      ],
+      "objects_per_specimen": 13,
+      "max_link_depth": 12,
+      "new_object_types": 16,
+      "new_dataset_types": 17,
+      "pros": [
+        {
+          "de": "Bekannt: so arbeiten Sie bisher",
+          "en": "Familiar: this is how you work so far"
+        },
+        {
+          "de": "Die Reihenfolge der Schritte steckt in den Verknüpfungen",
+          "en": "The order of the steps is in the links"
+        }
+      ],
+      "cons": [
+        {
+          "de": "12 Ebenen: vom Bruchbild zurück zur Probe sind es 12 Verknüpfungen",
+          "en": "12 levels: from the fracture image back to the specimen it takes 12 links"
+        },
+        {
+          "de": "16 neue Objekttypen und 17 Datei-Typen zu beantragen",
+          "en": "16 new object types and 17 file types to request"
+        },
+        {
+          "de": "Widerspricht P1 (keine Ketten Schritt → Schritt) und P6 (Standard zuerst)",
+          "en": "Contradicts P1 (no step → step chains) and P6 (standard first)"
+        }
+      ]
+    }
+  ]
 }

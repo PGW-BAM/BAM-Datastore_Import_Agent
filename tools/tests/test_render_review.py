@@ -16,8 +16,10 @@ def test_struktur_page_renders_fb72(tmp_path):
     html = out.read_text(encoding="utf-8")
     assert html.startswith("<!doctype html>") and "</html>" in html
     for part in ("Prüfpunkt B", "SAMPLE.WELDED_FATIGUE_SPECIMEN", "Strain Gauge Application", "Serientabelle",
-                 "Stumpfstoß", "Text kopieren", 'data-item="aufbau"'):
+                 "Stumpfstoß", "Text kopieren", 'data-item="aufbau"', "FB 7.2", "S-N tests on welded joints",
+                 "Kette wie bisher auf dev1", "(empfohlen)"):
         assert part in html, part
+    assert "<title>Strukturvorschlag · Wöhlerversuche an Schweißverbindungen</title>" in html
     assert html.count('class="fb"') == 7  # build-up, steps, 2 forms, table, lists, terms
 
 

@@ -9,7 +9,8 @@
   "vocabularies",
   "layout",
   "step_location_map",
-  "section_names_de"
+  "section_names_de",
+  "variants"
  ],
  "properties": {
   "object_types": {
@@ -335,6 +336,153 @@
   },
   "metrics": {
    "type": "object"
+  },
+  "variant": {
+   "type": "string",
+   "description": "id of the variant this design.json works out in detail (default: the recommended one)"
+  },
+  "variants": {
+   "type": "array",
+   "minItems": 2,
+   "maxItems": 4,
+   "description": "2-4 possible data structures for the same workflow, shown side by side on review page B. Exactly one has recommended: true (checked by tools/check_files.py). The rest of design.json works out the one named in 'variant'.",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "name_de",
+     "name_en",
+     "summary_de",
+     "summary_en",
+     "shape",
+     "objects",
+     "pros",
+     "cons"
+    ],
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[A-Z]$"
+     },
+     "recommended": {
+      "type": "boolean"
+     },
+     "name_de": {
+      "type": "string",
+      "minLength": 1
+     },
+     "name_en": {
+      "type": "string",
+      "minLength": 1
+     },
+     "summary_de": {
+      "type": "string",
+      "minLength": 1
+     },
+     "summary_en": {
+      "type": "string",
+      "minLength": 1
+     },
+     "shape": {
+      "enum": [
+       "flat",
+       "chain",
+       "single"
+      ],
+      "description": "flat: steps hang on the main object; chain: step -> step; single: everything on one object"
+     },
+     "objects": {
+      "type": "array",
+      "minItems": 1,
+      "description": "first = main object (usually the specimen)",
+      "items": {
+       "type": "object",
+       "required": [
+        "name_de",
+        "name_en"
+       ],
+       "properties": {
+        "name_de": {
+         "type": "string",
+         "minLength": 1
+        },
+        "name_en": {
+         "type": "string",
+         "minLength": 1
+        },
+        "steps": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        }
+       }
+      }
+     },
+     "objects_per_specimen": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "max_link_depth": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "new_object_types": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "new_dataset_types": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "pros": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "object",
+       "required": [
+        "de",
+        "en"
+       ],
+       "properties": {
+        "de": {
+         "type": "string",
+         "minLength": 1
+        },
+        "en": {
+         "type": "string",
+         "minLength": 1
+        }
+       }
+      }
+     },
+     "cons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "object",
+       "required": [
+        "de",
+        "en"
+       ],
+       "properties": {
+        "de": {
+         "type": "string",
+         "minLength": 1
+        },
+        "en": {
+         "type": "string",
+         "minLength": 1
+        }
+       }
+      }
+     },
+     "source": {
+      "type": "string",
+      "description": "where the variant comes from, e.g. 'Vorschlag des Agenten', 'bisheriges Modell auf dev1'"
+     }
+    }
+   }
   }
  }
 }

@@ -66,7 +66,14 @@ to render until it passes).
    SOURCE_CODE, MEASUREMENT_PROTOCOL_FILE). No new dataset types.
 8. **Series.** Collection type `COLLECTION` with `$DEFAULT_OBJECT_TYPE` = specimen type, unless the catalog
    offers a better fit.
-9. **Metrics.** Compute and report: new object types, new vocabularies, objects per specimen, max link
+9. **Variants (required).** Before working out details, write 2–4 alternative structures into `variants`
+   (see `workflow/04_struktur.md` step 3 and `generated/welded_fatigue_v2/design.json`): e.g. flat with grouped
+   steps, flat with one object per step, everything on the specimen, and the legacy live model if there is one.
+   Exactly one `"recommended": true`; `"variant"` names the one the rest of design.json works out (the recommended
+   one first). Each: `id` (A–D), `name_de`/`name_en`, `summary_de`/`summary_en`, `shape` (flat|chain|single),
+   `objects` (first = specimen, with `steps`), metrics where they can be backed up, `pros`/`cons` as `{de, en}`,
+   `source`. State conflicts with the PRD or P1–P8 among the cons. Variants are proposals until checkpoint B.
+10. **Metrics.** Compute and report: new object types, new vocabularies, objects per specimen, max link
    depth, new dataset types — and the same numbers for the live legacy model (from the live inventory).
 
 ## design.json schema (abridged)
@@ -99,7 +106,12 @@ to render until it passes).
   "section_names_de": {"Initial Quality Check": "Vorqualitätsprüfung"},
   "step_location_map": [{"no": "01", "step": "…", "step_de": "…", "object": "specimen", "section": "Initial Quality Check",
                          "files": ["…"]}],
-  "metrics": {"new": {…}, "legacy_live": {…}}
+  "metrics": {"new": {…}, "legacy_live": {…}},
+  "variant": "A",
+  "variants": [{"id": "A", "recommended": true, "shape": "flat", "name_de": "…", "name_en": "…",
+                "summary_de": "…", "summary_en": "…", "objects": [{"name_de": "Probe", "name_en": "Specimen", "steps": ["01"]}],
+                "objects_per_specimen": 4, "max_link_depth": 1, "new_object_types": 2,
+                "pros": [{"de": "…", "en": "…"}], "cons": [{"de": "…", "en": "…"}], "source": "…"}, {"id": "B", …}]
 }
 ```
 
@@ -118,4 +130,4 @@ to render until it passes).
 
 ## Final response
 
-Path of both files, the tree, the metrics table (new vs legacy), and the `unplaced` list.
+Path of both files, the tree, the variants (recommended one marked), the metrics table (new vs legacy), and the `unplaced` list.

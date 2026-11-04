@@ -2,9 +2,9 @@
 # Keine Zugangsdaten hier eintragen.
 
 name: "<name>"                      # = Ordnername unter projects/
-title: "<Titel auf Deutsch>"
-title_en: "<title in English>"      # für das Issue bei bam-masterdata
-division: "<FB x.y>"
+title: "<Titel auf Deutsch>"        # Überschrift der Prüfseiten
+title_en: "<title in English>"      # Überschrift auf Englisch, Titel des Issues bei bam-masterdata
+division: "<FB x.y>"                # Ihr Fachbereich, steht oben auf jeder Prüfseite
 summary_en: "<2-3 Sätze auf Englisch: was dokumentiert wird und wozu>"
 instance: https://playground.datastore.bam.de   # zum Testen; später die Hauptinstanz
 space: "<SPACE>"                    # Ihr Space, im ELN nachsehen (z. B. FB_72)

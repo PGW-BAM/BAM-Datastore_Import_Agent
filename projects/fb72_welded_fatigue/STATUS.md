@@ -33,6 +33,8 @@ Playground.
 
 ## Verlauf
 
+- 2026-11-04: Prüfseite B zeigt jetzt 4 Varianten der Datenstruktur (A flach gebündelt, empfohlen und ausgearbeitet; B ein Objekt je Schritt; C alles an der Probe; D Kette wie auf dev1). Überschrift und Fachbereich aus `project.yaml`. Die Varianten B und C sind Vorschläge des Agenten; eine neue Bestätigung von ◆ B ist für den Playground nicht nötig, aber möglich
+
 - 2026-11-04: Antragspaket und Prüfseite „antrag“ erzeugt (`tools/build_request.py`, `tools/render_review.py antrag`); wartet auf Prüfpunkt C
 - 2026-11-04: Alle Namen zweisprachig: 33 Feldnamen (`property_label_de`), 27 Auswahlbegriffe (`label_de`), Sektionen, Schritte, Objekt- und Collection-Namen („Deutsch / Englisch“). Übersetzungen sind Vorschläge des Agenten, Prüfung auf der Prüfseite (`review/struktur.html`)
 - 2026-11-04: Aufgabe „Playground auslesen“ gestellt (`AUFGABE.md`)

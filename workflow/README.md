@@ -71,7 +71,7 @@ zuerst und schreibt sie zuletzt.
 | `prd.md` | 2 | Anforderungen nach Vorlage (was, nicht welche Typen) |
 | `inventory_<instanz>.json` | 3, 7 (Notebook) | Export der Instanz (nur lesen) |
 | `inventory.md` | 3 | Auswertung des Exports durch den Agenten |
-| `requirements.json`, `design.json`, `design.md` | 4 | Anforderungen, flache Struktur, Schritt → Ort |
+| `requirements.json`, `design.json`, `design.md` | 4 | Anforderungen, 2–4 Varianten (eine empfohlen), flache Struktur, Schritt → Ort |
 | `gap-report.md` | 5 | Abgleich mit Standard und Instanz |
 | `datamodel/`, `spec.json` | 6 | neue Klassen (PR-fähig), Soll-Zustand der Masterdaten |
 | `request/` | 6 | `issue.md`, `mail.txt`, `masterdata.xlsx`, `checker.log` |

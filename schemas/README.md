@@ -6,7 +6,7 @@ erzeugt keine Prüfseite, solange Fehler bestehen.
 | Schema | Datei | Wer schreibt | Wofür |
 |---|---|---|---|
 | `project.schema.json` | `projects/<name>/project.yaml` | Mensch + Agent bei der Anlage | Instanz, Space, Projekt, Titel, Fachbereich |
-| `design.schema.json` | `design.json` | Agent, Schritt 4 | Prüfseite B, Abgleich, Antrag; jeder neue Name zweisprachig |
+| `design.schema.json` | `design.json` | Agent, Schritt 4 | Prüfseite B, Abgleich, Antrag; jeder neue Name zweisprachig; 2–4 `variants` der Datenstruktur, genau eine `recommended` |
 | `structure.schema.json` | `structure.json` | Agent, Schritt 8 | `tools/bruecke.py` / Notebook (Details im Kopf von `tools/openbis_bridge.py`) |
 
 `spec.json` (`tools/export_spec.py`) und `request/request.json` (`tools/build_request.py`) entstehen nur durch Skripte

@@ -44,6 +44,19 @@ DESIGN = {
                           {"no": "02", "step": "Tensile test", "step_de": "Zugversuch", "object": "A-01-TEST", "section": "-",
                            "data_items": [], "equipment": ["Universal testing machine"], "files": []}],
     "dataset_mapping": [{"file": "Photo//Foto", "attach_to": "specimen"}],
+    "variant": "A",
+    "variants": [
+        {"id": "A", "recommended": True, "shape": "flat", "name_de": "Probe mit Zugversuch", "name_en": "Specimen with tensile test",
+         "summary_de": "Zugversuch als eigenes Objekt an der Probe.", "summary_en": "Tensile test as an object on the specimen.",
+         "objects": [{"name_de": "Klebprobe", "name_en": "Specimen", "steps": ["01"]},
+                     {"name_de": "Zugversuch", "name_en": "Tensile test", "steps": ["02"]}],
+         "objects_per_specimen": 2, "max_link_depth": 1, "new_object_types": 1,
+         "pros": [{"de": "Prüfmaschine hängt am Versuch", "en": "Testing machine hangs on the test"}],
+         "cons": [{"de": "Zwei Objekte je Probe", "en": "Two objects per specimen"}]},
+        {"id": "B", "shape": "single", "name_de": "Alles an der Probe", "name_en": "Everything on the specimen",
+         "summary_de": "Nur die Probe.", "summary_en": "Only the specimen.",
+         "objects": [{"name_de": "Klebprobe", "name_en": "Specimen", "steps": ["01", "02"]}],
+         "pros": [{"de": "Ein Objekt", "en": "One object"}], "cons": [{"de": "Gerät ohne Schritt", "en": "Instrument without a step"}]}],
 }
 
 
@@ -65,8 +78,25 @@ def test_other_agents_design_renders(tmp_path):
     assert rr.main(["demo", "struktur", "--repo", str(repo), "--out", str(out)]) == 0
     html = out.read_text(encoding="utf-8")
     for part in ("Klebprobe", "Adhesive joint specimen", "Klebelänge [mm]", "Messdaten", "Klebung vermessen",
-                 "Adhäsionsbruch", "Beispielzeilen folgen", "Name"):  # "Name" comes from the parent type in the catalog
+                 "Adhäsionsbruch", "Beispielzeilen folgen", "Name",  # "Name" comes from the parent type in the catalog
+                 "Zugversuche an Klebverbindungen", "Tensile tests on adhesive joints", "FB 5.1",  # heading from project.yaml
+                 "Alles an der Probe / Everything on the specimen", "(empfohlen)", "(recommended)", 'data-shown="A"'):
         assert part in html, part
+    assert "FB 7.2" not in html and "Wöhler" not in html  # nothing from the reference project leaks into another one
+    assert html.count('name="variant"') == 2 and html.count(" checked") == 1
+
+
+def test_variants_are_required_with_one_recommendation(tmp_path):
+    for change, needle in ((lambda d: d.pop("variants"), "variants fehlt"),
+                           (lambda d: d["variants"][1].update(recommended=True), "genau eine Variante"),
+                           (lambda d: d["variants"][0].pop("recommended"), "genau eine Variante"),
+                           (lambda d: d.update(variant="Z"), "keine der Varianten"),
+                           (lambda d: d["variants"].pop(), "variants")):
+        design = json.loads(json.dumps(DESIGN))
+        change(design)
+        repo = make_repo(tmp_path / needle.replace(" ", "_") / str(id(change)), design)
+        errors = check_files.check_project(repo, "demo")[0]
+        assert any(needle in e for e in errors), (needle, errors)
 
 
 def test_broken_design_gets_no_page_but_a_list(tmp_path, capsys):

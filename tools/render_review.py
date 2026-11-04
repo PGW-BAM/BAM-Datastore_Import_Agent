@@ -120,7 +120,13 @@ class Model:
         self.catalog = ob.read_json(repo / "generated" / "catalog.json") or {"types": []}
         prd = (pdir / cfg.get("prd", "prd.md")).resolve()
         first = next((l for l in prd.read_text(encoding="utf-8").splitlines() if l.startswith("# ")), "") if prd.exists() else ""
-        self.title = re.sub(r"^#\s*(PRD\s*(v\d+)?\s*:\s*)?", "", first).strip() or name
+        prd_title = re.sub(r"^#\s*(PRD\s*(v\d+)?\s*:\s*)?", "", first).strip()
+        # page heading from the project's own settings (title, title_en, division); the PRD heading only as fallback
+        given = lambda k: str(cfg.get(k) or "").strip() if not str(cfg.get(k) or "").strip().startswith("<") else ""
+        self.title_de = given("title") or re.sub(r"\s*\(.*?\)\s*$", "", prd_title) or name
+        self.title_en = given("title_en") or self.title_de
+        self.division = given("division")
+        self.title = self.title_de
         self.missing: set[str] = set()  # names shown without German, counted for the header
         self.vocab: dict[str, dict] = {}
         for t in self.catalog["types"]:
@@ -329,15 +335,110 @@ def section_head(n: str, sid: str, de_txt: str, en_txt: str) -> str:
     return f'<h2 id="{sid}"><span class="n">{n}</span>{te(de_txt, en_txt)}</h2>'
 
 
+def hero_top(m: Model, gate_de: str, gate_en: str) -> str:
+    """Eyebrow (division · checkpoint), language switch and the project title in both languages, from project.yaml."""
+    div = f"{E(m.division)} · " if m.division else ""
+    other = (f'<p class="sub">{t(E(m.title_en), E(m.title_de))}</p>' if m.title_en != m.title_de else "")
+    return (f'<div class="hero-top"><span class="eyebrow">{div}{t(gate_de, gate_en)}</span>{lang_switch()}</div>'
+            f'<h1>{t(E(m.title_de), E(m.title_en))}</h1>{other}')
+
+
+def step_range(steps: list[str]) -> str:
+    """['07','08','09','11'] -> '07–09, 11'."""
+    out, run = [], []
+    for x in steps:
+        if run and x.isdigit() and run[-1].isdigit() and int(x) == int(run[-1]) + 1 and len(x) == len(run[-1]):
+            run.append(x)
+            continue
+        if run:
+            out.append(run[0] if len(run) < 3 else f"{run[0]}–{run[-1]}")
+            out += run[1:] if len(run) == 2 else []
+        run = [x]
+    if run:
+        out.append(run[0] if len(run) < 3 else f"{run[0]}–{run[-1]}")
+        out += run[1:] if len(run) == 2 else []
+    return ", ".join(out)
+
+
+def variant_shape(v: dict) -> str:
+    """Small sketch of a variant: main object, the objects hanging on it (flat), a chain, or one object."""
+    objs = [{"name": Name(o.get("name_de"), o.get("name_en")), "steps": o.get("steps") or []} for o in v["objects"]]
+    main, rest = objs[0], objs[1:]
+
+    def box(o, cls=""):
+        st = f'<small>{te("Schritte ", "Steps ")}{E(step_range(o["steps"]))}</small>' if o["steps"] else ""
+        return f'<div class="vbox {cls}">{o["name"].html()}{st}</div>'
+
+    def pill(o):
+        label = step_range(o["steps"]) or str(objs.index(o))
+        return f'<span class="vpill" title="{E(o["name"].text)}">{E(label)}</span>'
+    if v["shape"] == "single" or not rest:
+        sketch = box(main, "main")
+    elif len(rest) <= 5 and v["shape"] == "flat":
+        sketch = (f'{box(main, "main")}<div class="arrow">↓ {t("hängen direkt daran", "attached directly")}</div>'
+                  f'<div class="vrow">{"".join(box(o) for o in rest)}</div>')
+    elif v["shape"] == "flat":
+        sketch = (f'{box(main, "main")}<div class="arrow">↓ {t(f"{len(rest)} Objekte, alle direkt daran", f"{len(rest)} objects, all attached directly")}</div>'
+                  f'<div class="vrow pills">{"".join(pill(o) for o in rest)}</div>')
+    else:  # chain
+        sketch = (f'<div class="vrow chain">{box(main, "main")}<span class="arrow">→</span>'
+                  + '<span class="arrow">→</span>'.join(pill(o) for o in rest) + "</div>")
+    names = ""
+    if len(rest) > 5:
+        names = (f'<details><summary>{t("Alle Objekte anzeigen", "Show all objects")}</summary><ol class="vlist">'
+                 + "".join(f'<li><code>{E(step_range(o["steps"]))}</code> {o["name"].html()}</li>' for o in rest) + "</ol></details>")
+    return f'<div class="vsketch {v["shape"]}">{sketch}</div>{names}'
+
+
+def variants_section(m: Model, num: str) -> str:
+    d = m.design
+    vs = d.get("variants") or []
+    if not vs:
+        return ""
+    rec = next((v for v in vs if v.get("recommended")), vs[0])
+    shown = d.get("variant") or rec["id"]
+    cards = []
+    for v in vs:
+        nm = Name(v["name_de"], v["name_en"])
+        is_rec, is_shown = v is rec, v["id"] == shown
+        tags = (f'<span class="rec">{t("(empfohlen)", "(recommended)")}</span>' if is_rec else "")
+        marks = chip("unten ausgearbeitet", "new", "worked out below") if is_shown else ""
+        figs = "".join(f'<div><b>{E(str(v[k]))}</b><span>{te(a, b)}</span></div>' for k, a, b in (
+            ("objects_per_specimen", "Objekte je Probe", "objects per specimen"),
+            ("max_link_depth", "Ebenen unter der Probe", "levels below the specimen"),
+            ("new_object_types", "neue Objekttypen", "new object types"),
+            ("new_dataset_types", "neue Datei-Typen", "new file types")) if v.get(k) is not None)
+        pros = "".join(f'<li>{te(x["de"], x["en"])}</li>' for x in v["pros"])
+        cons = "".join(f'<li>{te(x["de"], x["en"])}</li>' for x in v["cons"])
+        src = f'<p class="muted">{t("Herkunft", "Source")}: {E(v["source"])}</p>' if v.get("source") else ""
+        cards.append(f"""<label class="variant{' recommended' if is_rec else ''}{' shown' if is_shown else ''}">
+<input type="radio" name="variant" value="{E(v['id'])}" data-name="{E(nm.text)}"{' checked' if is_shown else ''}>
+<div class="v-head"><span class="v-id">{E(v['id'])}</span><h3>{nm.html()} {tags}</h3>{marks}</div>
+<p>{te(v['summary_de'], v['summary_en'])}</p>{variant_shape(v)}
+{f'<div class="vfigs">{figs}</div>' if figs else ''}
+<div class="pc"><ul class="pros" aria-label="{E('Vorteile / Advantages')}">{pros}</ul><ul class="cons" aria-label="{E('Nachteile / Disadvantages')}">{cons}</ul></div>{src}</label>""")
+    rnm = Name(rec["name_de"], rec["name_en"]).text
+    return f"""<section aria-labelledby="hvs" class="variants" data-shown="{E(shown)}">{section_head(num, "hvs", "Welche Struktur soll es werden?", "Which structure should it be?")}
+<p>{t(f"Der Agent hat {len(vs)} Möglichkeiten durchgespielt, Ihren Ablauf in openBIS abzubilden. Empfohlen ist Variante <b>{E(rec['id'])}</b> ({E(rnm)}); "
+      "sie ist auf dieser Seite ausgearbeitet. Wählen Sie eine andere, arbeitet der Agent diese aus und zeigt Ihnen eine neue Seite.",
+      f"The agent worked through {len(vs)} ways of mapping your workflow in openBIS. Variant <b>{E(rec['id'])}</b> ({E(rnm)}) is recommended; "
+      "it is worked out on this page. If you choose another one, the agent works it out and shows you a new page.")}</p>
+<fieldset class="vgrid"><legend class="sr">{t("Variante wählen", "Choose a variant")}</legend>{"".join(cards)}</fieldset>
+<p id="v-note" class="vnote" hidden>{t("Sie haben eine andere Variante gewählt. Die Teile weiter unten gehören zur ausgearbeiteten Variante; "
+      "Sie müssen sie jetzt nicht beantworten. Ihr Text unten bittet den Agenten, Ihre Wahl auszuarbeiten.",
+      "You chose a different variant. The parts further down belong to the variant that is worked out; you do not need to "
+      "answer them now. Your text at the bottom asks the agent to work out your choice.")}</p></section>"""
+
+
 def view_struktur(m: Model) -> str:
     d, lay = m.design, m.design.get("layout", {})
     objs = m.objects()
     st = m.structure
     space, project = lay.get("space", f"/{st.get('space', '')}"), lay.get("project", "")
     cols = lay.get("collections", [])
-    body = []
+    body = [variants_section(m, "1")]
 
-    # 1 hierarchy
+    # 2 hierarchy
     collections = "".join(f'<div class="node col"><b>{E(c.get("$NAME") or c["code"])}</b><code>{E(c["code"])}</code></div>'
                           for c in cols)
     plan = "".join(f'<div class="node plan"><b>{E(o.get("$NAME") or o["code"])}</b><span>{t("einmal im Projekt", "once per project")}</span></div>'
@@ -348,7 +449,7 @@ def view_struktur(m: Model) -> str:
                     f'{"".join(chip(short(m.device_name(e).text, 60), "dev") for e in o["equipment"])}</div>'
                     for o in objs[1:])
     probe = objs[0] if objs else {"name": Name("Probe", "Specimen"), "code_pattern": "", "kind": "probe"}
-    body.append(f"""<section aria-labelledby="h1s">{section_head("1", "h1s", "So ist Ihr Projekt aufgebaut", "How your project is built")}
+    body.append(f"""<section aria-labelledby="h1s">{section_head("2", "h1s", "So ist Ihr Projekt aufgebaut", "How your project is built")}
 <p>{t("Eine Serie ist eine Collection. In jeder Serie steht jede Probe einmal, und direkt an der Probe hängen ihre Versuchsschritte. "
       "Geräte und Material kommen aus dem Inventar des Fachbereichs und werden nur verlinkt.",
       "A series is a collection. Each specimen appears once in its series, and its test steps hang directly on the specimen. "
@@ -361,7 +462,7 @@ def view_struktur(m: Model) -> str:
 <div class="arrow">↓ {t("hängen direkt daran", "attached directly")}</div><div class="row">{steps}</div></div></div>
 {feedback("aufbau", "Aufbau", "Build-up")}</section>""")
 
-    # 2 step -> location
+    # 3 step -> location
     rows = []
     for s in d.get("step_location_map", []):
         o = m.object_for(s.get("object", "")) or {"kind": "extra", "name": Name("", s.get("object", ""))}
@@ -380,12 +481,12 @@ def view_struktur(m: Model) -> str:
 <p class="where">→ <b>{o['name'].html()}</b>{f" · {t('Abschnitt', 'Section')} {sec_html}" if sec else ""}</p>
 {'<p class="items">' + E(" · ".join(items)) + "</p>" if items else ""}
 <div class="chips">{"".join(chip(short(m.device_name(e).text, 60), "dev") for e in s.get("equipment", []))}{"".join(chip(m.file_name(f).text, "file") for f in s.get("files", []))}</div></div></li>""")
-    body.append(f"""<section aria-labelledby="h2s">{section_head("2", "h2s", "Wo landet welcher Ablaufschritt?", "Where does each workflow step go?")}
+    body.append(f"""<section aria-labelledby="h2s">{section_head("3", "h2s", "Wo landet welcher Ablaufschritt?", "Where does each workflow step go?")}
 <p>{t("Die Farbe zeigt das Objekt, in das der Schritt geschrieben wird. Umrandete Marken sind Geräte oder Material, gestrichelte sind Dateien.",
       "The colour shows the object the step is recorded in. Outlined tags are instruments or materials, dashed ones are files.")}</p>
 <ol class="timeline">{"".join(rows)}</ol>{feedback("ablauf", "Zuordnung der Schritte", "Step assignment")}</section>""")
 
-    # 3 object forms
+    # 4 object forms
     kinds = {o["type"]: o["kind"] for o in reversed(objs)}
     order = {o["type"]: i for i, o in enumerate(objs)}
     spec_types = sorted(form_types(m), key=lambda x: order.get(x["code"], 99))
@@ -401,14 +502,14 @@ def view_struktur(m: Model) -> str:
                      f'<p>{E(short(role, 220)) if role else default}</p></article>')
     fb = "".join(feedback(f"obj-{x['code']}", f"Felder „{short(m.type_name(x).de or m.type_name(x).en, 50)}“",
                           f"Fields “{short(m.type_name(x).en, 50)}”") for x in spec_types)
-    body.append(f"""<section aria-labelledby="h3s">{section_head("3", "h3s", "Welche Felder bekommt jedes Objekt?", "Which fields does each object get?")}
+    body.append(f"""<section aria-labelledby="h3s">{section_head("4", "h3s", "Welche Felder bekommt jedes Objekt?", "Which fields does each object get?")}
 <p>{t("So ungefähr sieht das Formular in der ELN aus. <b>neu</b> heißt: beantragt der Agent beim Data Store, <b>Standard</b> gibt es schon. "
       "Felder mit <b>Pflicht</b> müssen beim Anlegen ausgefüllt sein.",
       "This is roughly how the form looks in the ELN. <b>new</b> means the agent requests it from the Data Store, <b>standard</b> exists already. "
       "Fields marked <b>mandatory</b> must be filled in when an object is created.")}</p>
 <div class="cards">{"".join(cards)}</div>{fb}</section>""")
 
-    # 4 series table
+    # 5 series table
     cols_ = lay.get("series_table", [])
     specimens = [o for o in st.get("objects", []) if objs and o.get("type") == objs[0]["type"]][:4]
     by_key = {o["key"]: o for o in st.get("objects", [])}
@@ -429,12 +530,12 @@ def view_struktur(m: Model) -> str:
     rows_ = "".join("<tr>" + "".join(f"<td>{E(cell(c['source'], sp))}</td>" for c in cols_) + "</tr>" for sp in specimens)
     if not specimens:
         rows_ = (f'<tr><td colspan="{max(len(cols_), 1)}">{t("Beispielzeilen folgen, sobald die Struktur mit Beispielproben steht (Schritt 8).", "Example rows follow once the structure with example specimens exists (step 8).")}</td></tr>')
-    body.append(f"""<section aria-labelledby="h4s">{section_head("4", "h4s", "So sieht die Serientabelle aus", "What the series table looks like")}
+    body.append(f"""<section aria-labelledby="h4s">{section_head("5", "h4s", "So sieht die Serientabelle aus", "What the series table looks like")}
 <p>{t("Das ist die Tabelle, die man beim Öffnen einer Serie sieht. Die Werte sind Beispieldaten aus der Demo-Serie (fiktiv).",
       "This is the table you see when you open a series. The values are example data from the demo series (fictitious).")}</p>
 <div class="tbl"><table><thead><tr>{head}</tr></thead><tbody>{rows_}</tbody></table></div>{feedback("tabelle", "Serientabelle", "Series table")}</section>""")
 
-    # 5 vocabularies
+    # 6 vocabularies
     vcards = []
     for code, v in m.vocab.items():
         if v["status"] == "standard":
@@ -445,24 +546,10 @@ def view_struktur(m: Model) -> str:
         badge = chip("neu", "new", "new") if v["status"] == "neu" else chip("ergänzt", "new", "extended")
         vcards.append(f'<article class="card voc"><header><div><h3>{m._note(Name(dd if "//" in (v.get("description") or "") else "", en), "v:" + code).html()}</h3>'
                       f'<code>{E(code)}</code></div>{badge}</header><ul class="tlist">{terms}</ul></article>')
-    body.append(f"""<section aria-labelledby="h5s">{section_head("5", "h5s", "Auswahllisten", "Choice lists")}
+    body.append(f"""<section aria-labelledby="h5s">{section_head("6", "h5s", "Auswahllisten", "Choice lists")}
 <p>{t("Hier wählt man im Formular aus einer festen Liste. Hervorgehoben sind die Einträge, die neu dazukommen.",
       "In the form you pick from a fixed list. Entries that are being added are highlighted.")}</p>
 <div class="cards">{"".join(vcards)}</div>{feedback("listen", "Auswahllisten", "Choice lists")}</section>""")
-
-    # 6 numbers
-    mt = d.get("metrics", {})
-    if mt.get("new") and mt.get("legacy_live"):
-        a, b = mt["new"], mt["legacy_live"]
-        tiles = "".join(f'<div class="tile"><span>{te(lde, len_)}</span><b>{E(str(a.get(k, "–")))}</b>'
-                        f'<small>{te("vorher", "before")} {E(str(b.get(k, "–")))}</small></div>'
-                        for k, lde, len_ in (("objects_per_specimen", "Objekte je Probe", "Objects per specimen"),
-                                             ("max_link_depth", "Ebenen unter der Probe", "Levels below the specimen"),
-                                             ("new_object_types", "neue Typen", "New types"),
-                                             ("new_dataset_types", "neue Datei-Typen", "New file types")))
-        body.append(f'<section aria-labelledby="h6s">{section_head("6", "h6s", "Einfacher als vorher", "Simpler than before")}'
-                    f'<p>{t("Vergleich mit dem bisherigen Modell auf der Übungsinstanz.", "Compared with the previous model on the test instance.")}</p>'
-                    f'<div class="tiles">{tiles}</div></section>')
 
     # 7 terms in both languages
     body.append(f'<section aria-labelledby="h8s">{section_head("7", "h8s", "Begriffe in beiden Sprachen", "Terms in both languages")}'
@@ -489,13 +576,12 @@ def view_struktur(m: Model) -> str:
                 f"All names are shown as <b>German</b> / English. <i>Italics</i> = taken from the German description. "
                 f"{chip('DE fehlt', 'miss', 'DE missing')} = German version still missing ({n if n else 'none here'}). "
                 f"{chip('nur EN', 'std', 'EN only')} = name from the BAM standard that exists only in English there."))
-    header = f"""<header class="hero"><div class="hero-top"><span class="eyebrow">{t("Prüfpunkt B · Struktur bestätigen", "Checkpoint B · Confirm the structure")}</span>{lang_switch()}</div>
-<h1>{E(m.title)}</h1>
+    header = f"""<header class="hero">{hero_top(m, "Prüfpunkt B · Struktur bestätigen", "Checkpoint B · Confirm the structure")}
 <p class="lead">{t("So würde der Agent Ihren Versuchsablauf in openBIS abbilden. Bitte lesen Sie die Seite von oben nach unten. "
-                   "Bei jedem Teil wählen Sie <b>passt</b> oder <b>ändern</b>. Ganz unten entsteht daraus Ihr Text für den Chat.",
+                   "Zuerst wählen Sie die Variante, danach bei jedem Teil <b>passt</b> oder <b>ändern</b>. Ganz unten entsteht daraus Ihr Text für den Chat.",
                    "This is how the agent would map your test workflow in openBIS. Please read the page from top to bottom. "
-                   "For each part, choose <b>fits</b> or <b>change</b>. At the bottom this becomes your reply for the chat.")}</p>
-<ol class="ask"><li>{t("Hat jeder Ablaufschritt genau einen Ort?", "Does every workflow step have exactly one place?")}</li>
+                   "First choose the variant, then <b>fits</b> or <b>change</b> for each part. At the bottom this becomes your reply for the chat.")}</p>
+<ol class="ask">{"<li>" + t("Passt die empfohlene Variante, oder soll es eine andere werden?", "Does the recommended variant fit, or should it be a different one?") + "</li>" if d.get("variants") else ""}<li>{t("Hat jeder Ablaufschritt genau einen Ort?", "Does every workflow step have exactly one place?")}</li>
 <li>{t("Sind die Felder die, die im Labor wirklich notiert werden?", "Are these the fields that are actually recorded in the lab?")}</li>
 <li>{t("Würden Sie die Serientabelle so lesen wollen?", "Would you want to read the series table like this?")}</li>
 <li>{t("Passen die Begriffe auf Deutsch und auf Englisch?", "Are the terms right in German and in English?")}</li></ol>
@@ -513,9 +599,9 @@ def copy_block(cid: str, text: str, label_de: str, label_en: str) -> str:
 def view_antrag(m: Model) -> str:
     r = m.request
     if not r:
-        return (f'<header class="hero"><h1>{E(m.title)}</h1><p class="lead">'
+        return (f'<header class="hero">{hero_top(m, "Prüfpunkte C und D", "Checkpoints C and D")}<p class="lead">'
                 f'{t("Noch kein Antragspaket. Der Agent erzeugt es mit <code>python tools/build_request.py " + E(m.project["name"]) + "</code>.", "No request package yet. The agent creates it with <code>python tools/build_request.py " + E(m.project["name"]) + "</code>.")}'
-                f'</p>{lang_switch()}</header>')
+                f'</p></header>')
     tname = {x["code"]: Name(x.get("name_de"), x.get("name_en")) for x in r["new_types"]}
     body = []
     n_ext = sum(len(e["terms"]) for e in r["extensions"])
@@ -640,8 +726,7 @@ def view_antrag(m: Model) -> str:
 </ol></div></section>""")
 
     n = len(m.missing)
-    header = f"""<header class="hero"><div class="hero-top"><span class="eyebrow">{t("Prüfpunkte C und D · Antrag prüfen und senden", "Checkpoints C and D · Review and send the request")}</span>{lang_switch()}</div>
-<h1>{E(m.title)}</h1>
+    header = f"""<header class="hero">{hero_top(m, "Prüfpunkte C und D · Antrag prüfen und senden", "Checkpoints C and D · Review and send the request")}
 <p class="lead">{t("Das geht an den BAM Data Store: ein Issue bei bam-masterdata und eine Mail an datastore@bam.de. Prüfen Sie zuerst, "
                    "ob nur beantragt wird, was es wirklich noch nicht gibt. Danach öffnet sich unten der Teil zum Senden.",
                    "This goes to the BAM Data Store: an issue at bam-masterdata and a mail to datastore@bam.de. First check that only "
@@ -679,7 +764,7 @@ h4{font-size:14px;color:var(--bam-steel);font-weight:600}h4 small{font-weight:40
 code{font:13px var(--m);color:var(--muted);overflow-wrap:anywhere}section{display:flex;flex-direction:column;gap:16px}
 .eyebrow{font:500 12px var(--fh);letter-spacing:.08em;text-transform:uppercase;color:var(--bam-cyan)}
 .hero{display:flex;flex-direction:column;gap:14px;background:var(--bam-petrol);color:#fff;padding:32px clamp(20px,4vw,40px)}
-.hero h1{color:#fff}.hero .lead{font-size:19px;font-weight:300}.hero .meta{color:var(--gray-4);font-size:14px}.hero code{color:var(--gray-3)}
+.hero h1{color:#fff}.hero .sub{color:var(--gray-3);font-size:20px;margin-top:-6px}.hero .lead{font-size:19px;font-weight:300}.hero .meta{color:var(--gray-4);font-size:14px}.hero code{color:var(--gray-3)}
 .ask{margin:0;padding:14px 16px 14px 38px;background:rgba(255,255,255,.08);border-left:3px solid var(--bam-cyan);display:flex;flex-direction:column;gap:4px}
 .n{display:inline-grid;place-items:center;width:34px;height:34px;background:var(--bam-petrol);color:#fff;font:500 16px var(--fh);flex:none}
 .tree{display:flex;flex-direction:column;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);padding:24px}
@@ -742,6 +827,27 @@ a{color:var(--accent-strong)}a:hover{color:var(--bam-petrol)}
 .lang button[aria-pressed="true"]{background:var(--bam-cyan);border-color:var(--bam-cyan);color:var(--bam-petrol)}.lang button:hover{background:rgba(255,255,255,.1)}
 .lang button[aria-pressed="true"]:hover{background:var(--bam-cyan)}
 .copied{color:var(--success);font-weight:600}.hint{font-size:14px;color:var(--muted)}
+.variants .vgrid{border:0;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:16px;min-width:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.variant{position:relative;background:var(--paper);border:1px solid var(--line);border-top:3px solid var(--gray-3);padding:20px 24px;display:flex;flex-direction:column;gap:12px;cursor:pointer;min-width:0}
+.variant.recommended{border-top-color:var(--bam-cyan)}.variant.chosen{border-color:var(--bam-petrol);box-shadow:0 0 0 2px var(--bam-petrol)}
+.variant input{position:absolute;top:22px;right:22px;width:20px;height:20px;accent-color:var(--bam-petrol)}
+.variant input:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(0,175,240,.4)}
+.v-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding-right:32px}.v-head h3{flex:1 1 200px}
+.v-id{display:inline-grid;place-items:center;width:30px;height:30px;background:var(--gray-2);color:var(--bam-petrol);font:500 16px var(--fh)}
+.variant.recommended .v-id{background:var(--bam-cyan)}.rec{color:var(--accent-strong);font-weight:500;white-space:nowrap}
+.vsketch{display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--gray-1);padding:14px}
+.vrow{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px}.vrow.chain{gap:4px}
+.vbox{display:flex;flex-direction:column;align-items:center;text-align:center;font-size:14px;background:#fff;border:1px solid var(--line);border-top:3px solid var(--bam-steel);padding:6px 10px;min-width:0}
+.vbox.main{background:var(--bam-petrol);border-color:var(--bam-petrol);color:#fff}.vbox.main .dual .en,.vbox.main .dual .sep,.vbox.main small{color:var(--gray-3)}
+.vbox small{color:var(--muted);font-size:12px}.vpill{font:13px var(--m);padding:2px 8px;border:1px solid var(--bam-steel);background:#fff;color:var(--bam-steel);border-radius:999px}
+.vfigs{display:grid;grid-template-columns:repeat(auto-fit,minmax(84px,1fr));gap:8px}.vfigs div{display:flex;flex-direction:column;border-left:3px solid var(--gray-3);padding-left:10px}
+.vfigs b{font:500 26px var(--fh);color:var(--bam-petrol)}.vfigs span{font-size:13px;color:var(--muted)}
+.pc{display:flex;flex-direction:column;gap:6px}.pros,.cons{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:15px}
+.pros li,.cons li{padding-left:22px;position:relative}.pros li::before{content:"+";position:absolute;left:4px;color:var(--success);font-weight:600}
+.cons li::before{content:"–";position:absolute;left:4px;color:var(--warning);font-weight:600}
+.vlist{margin:6px 0 0;padding-left:0;list-style:none;font-size:14px;display:flex;flex-direction:column;gap:2px}.vlist code{display:inline-block;min-width:3em}
+.vnote{background:var(--cyan-tint);border-left:3px solid var(--bam-cyan);padding:12px 16px;font-weight:500;color:var(--bam-petrol)}
 @media (max-width:640px){.step{grid-template-columns:40px 1fr}.hero{padding:24px 20px}}
 @media (prefers-reduced-motion:reduce){button{transition:none}}
 """
@@ -753,12 +859,16 @@ JS = """
   try{lang=localStorage.getItem('review-lang')||'de'}catch(e){}
   var L={de:{open:'Noch %o von %n Teilen offen.',ok:'Alles passt: Das ist eine Freigabe.',one:' Änderungswunsch.',many:' Änderungswünsche.',
              wait:'(erscheint, sobald alle Teile beantwortet sind)',app:' freigegeben',not:' noch nicht freigegeben. Bitte ändern:',
-             note:'Anmerkung: ',also:'Außerdem: ',dflt:'(bitte ändern)',sel:'Markiert: jetzt kopieren (Strg+C) und im Chat einfügen.'},
+             note:'Anmerkung: ',also:'Außerdem: ',dflt:'(bitte ändern)',sel:'Markiert: jetzt kopieren (Strg+C) und im Chat einfügen.',
+             vn:'Variante',vchg:'Variante: bitte Variante %c „%n“ ausarbeiten statt %s.',vother:'Andere Variante gewählt: Der Agent arbeitet sie aus und zeigt Ihnen eine neue Seite.'},
          en:{open:'%o of %n parts still open.',ok:'Everything fits: this is an approval.',one:' change request.',many:' change requests.',
              wait:'(appears once every part is answered)',app:' approved',not:' not approved yet. Please change:',
-             note:'Note: ',also:'Also: ',dflt:'(please change)',sel:'Selected: now copy (Ctrl+C) and paste it into the chat.'}};
+             note:'Note: ',also:'Also: ',dflt:'(please change)',sel:'Selected: now copy (Ctrl+C) and paste it into the chat.',
+             vn:'variant',vchg:'Variant: please work out variant %c “%n” instead of %s.',vother:'Different variant chosen: the agent works it out and shows you a new page.'}};
   var gate=((document.querySelector('[data-gate]')||{}).dataset||{}).gate||'B';
   var fbs=[].slice.call(document.querySelectorAll('.fb')), gen=document.getElementById('fb-gesamt');
+  var vsec=document.querySelector('.variants'), vrs=[].slice.call(document.querySelectorAll('input[name=variant]')),
+      shown=vsec?vsec.dataset.shown:'';
   function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
   function render(){
     var T=L[lang], open=0, changes=[];
@@ -767,9 +877,13 @@ JS = """
       var t=f.querySelector('textarea');t.hidden=s.v!=='chg';if(t.value!==(s.t||''))t.value=s.t||'';
       if(!s.v)open++; if(s.v==='chg')changes.push('- '+label+': '+((s.t||'').trim()||T.dflt));});
     if(gen.value!==(st._g||''))gen.value=st._g||'';
-    var g=(st._g||'').trim(), txt='', state;
-    if(open){state=T.open.replace('%o',open).replace('%n',fbs.length);}
-    else if(!changes.length){txt=gate+T.app+(g?'\\n\\n'+T.note+g:'');state=T.ok;}
+    var g=(st._g||'').trim(), txt='', state, chosen=st._v||shown, other=!!vsec&&chosen!==shown, cn='';
+    vrs.forEach(function(r){r.checked=r.value===chosen;r.parentNode.classList.toggle('chosen',r.checked);if(r.checked)cn=r.dataset.name;});
+    if(vsec)document.getElementById('v-note').hidden=!other;
+    if(other){changes.unshift('- '+T.vchg.replace('%c',chosen).replace('%n',cn).replace('%s',shown));
+      txt=gate+T.not+'\\n'+changes.join('\\n')+(g?'\\n\\n'+T.also+g:'');state=T.vother;}
+    else if(open){state=T.open.replace('%o',open).replace('%n',fbs.length);}
+    else if(!changes.length){txt=gate+T.app+(vsec?' ('+T.vn+' '+shown+')':'')+(g?'\\n\\n'+T.note+g:'');state=T.ok;}
     else{txt=gate+T.not+'\\n'+changes.join('\\n')+(g?'\\n\\n'+T.also+g:'');state=changes.length+(changes.length>1?T.many:T.one);}
     document.getElementById('state').textContent=state;
     document.getElementById('out').textContent=txt||T.wait;
@@ -788,6 +902,7 @@ JS = """
     f.querySelector('.chg').onclick=function(){st[id]={v:'chg',t:(st[id]||{}).t||''};save();render();f.querySelector('textarea').focus()};
     f.querySelector('textarea').oninput=function(e){st[id]={v:'chg',t:e.target.value};save();render()};});
   gen.oninput=function(e){st._g=e.target.value;save();render()};
+  vrs.forEach(function(r){r.onchange=function(){st._v=r.value;save();render()}});
   var iu=document.getElementById('issue-url'); if(iu)iu.oninput=render;
   [].forEach.call(document.querySelectorAll('button[data-copy]'),function(btn){btn.onclick=function(){
     var el=document.querySelector(btn.dataset.copy), t=el.textContent;
@@ -839,8 +954,7 @@ def main(argv=None) -> int:
     label, fn = VIEWS[a.ansicht]
     out = a.out or m.project["dir"] / "review" / f"{a.ansicht}.html"
     out.parent.mkdir(parents=True, exist_ok=True)
-    name = re.sub(r"\s*\(.*?\)\s*$", "", m.title)  # page name without the trailing "(FB …)"
-    out.write_text(page(f"{label} {name}", fn(m), a.fragment), encoding="utf-8")
+    out.write_text(page(f"{label} · {m.title_de}", fn(m), a.fragment), encoding="utf-8")
     print(out)
     return 0
 

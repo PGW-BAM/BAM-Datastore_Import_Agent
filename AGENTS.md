@@ -60,7 +60,7 @@ An den Prüfpunkten zeigst du der Person eine Prüfseite. Die Seite schreibst du
 
 | Prüfpunkt | Vorher | Seite erzeugen | Datei |
 |---|---|---|---|
-| ◆ B Struktur | `design.json` (Format `schemas/design.schema.json`) | `python tools/render_review.py <name> struktur` | `projects/<name>/review/struktur.html` |
+| ◆ B Struktur | `design.json` mit 2–4 `variants`, eine empfohlen (Format `schemas/design.schema.json`) | `python tools/render_review.py <name> struktur` | `projects/<name>/review/struktur.html` |
 | ◆ C/D Antrag | `python tools/build_request.py <name>` | `python tools/render_review.py <name> antrag` | `projects/<name>/review/antrag.html` |
 | ◆ A, ◆ E | noch keine Seite: `prd.md` bzw. die Ausgabe des Trockenlaufs zeigen | | |
 
@@ -70,7 +70,10 @@ An den Prüfpunkten zeigst du der Person eine Prüfseite. Die Seite schreibst du
 3. Zeigen: Kann die Plattform Seiten anzeigen (Claude: Artifact, mit `--fragment`), dort veröffentlichen. Sonst (z. B.
    Mistral Vibe) den Link auf die Datei im Repo nennen, mit dem Hinweis: „Auf GitHub öffnen, oben rechts *Download raw
    file*, dann die Datei im Browser öffnen.“
-4. Die Person antwortet mit dem Text, den die Seite erzeugt („B freigegeben“ / „B approved“ oder eine Liste von Änderungen).
+4. Die Person antwortet mit dem Text, den die Seite erzeugt („B freigegeben (Variante A)“ / „B approved (variant A)“ oder
+   eine Liste von Änderungen, auch „bitte Variante C ausarbeiten“).
+5. Überschrift und Fachbereich jeder Seite kommen aus `project.yaml` (`title`, `title_en`, `division`), nie aus dem
+   Beispielprojekt.
 
 ## Texte für Menschen
 
