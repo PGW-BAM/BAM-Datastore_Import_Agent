@@ -41,6 +41,7 @@ Prinzipien P1–P8 (`workflow/README.md`).
 ◆ **B**: Prüfseite erzeugen und der Person zeigen, nicht `design.md`:
 
 ```bash
+python tools/check_files.py <name>                 # Format von design.json (schemas/design.schema.json)
 python tools/render_review.py <name> struktur      # -> projects/<name>/review/struktur.html, committen
 ```
 

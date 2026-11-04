@@ -53,6 +53,25 @@ Kurzform für Agenten mit Skills oder Slash-Befehlen: Skill `bam-weiter` (`.agen
 | Tabellen, Messreihen | als Datei, nicht als Properties |
 | Struktur | flach: Space → Projekt → Collection (= Serie) → Objekte; Schritte hängen direkt an der Probe |
 
+## Prüfseiten (fest, für jeden Agenten gleich)
+
+An den Prüfpunkten zeigst du der Person eine Prüfseite. Die Seite schreibst du **nie selbst**: Sie entsteht nur mit
+`tools/render_review.py` aus den Projektdateien, damit sie auf jeder Plattform gleich aussieht und dieselben Inhalte hat.
+
+| Prüfpunkt | Vorher | Seite erzeugen | Datei |
+|---|---|---|---|
+| ◆ B Struktur | `design.json` (Format `schemas/design.schema.json`) | `python tools/render_review.py <name> struktur` | `projects/<name>/review/struktur.html` |
+| ◆ C/D Antrag | `python tools/build_request.py <name>` | `python tools/render_review.py <name> antrag` | `projects/<name>/review/antrag.html` |
+| ◆ A, ◆ E | noch keine Seite: `prd.md` bzw. die Ausgabe des Trockenlaufs zeigen | | |
+
+1. Nach jedem Schreiben von `design.json` oder `structure.json`: `python tools/check_files.py <name>`. Meldet es Fehler,
+   erzeugt auch `render_review.py` keine Seite. Dann die Dateien nach der Meldung korrigieren, nicht das Skript.
+2. Seite committen und pushen.
+3. Zeigen: Kann die Plattform Seiten anzeigen (Claude: Artifact, mit `--fragment`), dort veröffentlichen. Sonst (z. B.
+   Mistral Vibe) den Link auf die Datei im Repo nennen, mit dem Hinweis: „Auf GitHub öffnen, oben rechts *Download raw
+   file*, dann die Datei im Browser öffnen.“
+4. Die Person antwortet mit dem Text, den die Seite erzeugt („B freigegeben“ / „B approved“ oder eine Liste von Änderungen).
+
 ## Texte für Menschen
 
 Prüfseiten, `AUFGABE.md`, `workflow/MENSCH.md` und Mails sprechen die Person mit **„Sie“** an (BAM-Konvention: förmlich,
@@ -82,6 +101,7 @@ Englisch umschaltbar, Namen immer „Deutsch / Englisch“.
 |---|---|
 | `workflow/` | Überblick, eine Karte pro Schritt, Interview-Fragen, `MENSCH.md` (Aufgaben des Menschen) |
 | `templates/` | Vorlagen für ein neues Projekt (Kopiervorlage) |
+| `schemas/` | Formate der Projektdateien (`design`, `structure`, `project`), geprüft mit `tools/check_files.py` |
 | `projects/<name>/` | ein Projekt: Einstellungen, Status, alle Zwischenstände |
 | `tools/bruecke.py`, `notebooks/openbis_bruecke.ipynb` | die Werkzeuge im BAM-Netz (Befehl oder Notebook, gleiche Logik): Lesen, Prüfen, Trockenlauf, Anlegen |
 | `tools/` | Skripte: Katalog, Spec-Export, Brücke (`openbis_bridge.py`), Antragspaket (`build_request.py`), Prüfseiten (`render_review.py struktur|antrag`), Cloud-Setup |

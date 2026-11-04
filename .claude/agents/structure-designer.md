@@ -26,6 +26,9 @@ masterdata-extender implements.
 - `generated/<prd-stem>/design.json`
 - `generated/<prd-stem>/design.md` — human-readable: tree, step→location table, metrics before/after
 
+Output format: `schemas/design.schema.json` (checked by `python tools/check_files.py <name>`; the review page refuses
+to render until it passes).
+
 ## Design algorithm (follow in order)
 
 1. **Subject first (P3).** Every data item that *describes the specimen* (identity, geometry, weld

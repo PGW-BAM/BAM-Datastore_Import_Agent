@@ -296,6 +296,29 @@ def feedback(item_id: str, label_de: str, label_en: str) -> str:
 # view: struktur (Prüfpunkt B)
 
 
+def form_types(m: Model) -> list[dict]:
+    """Object types with all fields in display order. From spec.json when it exists (step 6 on); before that from
+    design.json plus the parent's fields in the catalog, so the page also works at checkpoint B of a new project."""
+    if m.spec.get("object_types"):
+        return m.spec["object_types"]
+    by_class = {t["class"]: t for t in m.catalog.get("types", [])}
+    out = []
+    for dt in m.design.get("object_types", []):
+        parent = by_class.get(dt.get("parent_class") or "", {})
+        props = {}
+        for p in parent.get("inherited_properties", []) + parent.get("properties", []):
+            props[p["code"]] = {"code": p["code"], "data_type": p.get("data_type"), "label": p.get("property_label"),
+                                "description": p.get("description"), "section": p.get("section"), "mandatory": p.get("mandatory"),
+                                "vocabulary_code": p.get("vocabulary_code")}
+        for p in dt.get("properties", []):
+            props[p["code"]] = {"code": p["code"], "data_type": p.get("data_type"), "label": p.get("property_label"),
+                                "description": p.get("description"), "section": p.get("section"), "mandatory": p.get("mandatory"),
+                                "vocabulary_code": p.get("vocabulary_code")}
+        out.append({"code": dt["code"], "description": dt.get("description"), "section_order": dt.get("section_order"),
+                    "properties": list(props.values())})
+    return out
+
+
 def lang_switch() -> str:
     return ('<div class="lang" role="group" aria-label="Sprache / Language">'
             '<button type="button" data-lang="de" aria-pressed="true">Deutsch</button>'
@@ -365,9 +388,9 @@ def view_struktur(m: Model) -> str:
     # 3 object forms
     kinds = {o["type"]: o["kind"] for o in reversed(objs)}
     order = {o["type"]: i for i, o in enumerate(objs)}
-    spec_types = sorted(m.spec.get("object_types", []), key=lambda x: order.get(x["code"], 99))
+    spec_types = sorted(form_types(m), key=lambda x: order.get(x["code"], 99))
     cards = [object_card(m, x, kinds.get(x["code"], "extra")) for x in spec_types]
-    reused = [o for o in objs if o["type"] not in {x["code"] for x in m.spec.get("object_types", [])}]
+    reused = [o for o in objs if o["type"] not in {x["code"] for x in spec_types}]
     for o in reused:
         role = next((r.get("role", "") for r in d.get("reused_types", []) if r.get("code") == o["type"] and
                      r.get("used_as", "").endswith(o["code_pattern"][len(objs[0]["code_pattern"]):] or "~")), "")
@@ -404,6 +427,8 @@ def view_struktur(m: Model) -> str:
     head = "".join(f"<th>{m._note(Name(de(c['column'])[1] if '//' in c['column'] else '', de(c['column'])[0]), 'c:' + c['column']).html('th')}</th>"
                    for c in cols_)
     rows_ = "".join("<tr>" + "".join(f"<td>{E(cell(c['source'], sp))}</td>" for c in cols_) + "</tr>" for sp in specimens)
+    if not specimens:
+        rows_ = (f'<tr><td colspan="{max(len(cols_), 1)}">{t("Beispielzeilen folgen, sobald die Struktur mit Beispielproben steht (Schritt 8).", "Example rows follow once the structure with example specimens exists (step 8).")}</td></tr>')
     body.append(f"""<section aria-labelledby="h4s">{section_head("4", "h4s", "So sieht die Serientabelle aus", "What the series table looks like")}
 <p>{t("Das ist die Tabelle, die man beim Öffnen einer Serie sieht. Die Werte sind Beispieldaten aus der Demo-Serie (fiktiv).",
       "This is the table you see when you open a series. The values are example data from the demo series (fictitious).")}</p>
@@ -800,6 +825,16 @@ def main(argv=None) -> int:
     ap.add_argument("--out", type=Path, help="Zieldatei (Standard: projects/<projekt>/review/<ansicht>.html)")
     ap.add_argument("--repo", type=Path, default=REPO, help=argparse.SUPPRESS)
     a = ap.parse_args(argv)
+    import check_files
+    need = {"struktur": (("project", "design"), ("design",)), "antrag": (("project", "design"), ())}[a.ansicht]
+    errors, notes = check_files.check_project(a.repo, a.projekt, *need)
+    for n in notes:
+        print("Hinweis:", n)
+    if errors:
+        print("Keine Prüfseite erzeugt. Bitte zuerst beheben (Formate: schemas/):")
+        for e in errors:
+            print("  -", e)
+        return 1
     m = Model(a.repo, a.projekt)
     label, fn = VIEWS[a.ansicht]
     out = a.out or m.project["dir"] / "review" / f"{a.ansicht}.html"

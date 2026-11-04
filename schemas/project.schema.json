@@ -1,0 +1,76 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "project.schema.json",
+ "title": "project.yaml: settings of one project",
+ "type": "object",
+ "required": [
+  "name",
+  "title",
+  "title_en",
+  "division",
+  "instance",
+  "space",
+  "project",
+  "inventory_projects",
+  "bam_masterdata"
+ ],
+ "properties": {
+  "name": {
+   "type": "string",
+   "minLength": 1
+  },
+  "title": {
+   "type": "string",
+   "minLength": 1
+  },
+  "title_en": {
+   "type": "string",
+   "minLength": 1
+  },
+  "division": {
+   "type": "string",
+   "minLength": 1
+  },
+  "summary_en": {
+   "type": "string"
+  },
+  "instance": {
+   "type": "string",
+   "pattern": "^https://"
+  },
+  "space": {
+   "type": "string",
+   "minLength": 1
+  },
+  "project": {
+   "type": "string",
+   "pattern": "^[A-Z0-9_]+$|^<"
+  },
+  "inventory_projects": {
+   "type": "array",
+   "items": {
+    "type": "string",
+    "pattern": "^/"
+   }
+  },
+  "bam_masterdata": {
+   "type": "string",
+   "minLength": 1
+  },
+  "prd": {
+   "type": "string"
+  },
+  "design": {
+   "type": "string"
+  },
+  "structure": {
+   "type": "string"
+  },
+  "spec": {
+   "type": "string"
+  },
+  "datamodel": {
+   "type": "string"
+  }
+ }
+}

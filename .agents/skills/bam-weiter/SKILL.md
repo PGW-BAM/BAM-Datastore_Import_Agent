@@ -12,7 +12,7 @@ description: Ein BAM-Data-Store-Projekt unter projects/ fortsetzen oder neu anle
 4. `projects/<name>/STATUS.md` lesen. Liegt dort eine `AUFGABE.md`, ist der Mensch dran: sie zeigen und fragen, ob
    sie erledigt ist. Erledigt: Ergebnisdateien prüfen (`git pull`), `AUFGABE.md` löschen, weiter.
 5. Nächsten offenen Schritt nehmen, Karte `workflow/0N_*.md` öffnen, abarbeiten: Eingabe → Tun → Prüfen → Stopp.
-6. Am Stopp: Prüfpunkt im Chat zur Freigabe stellen, oder die Aufgabe für den Menschen nach `workflow/AUFGABE_VORLAGE.md`
+6. Am Stopp: Prüfseite erzeugen, wo es eine gibt (`AGENTS.md` → „Prüfseiten“), und den Prüfpunkt im Chat zur Freigabe stellen, oder die Aufgabe für den Menschen nach `workflow/AUFGABE_VORLAGE.md`
    schreiben und im Chat zeigen. `STATUS.md` fortschreiben, committen, pushen.
 7. Immer bevor du auf eine Antwort wartest: committen und pushen (Sitzungen können ablaufen). Läuft die Arbeit auf
    einem eigenen Zweig, nenne ihn der Person: Pull Request mergen (bevorzugt, dann gilt `main`) oder `--zweig` nutzen.
