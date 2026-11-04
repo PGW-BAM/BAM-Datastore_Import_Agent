@@ -70,6 +70,10 @@ def parse_file(path: Path, rel: str) -> list[dict]:
 
 def build(repo: Path) -> dict:
     dm = repo / "bam_masterdata" / "datamodel"
+    # Since v0.17 the datamodel is split into v0/ (deployed) and v1/ (work in progress, not deployed).
+    # Catalog only v0: v1 reuses class names (Calibration, Measurement, Test) and would shadow v0.
+    if (dm / "v0").is_dir():
+        dm = dm / "v0"
     classes = {}
     for path in sorted(dm.rglob("*.py")):
         if path.name.startswith("_"):

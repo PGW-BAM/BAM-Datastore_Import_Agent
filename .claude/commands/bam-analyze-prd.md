@@ -18,7 +18,7 @@ Examples:
 
 | # | Step | Agent / tool | Output |
 |---|---|---|---|
-| 1 | Sync standard | `/bam-sync` (fast-forward only) | `../bam-masterdata` at origin/main |
+| 1 | Sync standard | `/bam-sync` (pinned release) | `../bam-masterdata` at `BMD_REF` (`tools/cloud_setup.sh`) |
 | 2 | Catalog the standard | `bam-masterdata-explorer` → `python tools/build_catalog.py` | `generated/CATALOG.md`, `generated/catalog.json` |
 | 3 | Inventory the instance (optional, recommended) | from a committed `generated/live/<instance>_inventory.json` (`tools/openbis_inventory.js`, run by a human in the ELN tab — the only way in cloud sessions, see `CLOUD.md`); otherwise a browser session on the target instance, **read-only** V3 `search*` calls | `generated/live/<instance>_inventory.md` |
 | 4 | Transcribe the PRD | `prd-requirements-extractor` | `generated/<stem>/requirements.json` |

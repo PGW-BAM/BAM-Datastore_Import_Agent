@@ -10,8 +10,8 @@ DEFECT_DESCRIPTION) are assigned with their existing code, data type and vocabul
 PR target: bam_masterdata/datamodel/fatigue/object_types.py (new subpackage).
 """
 
-from bam_masterdata.datamodel.activities import MechanicalTest
-from bam_masterdata.datamodel.object_types import Sample
+from bam_masterdata.datamodel.v0.activities import MechanicalTest
+from bam_masterdata.datamodel.v0.object_types import Sample
 from bam_masterdata.metadata.definitions import ObjectTypeDef, PropertyTypeAssignment
 
 

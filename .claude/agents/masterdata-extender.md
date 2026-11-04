@@ -29,9 +29,9 @@ This is the single most important rule of this agent. Emitting code for REUSE/EX
 | Gap report | `generated/<prd-stem>/gap-report.md` |
 | Design (workflow PRDs — authoritative for codes, sections, properties) | `generated/<prd-stem>/design.json` |
 | Requirements | `generated/<prd-stem>/requirements.json` |
-| ObjectType template | `../bam-masterdata/bam_masterdata/datamodel/object_types.py:7167-7191` (`AlignmentFixture`) |
-| Vocabulary template | `../bam-masterdata/bam_masterdata/datamodel/vocabulary_types.py:27836-27858` (`FlashLampShape`) |
-| Namespaced vocab template | `../bam-masterdata/bam_masterdata/datamodel/welding/vocabularies.py:6-34` (`GmawTorchType`) |
+| ObjectType template | `../bam-masterdata/bam_masterdata/datamodel/v0/instruments.py:262-287` (`AlignmentFixture`, bam-masterdata v0.17.0) |
+| Vocabulary template | `../bam-masterdata/bam_masterdata/datamodel/v0/vocabulary_types.py:27934-27958` (`FlashLampShape`) |
+| Namespaced vocab template | `../bam-masterdata/bam_masterdata/datamodel/v0/welding/vocabularies.py:6-37` (`GmawTorchType`) |
 
 Derive `<prd-stem>` from `$ARGUMENTS` (the PRD path) — snake_case stem.
 
@@ -61,8 +61,8 @@ from bam_masterdata.metadata.definitions import (
     PropertyTypeAssignment,
 )
 # Base classes for flat inheritance come from the datamodel, not from entities:
-from bam_masterdata.datamodel.object_types import ExperimentalStep, Sample
-from bam_masterdata.datamodel.activities import MechanicalTest
+from bam_masterdata.datamodel.v0.object_types import ExperimentalStep, Sample
+from bam_masterdata.datamodel.v0.activities import MechanicalTest
 
 class MyNewType(ObjectType):
     defs = ObjectTypeDef(
@@ -144,7 +144,7 @@ Group vocabularies in a single file. One class per vocabulary.
 For each CREATE ObjectType or ExperimentalStep:
 
 ```python
-from bam_masterdata.datamodel.object_types import ExperimentalStep, Sample
+from bam_masterdata.datamodel.v0.object_types import ExperimentalStep, Sample
 from bam_masterdata.metadata.definitions import ObjectTypeDef, PropertyTypeAssignment
 
 
