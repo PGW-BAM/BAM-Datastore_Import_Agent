@@ -1,0 +1,14 @@
+# Projekt-Einstellungen. Gelesen vom Agenten (Cloud) und vom Brücken-Notebook (BAM-Netz).
+# Keine Zugangsdaten hier eintragen.
+
+name: <name>                      # = Ordnername unter projects/
+instance: https://playground.datastore.bam.de   # zum Testen; später die Hauptinstanz
+space: <SPACE>                    # dein Space, im ELN nachsehen (z. B. FB_72)
+project: <PROJECT_CODE>           # Projekt-Code, GROSSBUCHSTABEN_MIT_UNTERSTRICH; wird angelegt, falls er fehlt
+inventory_projects:               # Geräte deines Fachbereichs, zum Mitlesen und Verlinken (im ELN nachsehen)
+  - /<EQUIPMENT_SPACE>/<FB>_EQUIPMENT_OPEN
+bam_masterdata: v0.17.0           # muss zu BMD_REF in tools/cloud_setup.sh passen
+
+# Optional, wenn die Dateien nicht im Projektordner liegen (Pfade relativ zu diesem Ordner):
+# structure: structure.json
+# spec: spec.json

@@ -1,0 +1,16 @@
+# FB 7.2 Wöhlerversuche an Schweißverbindungen. Erstes Projekt im neuen Ablauf, Test auf dem Playground.
+# Keine Zugangsdaten hier eintragen.
+
+name: fb72_welded_fatigue
+instance: https://playground.datastore.bam.de
+space: FB_72                      # TODO prüfen: dein Space auf dem Playground (im ELN nachsehen)
+project: WELDED_FATIGUE
+inventory_projects:               # TODO prüfen: Codes der Equipment-/Material-Projekte auf dem Playground
+  - /MATERIALS/7_2_EQUIPMENT      # Layout von dev1; Playground laut Tutorial eher /BAM_EQUIPMENT/<FB>_EQUIPMENT_OPEN
+  - /MATERIALS/7_2_MATERIALS
+bam_masterdata: v0.17.0
+
+# Die Dateien stammen aus dem Lauf auf dev1 (vor dem Umbau) und liegen noch unter generated/:
+prd: ../../BAM_PRD_Workflow_FB72_v2.md
+structure: ../../generated/welded_fatigue_v2/structure.json
+spec: ../../generated/welded_fatigue_v2/spec.json

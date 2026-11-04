@@ -1,0 +1,16 @@
+An: datastore@bam.de
+Betreff: Masterdaten-Antrag <Fachbereich>: <Thema>
+
+Hallo Data-Store-Team,
+
+für <Ablauf/Projekt> im <Fachbereich> brauchen wir neue Masterdaten. Ich habe dazu ein Issue in bam-masterdata angelegt:
+
+<Issue-Link>
+
+Kurz: <n> neue Object-Types, <n> neue Vokabulare, <n> Ergänzungen bestehender Definitionen und <n> Typen, die auf der Instanz nur nachgezogen werden müssen. Python-Module und masterdata.xlsx hängen am Issue, der checker meldet <0> Fehler.
+
+Getestet haben wir die Struktur auf dem Playground. Sobald die Typen auf <Instanz> sind, legen wir unser Projekt selbst an.
+
+Viele Grüße
+<Name>
+Data Store Steward <Fachbereich>

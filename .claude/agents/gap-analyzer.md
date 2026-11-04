@@ -18,11 +18,14 @@ Decide, for every type, vocabulary and property the design needs, whether it alr
 | Design | `generated/<prd-stem>/design.json` | if present (workflow PRDs) |
 | Requirements | `generated/<prd-stem>/requirements.json` | always (legacy PRDs: classify its entities directly) |
 | Catalog | `generated/CATALOG.md` + `generated/catalog.json` | yes |
-| Live inventory | `generated/live/*_inventory.md` | if present |
+| Live inventory | `projects/<name>/inventory_<instance>.json` (bridge notebook) or legacy `generated/live/*_inventory.md` | if present |
 
 ## Output
 
-`generated/<prd-stem>/gap-report.md`
+`generated/<prd-stem>/gap-report.md` (new layout: `projects/<name>/gap-report.md`)
+
+Workflow names (`workflow/05_abgleich.md`): REUSE = NUTZEN, EXTEND = ERWEITERN, CREATE = NEU,
+LIVE-ONLY = ALTBESTAND, instance sync = NACHZIEHEN, equipment missing = GERÄT FEHLT.
 
 ## Classes
 
@@ -67,8 +70,13 @@ PRD · design.json · catalog SHA · live inventory (instance, date)
 ## LIVE-ONLY       | Live entity | Kind | Replacement in design / proposal |
 ## Property types  | Code | Data type | Status (reuse: citation / new) | Collision check |
 ## Instance sync   | Entity | Status on instance | Needed action |
+## Equipment       | Device (design) | Type | Found in inventory (identifier) or MISSING | Action |
 ## Summary         counts per class + new-vs-legacy metrics from design.json
 ```
+
+Equipment: every instrument/material the design links as a parent is looked up in the inventory
+objects (`objects` of the read equipment projects). Missing ones are not an admin matter: the person
+registers them (workflow step 8). If no inventory was read, write `UNCONFIRMED`.
 
 ## Citation rule (MANDATORY)
 

@@ -3,10 +3,14 @@
 Cloud-Sessions laufen auf einer VM des Anbieters, **außerhalb des BAM-Netzes**. Daraus folgt eine feste Aufteilung:
 
 - **Cloud-Agent:** alles, was nur Dateien braucht (PRD → Anforderungen → Design → Gap-Report → Klassen → Spec, Notebook, Parser).
-- **Mensch im BAM-Netz:** alles, was die openBIS-Instanz berührt (Inventar lesen, Masterdaten und Objekte anlegen). Dafür braucht
-  es nur einen Browser mit ELN-Anmeldung, keinen lokalen Agenten.
+- **Mensch im BAM-Netz:** alles, was die openBIS-Instanz berührt (Inventar lesen, Objekte anlegen). Kein lokaler Agent nötig.
 
 Die beiden Seiten tauschen **committete Dateien** aus. Der Agent bekommt nie Zugangsdaten oder einen Netzweg zur Instanz.
+
+**Hauptweg seit 11/2026:** das Brücken-Notebook `notebooks/openbis_bruecke.ipynb` (Lesen, Prüfen, Trockenlauf, Anlegen), gesteuert
+über `projects/<name>/project.yaml` und `structure.json`. Ablauf: `workflow/README.md`, Schritte 3, 7, 8. Masterdaten legt auf
+den offiziellen Instanzen der Admin an (Schritt 6, Antrag). Die Browser-Skripte unten sind der Weg ohne Python im BAM-Netz bzw.
+für Instanzen, auf denen du selbst Admin bist (dev1).
 
 ```
   BAM-Netz (Mensch, ELN-Tab)                       Cloud-Session (Agent)
@@ -22,11 +26,13 @@ Die beiden Seiten tauschen **committete Dateien** aus. Der Agent bekommt nie Zug
 ## Einrichtung (einmalig)
 
 1. **Repo verbinden:** Claude GitHub App auf `PGW-BAM/BAM-Datastore_Import_Agent` installieren (claude.ai/code → Onboarding).
-2. **Umgebung:** Netzwerkzugriff **Trusted** reicht (GitHub, PyPI). `dev1.datastore.bam.de` **nicht** freigeben und **kein**
+2. **Umgebung:** Netzwerkzugriff **Trusted** reicht (GitHub, PyPI). Zusätzlich unter *Allowed domains* für die Doku:
+   `bamresearch.github.io` (bam-masterdata-Doku, erreichbar) und `datastore.bam.de` (Wiki; aus der Cloud derzeit nicht
+   erreichbar, „upstream dial failed“). Die openBIS-Instanzen (`dev1.…`, `playground.…`) **nicht** freigeben und **kein**
    openBIS-Token als Variable oder Secret hinterlegen. Das wäre erst nach Freigabe durch die BAM-IT ein Thema.
 3. **Session-Start:** Der SessionStart-Hook in `.claude/settings.json` ruft `tools/cloud_setup.sh` auf. Das Skript
-   - klont `bam-masterdata` nach `../bam-masterdata` (shallow, `main`), falls es fehlt,
-   - installiert `bam-masterdata` (editable), `pybis==1.37.4` und `nbformat`,
+   - klont `bam-masterdata` nach `../bam-masterdata` (shallow, gepinnter Release `BMD_REF`, derzeit `v0.17.0`), falls es fehlt,
+   - installiert `bam-masterdata` (editable), `pybis==1.37.4`, `nbformat` und `pyyaml`,
    - meldet SHA und Stand. Lokal (Windows) beendet es sich sofort, weil `CLAUDE_CODE_REMOTE` dort nicht `true` ist.
 
 ### bam-masterdata
@@ -42,7 +48,9 @@ gehört in die eigene `.claude/settings.local.json`:
 { "permissions": { "additionalDirectories": ["C:/Users/<du>/repos/bam-masterdata"] } }
 ```
 
-## Übergabe 1: Inventar rein
+## Übergabe 1 (Browser-Variante): Inventar rein
+
+Mit Python im BAM-Netz stattdessen: Brücken-Notebook, Teil 1 (`workflow/03_ist_stand.md`).
 
 Wann: vor `/bam-analyze-prd` für eine neue Instanz oder wenn sich die Instanz geändert hat.
 
@@ -62,7 +70,9 @@ Inhalt der JSON: Instanz, Zeitpunkt, Server-Info, Vokabulare mit Termen, Propert
 mit zugewiesenen Properties (Sektion, Pflicht), Projekte, Collections mit Typ. Keine Objektinhalte, keine Personendaten außer
 dem, was in Typbeschreibungen steht.
 
-## Übergabe 2: Spec raus
+## Übergabe 2 (Browser-Variante, nur mit Admin-Rechten): Spec raus
+
+Auf den offiziellen Instanzen legt der Admin die Masterdaten an (`workflow/06_antrag.md`); Objekte legt das Brücken-Notebook an.
 
 Wann: nach dem menschlichen Review von `design.md` und `gap-report.md` und nach `/bam-generate-types`.
 

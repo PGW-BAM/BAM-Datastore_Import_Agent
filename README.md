@@ -1,96 +1,64 @@
-# BAM openBIS PRD-to-Provisioning Agent Architecture
+# BAM Data Store: vom Laborablauf zur openBIS-Struktur
 
-A reusable Claude Code agent + command architecture for BAM FB 7.2 and other BAM groups.
+Ein Agenten-Workflow für BAM-Fachbereiche: Aus einem Ablaufschema oder einer Erzählung wird im Interview ein PRD,
+daraus eine flache openBIS-Struktur, ein geprüfter Masterdaten-Antrag an den Admin und am Ende ein Notebook-Lauf,
+der die Struktur in deinem Space anlegt.
 
-## Current state (06.10.2026)
+**Für Agenten:** [AGENTS.md](AGENTS.md) (gilt für jeden Agenten; Claude liest es über `CLAUDE.md`).
+**Für Menschen:** [workflow/README.md](workflow/README.md) zeigt alle Schritte, Prüfpunkte und Zugänge auf einer Seite.
 
-Showcase for FB 7.2 (S-N tests on welded joints) re-run end-to-end with a **flat** structure:
+## Kurz
 
-| Artefact | Path |
-|---|---|
-| PRD v2 (workflow + principles) | `BAM_PRD_Workflow_FB72_v2.md` |
-| Catalog of the standard (script) | `generated/CATALOG.md`, `generated/catalog.json` |
-| Live inventory of dev1 (read-only) | `generated/live/dev1_inventory.md` |
-| Requirements → design → gap report | `generated/welded_fatigue_v2/{requirements.json, design.md, gap-report.md}` |
-| PR-ready classes + spec | `generated/welded_fatigue_v2/datamodel/`, `spec.json` |
-| Provisioned on dev1 | `/FB_72/WELDED_FATIGUE` (demo series, fictitious values) via `tools/openbis_apply.js`, `tools/openbis_demo.js` |
-| Notebook / parser | `notebooks/welded_fatigue_v2_provisioning.ipynb`, `generated/welded_fatigue_v2/parsers/` |
-| Talk (10 min) | `presentation/00_Vortrag_10min.md`, `presentation/06_Befunde_und_Entscheidungen.md` |
-| Cleanup of the legacy model | `generated/welded_fatigue_v2/CLEANUP_dev1.md` |
+| Phase | Schritte | Wer | openBIS |
+|---|---|---|---|
+| Verstehen | 1 Standard laden · 2 Interview → PRD (◆ A) | Agent + du | – |
+| Entwerfen | 3 Ist-Stand · 4 Struktur (◆ B) · 5 Abgleich (◆ C) | Agent, du liest die Instanz | lesen |
+| Beantragen | 6 Issue + Mail an datastore@bam.de (◆ D) · 7 Lieferung prüfen | Agent baut, du sendest, Admin legt Typen an | Admin, lesen |
+| Anlegen | 8 Trockenlauf (◆ E) · Anlegen | Agent baut `structure.json`, du führst aus | schreiben |
 
-The v1 run (`BAM_PRD_Workflow_FB72.md`, `generated/welded_fatigue/`, `shipping/`) is kept for comparison.
+Der Agent arbeitet in der Cloud nur mit Dateien und hat keinen Zugang zu openBIS. Was die Instanz berührt, läuft
+im BAM-Netz über **ein** Notebook: [`notebooks/openbis_bruecke.ipynb`](notebooks/openbis_bruecke.ipynb)
+(Lesen, Prüfen, Trockenlauf, Anlegen). Test-Instanz: `https://playground.datastore.bam.de`.
 
-## What it does
-
-Drop a Markdown PRD into this folder. The pipeline:
-1. Catalogs all existing types in `bam-masterdata` with a deterministic script (`tools/build_catalog.py`)
-2. Inventories the target openBIS instance read-only (what is already there?)
-3. Extracts the workflow from the PRD and designs a **flat** structure (`structure-designer`)
-4. Produces a **gap report** against both sources: REUSE / EXTEND / CREATE / LIVE-ONLY
-5. Generates Python extension modules (PR-ready for `BAMresearch/bam-masterdata`) only for genuine gaps — import-tested
-6. Applies missing masterdata + object layout idempotently (dry run first), and emits notebook + parser for operators
-
-## Prerequisites
-
-- [Claude Code](https://claude.ai/code) with claude-sonnet-4-6 or better
-- `pybis==1.37.4` (`pip install pybis==1.37.4`)
-- `nbformat` (`pip install nbformat`)
-- Access to a BAM openBIS 20.10.12.5 instance
-- `bam-masterdata` cloned next to this repo at `../bam-masterdata` (or run `/bam-sync` first)
-
-**Cloud sessions (Claude Code on the web):** the agent has no network path to openBIS. Setup runs
-automatically (`tools/cloud_setup.sh` via SessionStart hook); the instance is reached only through
-committed handover files — inventory in (`tools/openbis_inventory.js`), spec out (`tools/openbis_apply.js`,
-`tools/openbis_demo.js`). See [CLOUD.md](CLOUD.md).
-
-## Quick start
+## Loslegen
 
 ```bash
-# 1. Sync bam-masterdata (first time or to update)
-/bam-sync
-
-# 2. Analyze your PRD (produces CATALOG.md + gap-report.md)
-/bam-analyze-prd BAM_PRD_Workflow_FB72.md
-
-# 3. Review generated/BAM_PRD_Workflow_FB72.gap-report.md
-
-# 4. Generate Python extension modules (for CREATE items only)
-/bam-generate-types BAM_PRD_Workflow_FB72.md
-
-# 5. Generate the provisioning notebook
-/bam-generate-notebook BAM_PRD_Workflow_FB72.md
-
-# 6. Open notebooks/welded_fatigue_provisioning.ipynb
-#    Fill in OPENBIS_URL, SPACE, PROJECT_CODE, COLLECTION_CODE
-#    Run all cells
+cp -r templates projects/<name>     # neues Projekt; dann project.yaml ausfüllen
 ```
 
-## Improving agents (Karpathy self-improvement loop)
+Dann einem Agenten sagen: „Arbeite an `projects/<name>`.“ Er liest `STATUS.md` und macht beim nächsten Schritt weiter.
 
-```bash
-/bam-improve bam-masterdata-explorer
+Laufendes Projekt: [`projects/fb72_welded_fatigue/`](projects/fb72_welded_fatigue/) (Wöhlerversuche FB 7.2, Test
+auf dem Playground). Die Ergebnisse des ersten Laufs gegen dev1 liegen unter `generated/welded_fatigue_v2/`.
+
+## Voraussetzungen
+
+- **Cloud-Session:** nichts. `tools/cloud_setup.sh` legt beim Start `../bam-masterdata` (gepinnt auf `v0.17.0`) an und
+  installiert `bam-masterdata`, `pybis==1.37.4`, `nbformat`, `pyyaml`. Ohne Hook: `bash tools/cloud_setup.sh --force`.
+- **BAM-Netz (für das Notebook):** Python mit `pybis==1.37.4` und `pyyaml`, ein Klon dieses Repos, VPN.
+- Tests: `python -m pytest tools/tests -q`
+
+## Verzeichnisse
+
+```
+AGENTS.md, CLAUDE.md     Regeln und Einstieg für Agenten
+workflow/                eine Karte pro Schritt, Interview-Fragen
+templates/               Kopiervorlage für ein neues Projekt
+projects/<name>/         ein Projekt: project.yaml, STATUS.md, alle Zwischenstände
+notebooks/               openbis_bruecke.ipynb (BAM-Netz); ältere projektspezifische Notebooks
+tools/                   build_catalog.py, export_spec.py, openbis_bridge.py, cloud_setup.sh, JS-Fallbacks
+generated/               Katalog des Standards; Ergebnisse früherer Läufe (welded_fatigue, welded_fatigue_v2)
+.claude/                 Claude-Agenten und Befehle (/bam-*) als Abkürzungen für einzelne Schritte
+presentation/, shipping/ Vortrag, Poster, Lieferpaket des ersten Laufs
 ```
 
-See `.claude/skills/karpathy-self-improvement/SKILL.md` for the 7-step loop.
+## Selbstverbesserung (Claude)
 
-## Directory layout
+`/bam-improve <agent>` bewertet einen Agenten-Lauf und schlägt Änderungen an seiner Anleitung vor
+(`.claude/skills/karpathy-self-improvement/SKILL.md`).
 
-```
-.claude/
-  agents/      # Domain agents (bam-masterdata-explorer, gap-analyzer, ...)
-  commands/    # Slash commands (/bam-sync, /bam-analyze-prd, ...)
-  skills/      # karpathy-self-improvement skill
-runs/          # Karpathy improvement run logs
-evals/
-  regressions/ # Golden regression task files
-notebooks/     # Generated Jupyter notebooks
-generated/     # Generated masterdata extension modules (PR candidates)
-```
+## Versionen
 
-## openBIS version
+openBIS 20.10.12.5 · pyBIS 1.37.4 · bam-masterdata v0.17.0 (nur `datamodel/v0`)
 
-Targeting **openBIS 20.10.12.5** with `pybis==1.37.4`.
-
-## License
-
-Internal BAM tooling. Not for public distribution without explicit approval.
+Interne BAM-Werkzeuge. Nicht ohne Freigabe veröffentlichen.
