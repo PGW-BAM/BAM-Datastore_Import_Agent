@@ -12,7 +12,7 @@ Alles, was der Mensch tut, auf einer Seite: [MENSCH.md](MENSCH.md). Freigaben gi
 | 2 | Ablauf erklären (Interview) | [02_interview.md](02_interview.md) | Mensch + Agent | – | `ablauf.md`, `interview.md`, `prd.md` | ◆ **A** PRD freigeben |
 | **II** | **Entwerfen** | | | | | |
 | 3 | Ist-Stand der Instanz | [03_ist_stand.md](03_ist_stand.md) | Mensch liest, Agent wertet aus | lesen | `inventory_<instanz>.json`, `inventory.md` | |
-| 4 | Flache Struktur entwerfen | [04_struktur.md](04_struktur.md) | Agent | – | `requirements.json`, `design.json`, `design.md` | ◆ **B** Struktur passt fachlich |
+| 4 | Struktur entwerfen | [04_struktur.md](04_struktur.md) | Agent | – | `requirements.json`, `design.json`, `design.md` | ◆ **B** Struktur passt fachlich |
 | 5 | Abgleich | [05_abgleich.md](05_abgleich.md) | Agent | – | `gap-report.md` | ◆ **C** jedes NEU ist wirklich neu |
 | **III** | **Beantragen** | | | | | |
 | 6 | Antrag an den Admin | [06_antrag.md](06_antrag.md) | Agent baut, Mensch sendet | Admin | `datamodel/`, `spec.json`, `request/` | ◆ **D** Mensch sendet |
@@ -49,7 +49,7 @@ zuerst und schreibt sie zuletzt.
 
 | # | Prinzip |
 |---|---|
-| P1 | Flache Objekt-Hierarchie: Space → Projekt → Collection (= Serie) → Objekte. Schritte hängen direkt an der Probe, keine Ketten Schritt → Schritt. |
+| P1 | Übersichtlich lesbar statt pauschal flach: Space → Projekt → Collection (= Serie) → Objekte; wie die Objekte einer Probe verbunden sind, wählt der Agent aus den Mustern in [strukturmuster.md](strukturmuster.md) (Prozesslinie, Probe als Mittelpunkt, Zustände des Materials, Bezüge als Felder …) und zeigt 2–4 Varianten. Eltern/Kind für Herkunft und Reihenfolge, Felder vom Typ OBJECT für „wurde benutzt“. Tiefe ist erlaubt, wenn sie eine Linie ist. |
 | P2 | Flache Typ-Hierarchie: neue Typen erben direkt von einer BAM-Basisklasse, so wenige neue Typen wie möglich. |
 | P3 | Was die Probe beschreibt, ist Property der Probe. Die Collection-Tabelle ist die Versuchsmatrix. |
 | P4 | Eigenes Schritt-Objekt nur, wo Gerät, Zeitraum, Bearbeiter*in und Dateien zusammengehören. Mehrere Ablaufschritte am selben Arbeitsplatz: ein Objekt mit einer Sektion je Schritt, in Ablauf-Reihenfolge. |
@@ -71,7 +71,7 @@ zuerst und schreibt sie zuletzt.
 | `prd.md` | 2 | Anforderungen nach Vorlage (was, nicht welche Typen) |
 | `inventory_<instanz>.json` | 3, 7 (Notebook) | Export der Instanz (nur lesen) |
 | `inventory.md` | 3 | Auswertung des Exports durch den Agenten |
-| `requirements.json`, `design.json`, `design.md` | 4 | Anforderungen, 2–4 Varianten (eine empfohlen), flache Struktur, Schritt → Ort |
+| `requirements.json`, `design.json`, `design.md` | 4 | Anforderungen, 2–4 Varianten (eine empfohlen), Struktur, Schritt → Ort |
 | `gap-report.md` | 5 | Abgleich mit Standard und Instanz |
 | `datamodel/`, `spec.json` | 6 | neue Klassen (PR-fähig), Soll-Zustand der Masterdaten |
 | `request/` | 6 | `issue.md`, `mail.txt`, `masterdata.xlsx`, `checker.log` |

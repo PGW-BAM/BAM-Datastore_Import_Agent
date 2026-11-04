@@ -219,12 +219,18 @@ class Model:
     def objects(self) -> list[dict]:
         """Objects per specimen with a kind (for colours) and a name in both languages."""
         out = []
-        for i, o in enumerate(self.design.get("layout", {}).get("per_specimen", [])):
+        per = self.design.get("layout", {}).get("per_specimen", [])
+        codes = [o["code_pattern"] for o in per]
+        for i, o in enumerate(per):
             name = o.get("name_pattern", "")
             name = name[len(o["code_pattern"]):].strip() if name.startswith(o["code_pattern"]) else name
             nm = Name(o.get("name_de"), o.get("name_en") or name or "Specimen")
+            own = [p for p in o.get("parents", []) if "(specimen)" in p or (p.split() or [""])[0] in codes]
+            prev = next((p.split()[0] for p in own if "(specimen)" not in p), codes[0] if own and i else None)
             out.append({**o, "kind": KIND_COLORS[min(i, len(KIND_COLORS) - 1)], "name": self._note(nm, f"x:{o['code_pattern']}"),
-                        "equipment": [p for p in o.get("parents", []) if "(specimen)" not in p]})
+                        "prev": prev,  # the object this one hangs on (specimen or previous step)
+                        "equipment": [p for p in o.get("parents", []) if p not in own],  # inventory parents
+                        "fields": list(o.get("links", []))})  # inventory objects linked by OBJECT fields (pattern M4)
         return out
 
     def object_for(self, text: str) -> dict | None:
@@ -380,7 +386,9 @@ def variant_shape(v: dict) -> str:
     elif v["shape"] == "flat":
         sketch = (f'{box(main, "main")}<div class="arrow">↓ {t(f"{len(rest)} Objekte, alle direkt daran", f"{len(rest)} objects, all attached directly")}</div>'
                   f'<div class="vrow pills">{"".join(pill(o) for o in rest)}</div>')
-    else:  # chain
+    elif len(rest) <= 5:  # short process line
+        sketch = box(main, "main") + "".join(f'<div class="arrow">↓</div>{box(o)}' for o in rest)
+    else:  # long chain
         sketch = (f'<div class="vrow chain">{box(main, "main")}<span class="arrow">→</span>'
                   + '<span class="arrow">→</span>'.join(pill(o) for o in rest) + "</div>")
     names = ""
@@ -407,27 +415,36 @@ def variants_section(m: Model, num: str) -> str:
             ("objects_per_specimen", "Objekte je Probe", "objects per specimen"),
             ("max_link_depth", "Ebenen unter der Probe", "levels below the specimen"),
             ("new_object_types", "neue Objekttypen", "new object types"),
-            ("new_dataset_types", "neue Datei-Typen", "new file types")) if v.get(k) is not None)
+            ("new_dataset_types", "neue Datei-Typen", "new file types"),
+            ("shared_parents", "Geräte als Eltern im Graphen", "instruments as parents in the graph")) if v.get(k) is not None)
         pros = "".join(f'<li>{te(x["de"], x["en"])}</li>' for x in v["pros"])
         cons = "".join(f'<li>{te(x["de"], x["en"])}</li>' for x in v["cons"])
         src = f'<p class="muted">{t("Herkunft", "Source")}: {E(v["source"])}</p>' if v.get("source") else ""
         cards.append(f"""<label class="variant{' recommended' if is_rec else ''}{' shown' if is_shown else ''}">
-<input type="radio" name="variant" value="{E(v['id'])}" data-name="{E(nm.text)}"{' checked' if is_shown else ''}>
+<input type="radio" name="variant" value="{E(v['id'])}" data-name="{E(nm.text)}"{' checked' if is_rec else ''}>
 <div class="v-head"><span class="v-id">{E(v['id'])}</span><h3>{nm.html()} {tags}</h3>{marks}</div>
 <p>{te(v['summary_de'], v['summary_en'])}</p>{variant_shape(v)}
 {f'<div class="vfigs">{figs}</div>' if figs else ''}
 <div class="pc"><ul class="pros" aria-label="{E('Vorteile / Advantages')}">{pros}</ul><ul class="cons" aria-label="{E('Nachteile / Disadvantages')}">{cons}</ul></div>{src}</label>""")
     rnm = Name(rec["name_de"], rec["name_en"]).text
-    return f"""<section aria-labelledby="hvs" class="variants" data-shown="{E(shown)}">{section_head(num, "hvs", "Welche Struktur soll es werden?", "Which structure should it be?")}
-<p>{t(f"Der Agent hat {len(vs)} Möglichkeiten durchgespielt, Ihren Ablauf in openBIS abzubilden. Empfohlen ist Variante <b>{E(rec['id'])}</b> ({E(rnm)}); "
-      "sie ist auf dieser Seite ausgearbeitet. Wählen Sie eine andere, arbeitet der Agent diese aus und zeigt Ihnen eine neue Seite.",
-      f"The agent worked through {len(vs)} ways of mapping your workflow in openBIS. Variant <b>{E(rec['id'])}</b> ({E(rnm)}) is recommended; "
-      "it is worked out on this page. If you choose another one, the agent works it out and shows you a new page.")}</p>
+    if rec["id"] == shown:
+        why = t(f"Empfohlen ist Variante <b>{E(rec['id'])}</b> ({E(rnm)}); sie ist auf dieser Seite ausgearbeitet. "
+                "Wählen Sie eine andere, arbeitet der Agent diese aus und zeigt Ihnen eine neue Seite.",
+                f"Variant <b>{E(rec['id'])}</b> ({E(rnm)}) is recommended; it is worked out on this page. "
+                "If you choose another one, the agent works it out and shows you a new page.")
+    else:
+        why = t(f"Empfohlen ist Variante <b>{E(rec['id'])}</b> ({E(rnm)}). Weiter unten ist noch Variante <b>{E(shown)}</b> ausgearbeitet. "
+                f"Bleibt Ihre Wahl bei {E(rec['id'])}, arbeitet der Agent sie aus und zeigt Ihnen eine neue Seite; die Teile unten müssen Sie dann nicht beantworten.",
+                f"Variant <b>{E(rec['id'])}</b> ({E(rnm)}) is recommended. Further down, variant <b>{E(shown)}</b> is still worked out. "
+                f"If you keep {E(rec['id'])}, the agent works it out and shows you a new page; you do not need to answer the parts below then.")
+    return f"""<section aria-labelledby="hvs" class="variants" data-shown="{E(shown)}" data-rec="{E(rec['id'])}">{section_head(num, "hvs", "Welche Struktur soll es werden?", "Which structure should it be?")}
+<p>{t(f"Der Agent hat {len(vs)} Möglichkeiten durchgespielt, Ihren Ablauf in openBIS abzubilden. ", f"The agent worked through {len(vs)} ways of mapping your workflow in openBIS. ")}{why}
+{t('Muster und Quellen: <code>workflow/strukturmuster.md</code>.', 'Patterns and sources: <code>workflow/strukturmuster.md</code>.')}</p>
 <fieldset class="vgrid"><legend class="sr">{t("Variante wählen", "Choose a variant")}</legend>{"".join(cards)}</fieldset>
-<p id="v-note" class="vnote" hidden>{t("Sie haben eine andere Variante gewählt. Die Teile weiter unten gehören zur ausgearbeiteten Variante; "
-      "Sie müssen sie jetzt nicht beantworten. Ihr Text unten bittet den Agenten, Ihre Wahl auszuarbeiten.",
-      "You chose a different variant. The parts further down belong to the variant that is worked out; you do not need to "
-      "answer them now. Your text at the bottom asks the agent to work out your choice.")}</p></section>"""
+<p id="v-note" class="vnote" hidden>{t(f"Ihre Wahl ist nicht die Variante, die weiter unten ausgearbeitet ist ({E(shown)}). Die Teile unten müssen Sie "
+      "jetzt nicht beantworten. Ihr Text ganz unten bittet den Agenten, Ihre Wahl auszuarbeiten.",
+      f"Your choice is not the variant worked out further down ({E(shown)}). You do not need to answer the parts below now. "
+      "Your text at the bottom asks the agent to work out your choice.")}</p></section>"""
 
 
 def view_struktur(m: Model) -> str:
@@ -438,28 +455,47 @@ def view_struktur(m: Model) -> str:
     cols = lay.get("collections", [])
     body = [variants_section(m, "1")]
 
-    # 2 hierarchy
+    # 2 hierarchy: hub (steps hang on the specimen) or process line (specimen -> step -> step)
     collections = "".join(f'<div class="node col"><b>{E(c.get("$NAME") or c["code"])}</b><code>{E(c["code"])}</code></div>'
                           for c in cols)
     plan = "".join(f'<div class="node plan"><b>{E(o.get("$NAME") or o["code"])}</b><span>{t("einmal im Projekt", "once per project")}</span></div>'
                    for o in lay.get("project_objects", []))
-    steps = "".join(f'<div class="node obj {o["kind"]}"><span class="dot"></span><b>{o["name"].html()}</b>'
-                    f'<code>{E(o["code_pattern"])}</code>'
-                    f'{"<span>" + te("Schritte ", "Steps ") + E(", ".join(o.get("covers_steps", []))) + "</span>" if o.get("covers_steps") else ""}'
-                    f'{"".join(chip(short(m.device_name(e).text, 60), "dev") for e in o["equipment"])}</div>'
-                    for o in objs[1:])
     probe = objs[0] if objs else {"name": Name("Probe", "Specimen"), "code_pattern": "", "kind": "probe"}
+    line = len(objs) > 2 and any(o["prev"] not in (None, probe["code_pattern"]) for o in objs[1:])
+
+    def node(o):
+        return (f'<div class="node obj {o["kind"]}"><span class="dot"></span><b>{o["name"].html()}</b>'
+                f'<code>{E(o["code_pattern"])}</code>'
+                f'{"<span>" + te("Schritte ", "Steps ") + E(step_range(o.get("covers_steps", []))) + "</span>" if o.get("covers_steps") else ""}'
+                f'{"".join(chip(short(m.device_name(e).text, 60), "dev") for e in o["equipment"])}'
+                f'{"".join(chip(short(m.device_name(e).text, 60), "dev field") for e in o["fields"])}</div>')
+    if line:
+        steps = "".join(f'<div class="arrow">↓ {t("danach", "then")}</div>{node(o)}' for o in objs[1:])
+        below = f'<div class="line">{steps}</div>'
+        intro = t("Eine Serie ist eine Collection. In jeder Serie steht jede Probe einmal. Ihre Versuchsschritte folgen als Linie "
+                  "aufeinander, so wie sie im Labor stattfinden. Geräte und Material kommen aus dem Inventar des Fachbereichs.",
+                  "A series is a collection. Each specimen appears once in its series. Its test steps follow each other as a line, "
+                  "in the order they happen in the lab. Instruments and materials come from the division's inventory.")
+    else:
+        steps = "".join(node(o) for o in objs[1:])
+        below = f'<div class="arrow">↓ {t("hängen direkt daran", "attached directly")}</div><div class="row">{steps}</div>'
+        intro = t("Eine Serie ist eine Collection. In jeder Serie steht jede Probe einmal, und direkt an der Probe hängen ihre Versuchsschritte. "
+                  "Geräte und Material kommen aus dem Inventar des Fachbereichs.",
+                  "A series is a collection. Each specimen appears once in its series, and its test steps hang directly on the specimen. "
+                  "Instruments and materials come from the division's inventory.")
+    legend = t(f"{chip('Gerät', 'dev', 'instrument')} als Eltern verlinkt (im Graphen sichtbar)"
+               f"{' · ' + chip('Gerät', 'dev field', 'instrument') + ' als Feld verlinkt (im Formular, nicht im Graphen)' if any(o['fields'] for o in objs) else ''}",
+               f"{chip('Gerät', 'dev', 'instrument')} linked as parent (shown in the graph)"
+               f"{' · ' + chip('Gerät', 'dev field', 'instrument') + ' linked as a field (in the form, not in the graph)' if any(o['fields'] for o in objs) else ''}")
     body.append(f"""<section aria-labelledby="h1s">{section_head("2", "h1s", "So ist Ihr Projekt aufgebaut", "How your project is built")}
-<p>{t("Eine Serie ist eine Collection. In jeder Serie steht jede Probe einmal, und direkt an der Probe hängen ihre Versuchsschritte. "
-      "Geräte und Material kommen aus dem Inventar des Fachbereichs und werden nur verlinkt.",
-      "A series is a collection. Each specimen appears once in its series, and its test steps hang directly on the specimen. "
-      "Instruments and materials come from the division's inventory and are only linked.")}</p>
+<p>{intro}</p>
 <div class="tree"><div class="node root"><span>Space</span><b>{E(space)}</b></div><div class="arrow">↓</div>
 <div class="node root"><span>{t("Projekt", "Project")}</span><b>{E(project)}</b></div><div class="arrow">↓</div>
 <div class="row">{collections}{plan}</div><div class="arrow">↓ {t("in jeder Serie, je Probe", "in every series, per specimen")}</div>
 <div class="specimen"><div class="node obj {probe['kind']} big"><span class="dot"></span><b>{probe['name'].html()}</b><code>{E(probe['code_pattern'])}</code>
 <span>{t("trägt alles, was die Probe beschreibt", "holds everything that describes the specimen")}</span></div>
-<div class="arrow">↓ {t("hängen direkt daran", "attached directly")}</div><div class="row">{steps}</div></div></div>
+{below}</div></div>
+<p class="hint">{legend}</p>
 {feedback("aufbau", "Aufbau", "Build-up")}</section>""")
 
     # 3 step -> location
@@ -782,7 +818,7 @@ code{font:13px var(--m);color:var(--muted);overflow-wrap:anywhere}section{displa
 .chip.must{background:#f8ecdd;color:var(--warning)}
 .chip.dev,.chip.file{font:400 13px var(--f);letter-spacing:0;text-transform:none;padding:3px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--fg)}
 .chip.dev{border-color:var(--bam-steel);color:var(--bam-steel)}.chip.file{border-style:dashed;color:var(--muted)}
-.node .chip{margin-top:2px}.node.obj.probe .chip.dev{background:transparent;color:#fff;border-color:var(--gray-4)}
+.node .chip{margin-top:2px}.chip.dev.field{border-style:dotted;background:var(--gray-1)}.line{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:480px}.line>.node{width:100%}.node.obj.probe .chip.dev{background:transparent;color:#fff;border-color:var(--gray-4)}
 .timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .step{display:grid;grid-template-columns:52px 1fr;gap:12px;background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--c);padding:14px}
 .step .no{font:500 20px var(--m);color:var(--c)}.s-body{display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -860,15 +896,15 @@ JS = """
   var L={de:{open:'Noch %o von %n Teilen offen.',ok:'Alles passt: Das ist eine Freigabe.',one:' Änderungswunsch.',many:' Änderungswünsche.',
              wait:'(erscheint, sobald alle Teile beantwortet sind)',app:' freigegeben',not:' noch nicht freigegeben. Bitte ändern:',
              note:'Anmerkung: ',also:'Außerdem: ',dflt:'(bitte ändern)',sel:'Markiert: jetzt kopieren (Strg+C) und im Chat einfügen.',
-             vn:'Variante',vchg:'Variante: bitte Variante %c „%n“ ausarbeiten statt %s.',vother:'Andere Variante gewählt: Der Agent arbeitet sie aus und zeigt Ihnen eine neue Seite.'},
+             vn:'Variante',vchg:'Variante: bitte Variante %c „%n“ ausarbeiten statt %s.',vother:'Der Agent arbeitet Ihre Wahl aus und zeigt Ihnen eine neue Seite.'},
          en:{open:'%o of %n parts still open.',ok:'Everything fits: this is an approval.',one:' change request.',many:' change requests.',
              wait:'(appears once every part is answered)',app:' approved',not:' not approved yet. Please change:',
              note:'Note: ',also:'Also: ',dflt:'(please change)',sel:'Selected: now copy (Ctrl+C) and paste it into the chat.',
-             vn:'variant',vchg:'Variant: please work out variant %c “%n” instead of %s.',vother:'Different variant chosen: the agent works it out and shows you a new page.'}};
+             vn:'variant',vchg:'Variant: please work out variant %c “%n” instead of %s.',vother:'The agent works out your choice and shows you a new page.'}};
   var gate=((document.querySelector('[data-gate]')||{}).dataset||{}).gate||'B';
   var fbs=[].slice.call(document.querySelectorAll('.fb')), gen=document.getElementById('fb-gesamt');
   var vsec=document.querySelector('.variants'), vrs=[].slice.call(document.querySelectorAll('input[name=variant]')),
-      shown=vsec?vsec.dataset.shown:'';
+      shown=vsec?vsec.dataset.shown:'', rec=vsec?(vsec.dataset.rec||vsec.dataset.shown):'';
   function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
   function render(){
     var T=L[lang], open=0, changes=[];
@@ -877,7 +913,7 @@ JS = """
       var t=f.querySelector('textarea');t.hidden=s.v!=='chg';if(t.value!==(s.t||''))t.value=s.t||'';
       if(!s.v)open++; if(s.v==='chg')changes.push('- '+label+': '+((s.t||'').trim()||T.dflt));});
     if(gen.value!==(st._g||''))gen.value=st._g||'';
-    var g=(st._g||'').trim(), txt='', state, chosen=st._v||shown, other=!!vsec&&chosen!==shown, cn='';
+    var g=(st._g||'').trim(), txt='', state, chosen=st._v||rec, other=!!vsec&&chosen!==shown, cn='';
     vrs.forEach(function(r){r.checked=r.value===chosen;r.parentNode.classList.toggle('chosen',r.checked);if(r.checked)cn=r.dataset.name;});
     if(vsec)document.getElementById('v-note').hidden=!other;
     if(other){changes.unshift('- '+T.vchg.replace('%c',chosen).replace('%n',cn).replace('%s',shown));

@@ -1,6 +1,6 @@
 ---
 name: structure-designer
-description: Turn a workflow-style requirements.json into a flat openBIS structure (design.json + design.md) - which data item lives on which object, in which section (in workflow order), which steps become objects, which inventory objects are linked as parents, which files go where. Applies the PRD principles (flat object + type hierarchy, reuse-first) using CATALOG + live inventory as reference. Does NOT classify REUSE/EXTEND/CREATE (gap-analyzer does).
+description: Turn a workflow-style requirements.json into a readable openBIS structure (design.json + design.md) - which data item lives on which object, in which section (in workflow order), which steps become objects, which inventory objects are linked as parents, which files go where. Applies the PRD principles and the patterns in workflow/strukturmuster.md (readable graph, flat type hierarchy, reuse-first) using CATALOG + live inventory as reference. Does NOT classify REUSE/EXTEND/CREATE (gap-analyzer does).
 tools: Read, Write, Glob, Grep, Bash
 ---
 
@@ -9,7 +9,8 @@ tools: Read, Write, Glob, Grep, Bash
 ## Single responsibility
 
 Map every data item, equipment item and file of `requirements.json` to **exactly one place** in openBIS
-and keep that place **flat**. Output is the design that the gap-analyzer classifies and the
+and keep the graph of one specimen **readable** (patterns M1–M7 in `workflow/strukturmuster.md`; depth is fine
+when it is a line). Output is the design that the gap-analyzer classifies and the
 masterdata-extender implements.
 
 ## Inputs
@@ -40,9 +41,11 @@ to render until it passes).
    only (no digits, `/`, `-`), as the bam-masterdata checker requires; step numbers go into the "next step"
    vocabulary labels and the workflow plan. A step that needs only an instrument link
    + files and has no own data items does **not** get a new type — use the generic `EXPERIMENTAL_STEP`.
-3. **Flat links (P1).** Steps are children of the specimen only. Instruments, testing machines and
-   auxiliary materials are **parents** of the step that uses them (inventory objects), never OBJECT
-   properties to dummy catalog types. No step→step links.
+3. **Links (P1, `workflow/strukturmuster.md`).** Parent/child only for origin and order: a process line
+   specimen → step → step (M1), the specimen as hub (M2), or material states (M3). Instruments, testing machines,
+   auxiliary materials and protocols that are only *used* become OBJECT properties pointing at the inventory object
+   (M4, as in the standard `CREEP_TEST`), unless the PRD says they are parents; never OBJECT properties to dummy catalog
+   types. Avoid shared inventory objects with many links in the graph of one specimen.
 4. **Workflow visibility (P5).** Add to the specimen one CONTROLLEDVOCABULARY property "Next step" whose
    vocabulary lists the workflow steps in order (`S01_…` … `S12_…`, `DONE`). Plan one `SOP` object
    "Workflow plan" per project holding the step→location table.
@@ -67,8 +70,9 @@ to render until it passes).
 8. **Series.** Collection type `COLLECTION` with `$DEFAULT_OBJECT_TYPE` = specimen type, unless the catalog
    offers a better fit.
 9. **Variants (required).** Before working out details, write 2–4 alternative structures into `variants`
-   (see `workflow/04_struktur.md` step 3 and `generated/welded_fatigue_v2/design.json`): e.g. flat with grouped
-   steps, flat with one object per step, everything on the specimen, and the legacy live model if there is one.
+   (see `workflow/04_struktur.md` step 3 and `generated/welded_fatigue_v2/design.json`): built from the patterns
+   M1–M7 (e.g. process line with instruments as fields, specimen as hub, everything on the specimen) plus the legacy
+   live model if there is one; name the patterns in the summary.
    Exactly one `"recommended": true`; `"variant"` names the one the rest of design.json works out (the recommended
    one first). Each: `id` (A–D), `name_de`/`name_en`, `summary_de`/`summary_en`, `shape` (flat|chain|single),
    `objects` (first = specimen, with `steps`), metrics where they can be backed up, `pros`/`cons` as `{de, en}`,

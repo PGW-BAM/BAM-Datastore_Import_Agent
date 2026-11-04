@@ -1,7 +1,7 @@
 # BAM Data Store: vom Laborablauf zur openBIS-Struktur
 
 Ein Agenten-Workflow für BAM-Fachbereiche: Aus einem Ablaufschema oder einer Erzählung wird im Interview ein PRD,
-daraus eine flache openBIS-Struktur, ein geprüfter Masterdaten-Antrag an den Admin und am Ende ein Notebook-Lauf,
+daraus eine übersichtliche openBIS-Struktur (mehrere Varianten zur Wahl), ein geprüfter Masterdaten-Antrag an den Admin und am Ende ein Notebook-Lauf,
 der die Struktur in deinem Space anlegt.
 
 **Für Agenten:** [AGENTS.md](AGENTS.md) (gilt für jeden Agenten; Claude liest es über `CLAUDE.md`).

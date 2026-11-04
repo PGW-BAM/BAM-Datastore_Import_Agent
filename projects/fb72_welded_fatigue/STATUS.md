@@ -14,7 +14,7 @@ Playground.
 | ◆ A | PRD freigegeben | erledigt (alt) | 2026-10-06 | Fachbereich, siehe `presentation/06_Befunde_und_Entscheidungen.md` |
 | 3 | Ist-Stand der Instanz | **wartet auf Mensch** | 2026-11-04 | `AUFGABE.md`: Playground lesen. Danach passt der Agent `space` und `inventory_projects` in `project.yaml` an |
 | 4 | Struktur entwerfen | erledigt (alt) | 2026-10-06 | `generated/welded_fatigue_v2/design.md` |
-| ◆ B | Struktur bestätigt | erledigt (alt) | 2026-10-06 | Fachbereich |
+| ◆ B | Struktur bestätigt | **wartet auf Freigabe** | 2026-11-04 | 2026-10-06 bestätigt (Variante A, flach). Neu: Variante E empfohlen (Prozesslinie, Geräte als Felder), Wahl auf `review/struktur.html` |
 | 5 | Abgleich | teilweise | 2026-10-06 | gegen dev1 + Katalog `d7a871b`; für den Playground nach Schritt 3 neu bewerten (NACHZIEHEN, GERÄT FEHLT) |
 | ◆ C | NEU geprüft | erledigt (alt) | 2026-10-06 | |
 | 6 | Antrag gebaut | erledigt (Entwurf) | 2026-11-04 | `request/` (Issue, Mail, Excel, checker), Prüfseite `review/antrag.html`. Abschnitt „nachziehen“ folgt nach Schritt 3.  Klassen + `spec.json` vorhanden; checker: 0 Fehler, 3 Warnungen (alle aus dem Standard geerbt). Sektionen am 2026-11-04 umbenannt (Title Case, ohne Nummern). Issue/Mail noch nicht geschrieben |
@@ -27,11 +27,14 @@ Playground.
 ## Offene Fragen
 
 - Equipment auf dem Playground: Welche Projekte/Collections? Nach Schritt 3 die Eltern-Pfade in `structure.json` anpassen.
+- PRD P1 (flach) und §5 (Geräte als Eltern) an die gewählte Variante anpassen, sobald ◆ B entschieden ist
 - Der Space `FB_72` und die neuen Typen (`SAMPLE.WELDED_FATIGUE_SPECIMEN`, `…CYCLIC_FATIGUE_TEST`, Vokabulare `FATIGUE.*`)
   gibt es auf dem Playground vermutlich nicht. Schritt 7 zeigt, was fehlt; für den Test entweder Antrag (Schritt 6)
   oder vorerst nur mit Standard-Typen testen.
 
 ## Verlauf
+
+- 2026-11-04: Vorgabe „möglichst flach“ aus den Regeln entfernt (Wunsch im Chat); Muster und Quellen in `workflow/strukturmuster.md`. Neue empfohlene Variante E „Prozesslinie, Geräte als Felder“ (Vorschlag), B entfällt. Offen: Das PRD (`BAM_PRD_Workflow_FB72_v2.md`) enthält noch P1 „Flache Objekt-Hierarchie“ und §5 „Geräte als Eltern“; E weicht davon ab und braucht die Zustimmung des Fachbereichs
 
 - 2026-11-04: Prüfseite B zeigt jetzt 4 Varianten der Datenstruktur (A flach gebündelt, empfohlen und ausgearbeitet; B ein Objekt je Schritt; C alles an der Probe; D Kette wie auf dev1). Überschrift und Fachbereich aus `project.yaml`. Die Varianten B und C sind Vorschläge des Agenten; eine neue Bestätigung von ◆ B ist für den Playground nicht nötig, aber möglich
 

@@ -86,6 +86,20 @@ def test_other_agents_design_renders(tmp_path):
     assert html.count('name="variant"') == 2 and html.count(" checked") == 1
 
 
+def test_process_line_is_drawn_as_a_line(tmp_path):
+    design = json.loads(json.dumps(DESIGN))
+    per = design["layout"]["per_specimen"]
+    per.append({"code_pattern": "A-01-FRACTURE", "type": "EXPERIMENTAL_STEP", "name_de": "Bruchbild", "name_en": "Fracture image",
+                "parents": ["A-01-TEST (step)"], "links": ["Microscope"]})
+    repo = make_repo(tmp_path, design)
+    out = tmp_path / "s.html"
+    assert rr.main(["demo", "struktur", "--repo", str(repo), "--out", str(out)]) == 0
+    html = out.read_text(encoding="utf-8")
+    assert 'class="line"' in html and "als Linie" in html  # specimen -> test -> fracture, not a star
+    assert "dev field" in html and "als Feld verlinkt" in html  # instrument linked by an OBJECT field (pattern M4)
+    assert "A-01-TEST (step)" not in html  # the previous step is not listed as an instrument
+
+
 def test_variants_are_required_with_one_recommendation(tmp_path):
     for change, needle in ((lambda d: d.pop("variants"), "variants fehlt"),
                            (lambda d: d["variants"][1].update(recommended=True), "genau eine Variante"),

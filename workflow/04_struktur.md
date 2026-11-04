@@ -1,7 +1,8 @@
-# Schritt 4: Flache Struktur entwerfen
+# Schritt 4: Struktur entwerfen
 
 **Ziel:** Jeder Wert, jede Datei und jeder Ablaufschritt bekommt genau einen Ort in openBIS, nach den
-Prinzipien P1–P8 (`workflow/README.md`).
+Prinzipien P1–P8 (`workflow/README.md`). Die Struktur soll in openBIS übersichtlich lesbar sein; Muster und
+Entscheidungshilfe: [strukturmuster.md](strukturmuster.md).
 
 | | |
 |---|---|
@@ -21,12 +22,14 @@ Prinzipien P1–P8 (`workflow/README.md`).
      ohne Ziffern („Strain Gauge Application“). Die Schrittnummer steht im Begriff des „Next step“-Feldes
      („07 Strain gauge application“) und im Ablaufplan
    - Collection = Serie; welche Spalten die Serientabelle zeigt
-   - Geräte als Eltern aus dem Inventar (Identifier aus `inventory.md`)
+   - Verbindungen nach `strukturmuster.md`: Eltern/Kind für Herkunft und Reihenfolge (Prozesslinie oder Probe als
+     Mittelpunkt), Geräte und Hilfsstoffe aus dem Inventar als Feld vom Typ OBJECT oder als Eltern, je nach PRD und
+     Variante (Identifier aus `inventory.md`)
    - Feld „Next step“ und ein Ablaufplan-Objekt (P5)
    - Für jede Datei: an welchem Objekt, welcher Dataset-Typ aus dem Standard
 3. **Varianten zeigen** (`design.json` → `variants`, Pflicht): 2–4 Möglichkeiten, denselben Ablauf abzubilden, z. B.
-   „flach, Schritte gebündelt“, „flach, ein Objekt je Ablaufschritt“, „alles an der Probe“ und, falls es ein bisheriges
-   Modell gibt, dieses zum Vergleich. Genau eine bekommt `"recommended": true` (die Seite zeigt „(empfohlen)“). Je Variante:
+   „Prozesslinie, Geräte als Felder“, „Probe als Mittelpunkt“, „alles an der Probe“ und, falls es ein bisheriges
+   Modell gibt, dieses zum Vergleich (Muster M1–M7 aus `strukturmuster.md`, in der Kurzbeschreibung nennen). Genau eine bekommt `"recommended": true` (die Seite zeigt „(empfohlen)“). Je Variante:
    Name und Kurzbeschreibung auf Deutsch und Englisch, Form (`flat`, `chain`, `single`), Objekte je Probe mit ihren
    Schritten, Kennzahlen (Objekte je Probe, Ebenen, neue Typen), Vor- und Nachteile, Herkunft. Widerspricht eine Variante dem
    PRD oder P1–P8, steht das bei den Nachteilen. Alle Varianten außer einem bisherigen Modell sind **Vorschläge** (Regel 5).
@@ -36,7 +39,8 @@ Prinzipien P1–P8 (`workflow/README.md`).
 ## Prüfen
 
 - [ ] Jeder Ablaufschritt aus `ablauf.md` hat genau einen Ort
-- [ ] Höchstens eine Ebene Probe → Schritt, keine Ketten Schritt → Schritt
+- [ ] Der Graph einer Probe ist lesbar: wenige Knoten, keine geteilten Inventar-Objekte mit vielen Verbindungen
+      (`strukturmuster.md` → Entscheidungshilfe)
 - [ ] Tabellen und Messreihen sind Dateien (P7)
 - [ ] Sektionsnamen englisch, Title Case, nur Buchstaben (Regel des `checker`, siehe `AGENTS.md`)
 - [ ] Jeder neue Name hat beide Sprachen: `property_label_de`, `label_de` (Begriffe), `section_names_de`, `step_de`,

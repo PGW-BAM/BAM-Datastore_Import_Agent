@@ -22,7 +22,7 @@ Examples:
 | 2 | Catalog the standard | `bam-masterdata-explorer` → `python tools/build_catalog.py` | `generated/CATALOG.md`, `generated/catalog.json` |
 | 3 | Inventory the instance (optional, recommended) | from a committed `generated/live/<instance>_inventory.json` (`tools/openbis_inventory.js`, run by a human in the ELN tab — the only way in cloud sessions, see `CLOUD.md`); otherwise a browser session on the target instance, **read-only** V3 `search*` calls | `generated/live/<instance>_inventory.md` |
 | 4 | Transcribe the PRD | `prd-requirements-extractor` | `generated/<stem>/requirements.json` |
-| 5 | Design a flat structure (workflow PRDs only) | `structure-designer` | `generated/<stem>/design.json`, `design.md` |
+| 5 | Design the structure with 2–4 variants (workflow PRDs only) | `structure-designer` | `generated/<stem>/design.json`, `design.md` |
 | 6 | Classify | `gap-analyzer` (REUSE / EXTEND / CREATE / LIVE-ONLY) | `generated/<stem>/gap-report.md` |
 | 7 | **Human review** | — | stop |
 
@@ -41,7 +41,7 @@ say so in the inventory MD header and ask for a fresh export instead of guessing
 ════════════════════════════════════════════════════════
 Check:
   [ ] Every workflow step has exactly one location (design.md step→location table)
-  [ ] Max link depth = 1 (specimen → step); no step→step chains
+  [ ] The graph of one specimen is readable (workflow/strukturmuster.md); variants with one recommendation
   [ ] REUSE/EXTEND rows cite file:line; LIVE-ONLY rows name their replacement
   [ ] No new dataset types; no live-only legacy type reused
   [ ] Domain decisions from the PRD are reflected verbatim

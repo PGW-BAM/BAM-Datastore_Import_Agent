@@ -51,7 +51,7 @@ Kurzform für Agenten mit Skills oder Slash-Befehlen: Skill `bam-weiter` (`.agen
 | Sektionsnamen | englisch in **Title Case** und nur aus Buchstaben: jedes Wort groß, keine Ziffern, kein `/` oder `-` („Strain Gauge Application“, „Measuring Amplifier And Test Rig“), sonst warnt der `checker`. Schrittnummern stehen im Auswahlfeld „Next step“ und im Ablaufplan, nicht in Sektionen |
 | Pflichtangaben | `mandatory` und `section` immer setzen; Einheiten über `units` (Label wird zu „Length in [mm]“) |
 | Tabellen, Messreihen | als Datei, nicht als Properties |
-| Struktur | flach: Space → Projekt → Collection (= Serie) → Objekte; Schritte hängen direkt an der Probe |
+| Struktur | Space → Projekt → Collection (= Serie) → Objekte; wie die Objekte verbunden sind, nach `workflow/strukturmuster.md` (übersichtlich lesbar, nicht pauschal flach; Eltern/Kind für Herkunft und Reihenfolge, OBJECT-Felder für benutzte Geräte und Hilfsstoffe) |
 
 ## Prüfseiten (fest, für jeden Agenten gleich)
 
@@ -102,7 +102,7 @@ Englisch umschaltbar, Namen immer „Deutsch / Englisch“.
 
 | Pfad | Inhalt |
 |---|---|
-| `workflow/` | Überblick, eine Karte pro Schritt, Interview-Fragen, `MENSCH.md` (Aufgaben des Menschen) |
+| `workflow/` | Überblick, eine Karte pro Schritt, Interview-Fragen, `strukturmuster.md` (Muster für viele Schritte), `MENSCH.md` (Aufgaben des Menschen) |
 | `templates/` | Vorlagen für ein neues Projekt (Kopiervorlage) |
 | `schemas/` | Formate der Projektdateien (`design`, `structure`, `project`), geprüft mit `tools/check_files.py` |
 | `projects/<name>/` | ein Projekt: Einstellungen, Status, alle Zwischenstände |

@@ -1609,14 +1609,103 @@
   "variant": "A",
   "variants": [
     {
-      "id": "A",
+      "id": "E",
       "recommended": true,
+      "shape": "chain",
+      "source": "Vorschlag des Agenten nach workflow/strukturmuster.md (M1, M4, M5, M6)",
+      "name_de": "Prozesslinie, Geräte als Felder",
+      "name_en": "Process line, instruments as fields",
+      "summary_de": "Dieselben vier Objekte wie A, aber als Linie in Ablauf-Reihenfolge: Probe → 3D-Scan → Ermüdungsversuch → Bruchflächenanalyse (M1, M5). Geräte und Hilfsstoffe stehen als Link-Felder im Formular des Schritts, nicht als Eltern (M4), so wie im BAM-Standard beim Kriechversuch.",
+      "summary_en": "The same four objects as A, but as a line in workflow order: specimen → 3D scan → fatigue test → fracture surface analysis (M1, M5). Instruments and auxiliary materials are link fields in the step's form, not parents (M4), as in the BAM standard's creep test.",
+      "objects": [
+        {
+          "name_de": "Probe",
+          "name_en": "Specimen",
+          "steps": [
+            "01",
+            "02",
+            "04",
+            "05",
+            "06"
+          ]
+        },
+        {
+          "name_de": "3D-Scan & Nahtanalyse",
+          "name_en": "3D scan & weld analysis",
+          "steps": [
+            "03",
+            "04"
+          ]
+        },
+        {
+          "name_de": "Zyklischer Ermüdungsversuch",
+          "name_en": "Cyclic fatigue test",
+          "steps": [
+            "07",
+            "08",
+            "09",
+            "10",
+            "11"
+          ]
+        },
+        {
+          "name_de": "Bruchflächenanalyse",
+          "name_en": "Fracture surface analysis",
+          "steps": [
+            "12"
+          ]
+        }
+      ],
+      "objects_per_specimen": 4,
+      "max_link_depth": 3,
+      "new_object_types": 2,
+      "new_dataset_types": 0,
+      "pros": [
+        {
+          "de": "Im Graphen einer Probe nur eine Linie aus 4 Kästen, in der Reihenfolge des Ablaufs",
+          "en": "The graph of a specimen is just a line of 4 boxes, in workflow order"
+        },
+        {
+          "de": "Geräte und Hilfsstoffe sind anklickbare Links im Formular; openBIS prüft, dass dort ein Gerät steht",
+          "en": "Instruments and auxiliary materials are clickable links in the form; openBIS checks that an instrument is entered there"
+        },
+        {
+          "de": "Inventar-Objekte verbinden im Graphen nicht mehr alle Proben miteinander",
+          "en": "Inventory objects no longer connect all specimens with each other in the graph"
+        },
+        {
+          "de": "Gleiche Objekte und Felder wie A, nur 2 neue Objekttypen",
+          "en": "Same objects and fields as A, only 2 new object types"
+        }
+      ],
+      "cons": [
+        {
+          "de": "Weicht von PRD §5 ab (Geräte als Eltern der Schritte): braucht Ihre Zustimmung",
+          "en": "Deviates from PRD §5 (instruments as parents of the steps): needs your approval"
+        },
+        {
+          "de": "Der Graph einer Maschine zeigt nicht mehr, welche Proben auf ihr liefen",
+          "en": "The graph of a machine no longer shows which specimens ran on it"
+        },
+        {
+          "de": "Bis zu 9 zusätzliche Link-Felder zu beantragen (eines je Gerät bzw. Hilfsstoff)",
+          "en": "Up to 9 additional link fields to request (one per instrument or auxiliary material)"
+        },
+        {
+          "de": "Vom Bruchbild zurück zur Probe sind es 3 Verknüpfungen statt 1",
+          "en": "From the fracture image back to the specimen it takes 3 links instead of 1"
+        }
+      ],
+      "shared_parents": 0
+    },
+    {
+      "id": "A",
       "shape": "flat",
       "source": "Vorschlag des Agenten nach P1–P8",
       "name_de": "Flach, Schritte gebündelt",
       "name_en": "Flat, steps grouped",
-      "summary_de": "Die Probe trägt alles, was sie beschreibt. Ein eigenes Schritt-Objekt gibt es nur dort, wo Gerät, Zeitraum, Person und Dateien zusammengehören; alle hängen direkt an der Probe.",
-      "summary_en": "The specimen holds everything that describes it. A separate step object exists only where instrument, time span, person and files belong together; all of them hang directly on the specimen.",
+      "summary_de": "Die Probe trägt alles, was sie beschreibt. Drei Schritt-Objekte hängen direkt an der Probe (M2, M5); Geräte und Hilfsstoffe sind Eltern der Schritte.",
+      "summary_en": "The specimen holds everything that describes it. Three step objects hang directly on the specimen (M2, M5); instruments and auxiliary materials are parents of the steps.",
       "objects": [
         {
           "name_de": "Probe",
@@ -1676,140 +1765,19 @@
       ],
       "cons": [
         {
+          "de": "Die 9 Geräte und Hilfsstoffe hängen als Eltern an den Schritten aller Proben: Im Graphen ist jede Probe über sie mit allen anderen verbunden, das wird schnell unübersichtlich",
+          "en": "The 9 instruments and auxiliary materials are parents of the steps of every specimen: in the graph every specimen is connected to all others through them, which quickly gets confusing"
+        },
+        {
+          "de": "Die Reihenfolge der Schritte ist im Graphen nicht zu sehen (Stern statt Linie)",
+          "en": "The order of the steps is not visible in the graph (a star instead of a line)"
+        },
+        {
           "de": "Die Schritte 07–11 haben kein eigenes Objekt, sondern je eine Sektion im Formular „Zyklischer Ermüdungsversuch“",
           "en": "Steps 07–11 have no object of their own but one section each in the “Cyclic fatigue test” form"
-        },
-        {
-          "de": "Die Schritte 01, 02, 05 und 06 stehen direkt im Formular der Probe",
-          "en": "Steps 01, 02, 05 and 06 are recorded directly in the specimen form"
-        }
-      ]
-    },
-    {
-      "id": "B",
-      "shape": "flat",
-      "source": "Vorschlag des Agenten",
-      "name_de": "Flach, ein Objekt je Ablaufschritt",
-      "name_en": "Flat, one object per workflow step",
-      "summary_de": "Jeder Ablaufschritt 01–12 wird ein eigenes Objekt. Alle hängen direkt an der Probe, es gibt keine Kette.",
-      "summary_en": "Each workflow step 01–12 becomes an object of its own. All of them hang directly on the specimen, there is no chain.",
-      "objects": [
-        {
-          "name_de": "Probe",
-          "name_en": "Specimen",
-          "steps": []
-        },
-        {
-          "name_de": "Vorqualitätsprüfung der Schweißnaht",
-          "name_en": "Pre-quality check of the weld",
-          "steps": [
-            "01"
-          ]
-        },
-        {
-          "name_de": "Anfasen / Schleifen",
-          "name_en": "Chamfering / grinding",
-          "steps": [
-            "02"
-          ]
-        },
-        {
-          "name_de": "3D-Scan der Probe",
-          "name_en": "3D scan of the specimen",
-          "steps": [
-            "03"
-          ]
-        },
-        {
-          "name_de": "Nahtanalyse (GOM)",
-          "name_en": "Weld analysis (GOM)",
-          "steps": [
-            "04"
-          ]
-        },
-        {
-          "name_de": "Serienzuordnung (Randomisierung)",
-          "name_en": "Series assignment (randomisation)",
-          "steps": [
-            "05"
-          ]
-        },
-        {
-          "name_de": "Geometrie vor Einbau",
-          "name_en": "Geometry before installation",
-          "steps": [
-            "06"
-          ]
-        },
-        {
-          "name_de": "DMS-Applikation",
-          "name_en": "Strain gauge application",
-          "steps": [
-            "07"
-          ]
-        },
-        {
-          "name_de": "Messverstärker / Prüfstand",
-          "name_en": "Measuring amplifier / test rig",
-          "steps": [
-            "08"
-          ]
-        },
-        {
-          "name_de": "Einbaubeanspruchung",
-          "name_en": "Installation stress",
-          "steps": [
-            "09"
-          ]
-        },
-        {
-          "name_de": "Zyklischer Ermüdungsversuch",
-          "name_en": "Cyclic fatigue test",
-          "steps": [
-            "10"
-          ]
-        },
-        {
-          "name_de": "Auswertung",
-          "name_en": "Evaluation",
-          "steps": [
-            "11"
-          ]
-        },
-        {
-          "name_de": "Bruchflächenanalyse",
-          "name_en": "Fracture surface analysis",
-          "steps": [
-            "12"
-          ]
         }
       ],
-      "objects_per_specimen": 13,
-      "max_link_depth": 1,
-      "pros": [
-        {
-          "de": "Jeder Schritt hat eigenes Datum, eigene Person und eigene Dateien",
-          "en": "Every step has its own date, person and files"
-        },
-        {
-          "de": "Trotzdem flach: von jedem Schritt ist es ein Klick zur Probe",
-          "en": "Still flat: every step is one click from the specimen"
-        }
-      ],
-      "cons": [
-        {
-          "de": "13 Objekte je Probe anzulegen und zu pflegen",
-          "en": "13 objects per specimen to create and maintain"
-        },
-        {
-          "de": "Mehr neue Typen zu beantragen, oder viele Schritte nur als allgemeiner Versuchsschritt ohne eigene Felder",
-          "en": "More new types to request, or many steps only as a generic experimental step without fields of their own"
-        },
-        {
-          "de": "Schritte am selben Prüfstand (07–11) werden auf fünf Objekte verteilt",
-          "en": "Steps on the same test rig (07–11) are spread over five objects"
-        }
-      ]
+      "shared_parents": 9
     },
     {
       "id": "C",
@@ -1817,8 +1785,8 @@
       "source": "Vorschlag des Agenten",
       "name_de": "Alles an der Probe",
       "name_en": "Everything on the specimen",
-      "summary_de": "Es gibt nur das Objekt Probe. Alle Werte stehen in Sektionen der Probe, alle Dateien hängen an ihr.",
-      "summary_en": "There is only the specimen object. All values are in sections of the specimen, all files are attached to it.",
+      "summary_de": "Es gibt nur das Objekt Probe. Alle Werte stehen in Sektionen der Probe, alle Dateien hängen an ihr (M5 bis zum Ende gedacht).",
+      "summary_en": "There is only the specimen object. All values are in sections of the specimen, all files are attached to it (M5 taken all the way).",
       "objects": [
         {
           "name_de": "Probe",
@@ -1866,7 +1834,8 @@
           "de": "Ein sehr langes Formular, Dateien aller Schritte an einem Objekt",
           "en": "A very long form, files of all steps on one object"
         }
-      ]
+      ],
+      "shared_parents": 9
     },
     {
       "id": "D",
@@ -1874,8 +1843,8 @@
       "source": "bisheriges Modell auf dev1 (generated/live/dev1_inventory.md)",
       "name_de": "Kette wie bisher auf dev1",
       "name_en": "Chain as before on dev1",
-      "summary_de": "So ist das Modell auf der Übungsinstanz dev1 bisher aufgebaut: Probe → Schritt 1 → Schritt 2 → … → Schritt 12, jeder Schritt ein eigener Typ.",
-      "summary_en": "This is how the model on the test instance dev1 is built so far: specimen → step 1 → step 2 → … → step 12, every step a type of its own.",
+      "summary_de": "So ist das Modell auf der Übungsinstanz dev1 bisher aufgebaut: Probe → Schritt 1 → … → Schritt 12 (M1 mit Einzelschritten), jeder Schritt ein eigener Typ, Geräte als Eltern.",
+      "summary_en": "This is how the model on the test instance dev1 is built so far: specimen → step 1 → … → step 12 (M1 with single steps), every step a type of its own, instruments as parents.",
       "objects": [
         {
           "name_de": "Probe",
@@ -1991,8 +1960,8 @@
           "en": "16 new object types and 17 file types to request"
         },
         {
-          "de": "Widerspricht P1 (keine Ketten Schritt → Schritt) und P6 (Standard zuerst)",
-          "en": "Contradicts P1 (no step → step chains) and P6 (standard first)"
+          "de": "Nicht standardisierte Typen auf der Instanz, widerspricht P6 (Standard zuerst)",
+          "en": "Non-standard types on the instance, contradicts P6 (standard first)"
         }
       ]
     }

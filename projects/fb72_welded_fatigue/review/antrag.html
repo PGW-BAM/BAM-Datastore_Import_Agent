@@ -45,7 +45,7 @@ code{font:13px var(--m);color:var(--muted);overflow-wrap:anywhere}section{displa
 .chip.must{background:#f8ecdd;color:var(--warning)}
 .chip.dev,.chip.file{font:400 13px var(--f);letter-spacing:0;text-transform:none;padding:3px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--fg)}
 .chip.dev{border-color:var(--bam-steel);color:var(--bam-steel)}.chip.file{border-style:dashed;color:var(--muted)}
-.node .chip{margin-top:2px}.node.obj.probe .chip.dev{background:transparent;color:#fff;border-color:var(--gray-4)}
+.node .chip{margin-top:2px}.chip.dev.field{border-style:dotted;background:var(--gray-1)}.line{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;max-width:480px}.line>.node{width:100%}.node.obj.probe .chip.dev{background:transparent;color:#fff;border-color:var(--gray-4)}
 .timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
 .step{display:grid;grid-template-columns:52px 1fr;gap:12px;background:var(--paper);border:1px solid var(--line);border-left:4px solid var(--c);padding:14px}
 .step .no{font:500 20px var(--m);color:var(--c)}.s-body{display:flex;flex-direction:column;gap:6px;min-width:0}
@@ -249,15 +249,15 @@ Data Store Steward FB 7.2</pre></div></li>
   var L={de:{open:'Noch %o von %n Teilen offen.',ok:'Alles passt: Das ist eine Freigabe.',one:' Änderungswunsch.',many:' Änderungswünsche.',
              wait:'(erscheint, sobald alle Teile beantwortet sind)',app:' freigegeben',not:' noch nicht freigegeben. Bitte ändern:',
              note:'Anmerkung: ',also:'Außerdem: ',dflt:'(bitte ändern)',sel:'Markiert: jetzt kopieren (Strg+C) und im Chat einfügen.',
-             vn:'Variante',vchg:'Variante: bitte Variante %c „%n“ ausarbeiten statt %s.',vother:'Andere Variante gewählt: Der Agent arbeitet sie aus und zeigt Ihnen eine neue Seite.'},
+             vn:'Variante',vchg:'Variante: bitte Variante %c „%n“ ausarbeiten statt %s.',vother:'Der Agent arbeitet Ihre Wahl aus und zeigt Ihnen eine neue Seite.'},
          en:{open:'%o of %n parts still open.',ok:'Everything fits: this is an approval.',one:' change request.',many:' change requests.',
              wait:'(appears once every part is answered)',app:' approved',not:' not approved yet. Please change:',
              note:'Note: ',also:'Also: ',dflt:'(please change)',sel:'Selected: now copy (Ctrl+C) and paste it into the chat.',
-             vn:'variant',vchg:'Variant: please work out variant %c “%n” instead of %s.',vother:'Different variant chosen: the agent works it out and shows you a new page.'}};
+             vn:'variant',vchg:'Variant: please work out variant %c “%n” instead of %s.',vother:'The agent works out your choice and shows you a new page.'}};
   var gate=((document.querySelector('[data-gate]')||{}).dataset||{}).gate||'B';
   var fbs=[].slice.call(document.querySelectorAll('.fb')), gen=document.getElementById('fb-gesamt');
   var vsec=document.querySelector('.variants'), vrs=[].slice.call(document.querySelectorAll('input[name=variant]')),
-      shown=vsec?vsec.dataset.shown:'';
+      shown=vsec?vsec.dataset.shown:'', rec=vsec?(vsec.dataset.rec||vsec.dataset.shown):'';
   function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
   function render(){
     var T=L[lang], open=0, changes=[];
@@ -266,7 +266,7 @@ Data Store Steward FB 7.2</pre></div></li>
       var t=f.querySelector('textarea');t.hidden=s.v!=='chg';if(t.value!==(s.t||''))t.value=s.t||'';
       if(!s.v)open++; if(s.v==='chg')changes.push('- '+label+': '+((s.t||'').trim()||T.dflt));});
     if(gen.value!==(st._g||''))gen.value=st._g||'';
-    var g=(st._g||'').trim(), txt='', state, chosen=st._v||shown, other=!!vsec&&chosen!==shown, cn='';
+    var g=(st._g||'').trim(), txt='', state, chosen=st._v||rec, other=!!vsec&&chosen!==shown, cn='';
     vrs.forEach(function(r){r.checked=r.value===chosen;r.parentNode.classList.toggle('chosen',r.checked);if(r.checked)cn=r.dataset.name;});
     if(vsec)document.getElementById('v-note').hidden=!other;
     if(other){changes.unshift('- '+T.vchg.replace('%c',chosen).replace('%n',cn).replace('%s',shown));

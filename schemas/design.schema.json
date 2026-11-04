@@ -1,7 +1,7 @@
 {
  "$schema": "https://json-schema.org/draft/2020-12/schema",
  "$id": "design.schema.json",
- "title": "design.json: flat openBIS structure (workflow step 4)",
+ "title": "design.json: openBIS structure (workflow step 4)",
  "description": "Written by the agent in step 4. Read by tools/render_review.py (review page B) and the later steps. Extra keys are allowed.",
  "type": "object",
  "required": [
@@ -389,7 +389,7 @@
        "chain",
        "single"
       ],
-      "description": "flat: steps hang on the main object; chain: step -> step; single: everything on one object"
+      "description": "flat: steps hang on the main object (hub); chain: process line main object -> step -> step; single: everything on one object"
      },
      "objects": {
       "type": "array",
@@ -480,6 +480,11 @@
      "source": {
       "type": "string",
       "description": "where the variant comes from, e.g. 'Vorschlag des Agenten', 'bisheriges Modell auf dev1'"
+     },
+     "shared_parents": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "inventory objects linked as parents of every specimen's objects (shared nodes in the hierarchy graph)"
      }
     }
    }
