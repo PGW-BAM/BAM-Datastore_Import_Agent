@@ -3,6 +3,21 @@
 A narrated walk-through of one complete run, from a written PRD to deployable tooling.
 Use this as the "demo storyboard" for a live presentation.
 
+> **Stand 06.10.2026 (Lauf v2, `BAM_PRD_Workflow_FB72_v2.md` → `welded_fatigue_v2`)** — gegenüber dem unten
+> beschriebenen v1-Ablauf kamen hinzu bzw. änderten sich:
+>
+> | Stufe | Neu / geändert |
+> |---|---|
+> | 1a Katalog | Skript `tools/build_catalog.py` statt grep (volle Vererbung, reproduzierbar) |
+> | 1a' Live-Inventur | **neu**: Zielinstanz nur lesend abfragen (Sitzung des Nutzers, keine Passwörter im Agenten) |
+> | 1b Extraktion | PRD beschreibt den **Ablauf**; Extractor transkribiert Schritte, Datenpunkte, Geräte, Dateien |
+> | 1b' Struktur | **neu**: `structure-designer` entwirft flache Struktur (Tiefe 1) – Review-Checkpoint |
+> | 1c Gap-Analyse | zwei Quellen, vier Klassen (REUSE / EXTEND / CREATE / **LIVE-ONLY**) |
+> | 2a Klassen | Pflicht-**Importtest** gegen das echte `bam-masterdata`; `tools/export_spec.py` erzeugt Soll-Zustand |
+> | 2a' Anlegen | **neu**: `tools/openbis_apply.js` (Masterdaten) + `tools/openbis_demo.js` (Objekte) – Trockenlauf, idempotent, meldet Konflikte statt zu überschreiben |
+>
+> Ablauf als Sequenz: `diagrams/03_pipeline_sequence.mmd`; Folienplan: `00_Vortrag_10min.md`.
+
 ---
 
 ## Stage 0 — Sync the standard

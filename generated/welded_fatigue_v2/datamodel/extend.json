@@ -1,0 +1,38 @@
+[
+  {
+    "vocabulary": "WELDING.WELD_TYPE",
+    "citation": "bam_masterdata/datamodel/welding/vocabularies.py:38",
+    "terms": [
+      {
+        "code": "WELDING_BUTT_WELD",
+        "label": "butt weld",
+        "description": "Butt weld//Stumpfstoß",
+        "label_de": "Stumpfstoß"
+      },
+      {
+        "code": "WELDING_CRUCIFORM_WELD",
+        "label": "cruciform weld",
+        "description": "Cruciform weld//Kreuzstoß",
+        "label_de": "Kreuzstoß"
+      }
+    ]
+  },
+  {
+    "vocabulary": "AUXILIARY_MATERIAL_TYPE",
+    "citation": "bam_masterdata/datamodel/vocabulary_types.py:252",
+    "terms": [
+      {
+        "code": "STRAIN_GAUGE",
+        "label": "Strain gauge",
+        "description": "Strain gauge//Dehnungsmessstreifen",
+        "label_de": "Dehnungsmessstreifen (DMS)"
+      },
+      {
+        "code": "CRACK_DETECTION_AGENT",
+        "label": "Crack detection agent",
+        "description": "Crack detection agent (e.g. crack luminescence)//Rissprüfmittel (z. B. Risslumineszenz)",
+        "label_de": "Rissprüfmittel"
+      }
+    ]
+  }
+]

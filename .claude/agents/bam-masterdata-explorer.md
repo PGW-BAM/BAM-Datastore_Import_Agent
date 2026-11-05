@@ -1,28 +1,20 @@
 ---
 name: bam-masterdata-explorer
-description: Build or refresh CATALOG.md — a structured index of every existing ObjectType, ExperimentalStep, VocabularyType, CollectionType, DatasetType in bam-masterdata with file:line citations. Idempotent. Run before any gap analysis or PRD processing.
+description: Build or refresh CATALOG.md + catalog.json — a structured index of every existing ObjectType, ExperimentalStep, VocabularyType, CollectionType, DatasetType and PropertyType in bam-masterdata with file:line citations. Runs the deterministic AST script tools/build_catalog.py. Idempotent. Run before any gap analysis or PRD processing.
 tools: Read, Glob, Grep, Bash, Write
 ---
 
 ## Overview
 
-Single responsibility: enumerate every class in `bam-masterdata/bam_masterdata/datamodel/` (and welding sub-package) and write a structured `generated/CATALOG.md`. Idempotent — re-running produces the same output given the same repo SHA.
+Single responsibility: produce `generated/CATALOG.md` (human-readable) and `generated/catalog.json`
+(machine-readable, incl. own + inherited properties and vocabulary terms) for the current
+`../bam-masterdata` working tree.
 
-## Inputs
-
-- `../bam-masterdata/` working tree (already cloned at that path)
-- Optionally: a previously generated `generated/CATALOG.md` (for SHA-comparison skip logic)
-
-## Outputs
-
-- `generated/CATALOG.md`
-
-## Discovery mechanism (MUST follow)
-
-From `bam-masterdata/bam_masterdata/utils/paths.py:24-40` and `utils/utils.py:55-110`:
-- Recursively glob `bam_masterdata/datamodel/**/*.py` — skip files whose basename starts with `_`
-- Parse each `.py` file with Grep/Read to find class definitions
-- Class types to enumerate: subclasses of `ObjectType`, `ExperimentalStep`, `VocabularyType`, `CollectionType`, `DatasetType`
+**Enumeration is done by a script, not by the LLM.** The previous grep-based approach
+(`class X(ObjectType|ExperimentalStep)`) only found *direct* subclasses and silently missed every
+type inheriting from `Instrument`, `Sample`, `MechanicalTest`, … (run 2026-06-02: 8 instrument types
+reported as "UNCONFIRMED" although they existed). `tools/build_catalog.py` parses every module with
+`ast` and resolves the full inheritance chain.
 
 ## Step-by-step
 
@@ -30,108 +22,37 @@ From `bam-masterdata/bam_masterdata/utils/paths.py:24-40` and `utils/utils.py:55
 
 ```bash
 git -C ../bam-masterdata rev-parse HEAD
+head -3 generated/CATALOG.md
 ```
 
-Compare to the SHA stored in `generated/CATALOG.md` header (if it exists). If identical, print "CATALOG.md is up to date (SHA: <sha>)" and exit.
+If the SHA in the header equals HEAD, print "CATALOG.md is up to date (SHA: <sha>)" and stop.
 
-**Step 2 — Enumerate ObjectTypes and ExperimentalSteps**
+**Step 2 — Build**
 
-Search `../bam-masterdata/bam_masterdata/datamodel/` recursively (excluding `_`-prefixed files):
-
-```
-grep -rn "class \w\+(ObjectType\|ExperimentalStep)" ../bam-masterdata/bam_masterdata/datamodel/
+```bash
+python tools/build_catalog.py
 ```
 
-For each match, record: class name, openBIS code (from `code=` attribute if present), file path, line number.
+Expected output: one line `SHA <8>: CollectionType=…, DatasetType=…, ExperimentalStep=…, ObjectType=…, VocabularyType=…`.
 
-**Step 3 — Enumerate VocabularyTypes**
+**Step 3 — Verify idempotency**
 
-```
-grep -rn "class \w\+(VocabularyType\b" ../bam-masterdata/bam_masterdata/datamodel/
-```
+Run the script a second time and confirm `generated/CATALOG.md` is byte-identical (e.g. compare `md5sum`).
 
-Also enumerate vocabulary terms: look for `VocabularyTypeAssignment` entries inside each vocabulary class.
+**Step 4 — Report**
 
-**Step 4 — Enumerate CollectionTypes and DatasetTypes**
-
-```
-grep -rn "class \w\+(CollectionType\|DatasetType" ../bam-masterdata/bam_masterdata/datamodel/
-```
-
-**Step 5 — Welding subpackage (special)**
-
-Always include `../bam-masterdata/bam_masterdata/datamodel/welding/` as a separate section in CATALOG.md. This subpackage is especially relevant to the FB7.2 workflow.
-
-**Step 6 — Write CATALOG.md**
-
-Structure of `generated/CATALOG.md`:
-
-```markdown
-# bam-masterdata CATALOG
-
-Generated: <ISO timestamp>
-bam-masterdata SHA: <sha>
-Source: ../bam-masterdata/bam_masterdata/datamodel/
-
----
-
-## ObjectTypes
-
-| Class | openBIS code | File | Line |
-|---|---|---|---|
-| TestingMachine | TESTING_MACHINE | bam_masterdata/datamodel/object_types.py | 1488 |
-| ... | ... | ... | ... |
-
-## ExperimentalSteps
-
-| Class | openBIS code | File | Line |
-|---|---|---|---|
-| FcgStep | EXPERIMENTAL_STEP.FCG_STEP | bam_masterdata/datamodel/object_types.py | NNNN |
-| ... | ... | ... | ... |
-
-## VocabularyTypes
-
-| Class | Code | Terms (count) | File | Line |
-|---|---|---|---|---|
-| WeldType | WELDING.WELD_TYPE | 6 (FILLET, GROOVE, PLUG, SPOT, SURFACING, TACK) | bam_masterdata/datamodel/welding/vocabularies.py | NN |
-| ... | ... | ... | ... | ... |
-
-## CollectionTypes
-
-| Class | Code | File | Line |
-|---|---|---|---|
-
-## DatasetTypes
-
-| Class | Code | File | Line |
-|---|---|---|---|
-
-## Welding subpackage (bam_masterdata/datamodel/welding/)
-
-### ObjectTypes (welding)
-...
-
-### VocabularyTypes (welding)
-...
-```
-
-## Citation rule (MANDATORY)
-
-Every row in the CATALOG must include a real `file:line` citation. Never invent line numbers. If a line cannot be confirmed, write `UNCONFIRMED` instead of a number. Fabricating citations is a hard failure.
+Return the counts line, the SHA and any classes whose root could not be resolved (root = null in catalog.json).
 
 ## Anti-patterns (FORBIDDEN)
 
-- Do NOT emit any Python code
-- Do NOT call pyBIS APIs
+- Do NOT hand-write or hand-edit CATALOG.md — always regenerate via the script
 - Do NOT modify any files in `../bam-masterdata/`
-- Do NOT skip the SHA check
-- Do NOT include files whose basename starts with `_` (discovery rule)
+- Do NOT invent line numbers
 
 ## Hard constraints
 
 | Constraint | Reason |
 |---|---|
-| Real file:line for every row | Downstream gap-analyzer uses these for REUSE/EXTEND citations |
-| No invented line numbers | "UNCONFIRMED — please verify" if uncertain |
-| Idempotent | Re-running at the same SHA produces byte-identical output |
-| Welding subpackage always included as separate section | FB7.2 depends heavily on it |
+| Script-generated, byte-identical on re-run | Downstream citations must be reproducible |
+| Full inheritance resolution | Subclasses of Instrument/Sample/MechanicalTest must be visible |
+| Property index included | gap-analyzer reuses existing PropertyType codes |

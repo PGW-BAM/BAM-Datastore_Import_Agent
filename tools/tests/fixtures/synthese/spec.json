@@ -1,0 +1,575 @@
+{
+ "vocabularies": [
+  {
+   "code": "NANO.PARTICLE_SHAPE",
+   "description": "Shape of nanoparticles//Form von Nanopartikeln",
+   "terms": [
+    {
+     "code": "SPHERE",
+     "label": "Sphere",
+     "label_de": "Kugel",
+     "description": "Spherical particles//Kugelförmige Partikel"
+    },
+    {
+     "code": "ROD",
+     "label": "Rod",
+     "label_de": "Stäbchen",
+     "description": "Rod-shaped particles//Stäbchenförmige Partikel"
+    },
+    {
+     "code": "PLATE",
+     "label": "Plate",
+     "label_de": "Plättchen",
+     "description": "Plate-shaped particles//Plättchenförmige Partikel"
+    }
+   ]
+  },
+  {
+   "code": "NANO.WORKFLOW_STEP",
+   "description": "Ordered workflow steps of the nanoparticle synthesis//Geordnete Ablaufschritte der Nanopartikel-Synthese",
+   "terms": [
+    {
+     "code": "S01_WEIGHING",
+     "label": "01 Weighing of reactants",
+     "label_de": "01 Einwaage der Edukte",
+     "description": "Weighing of reactants//Einwaage der Edukte"
+    },
+    {
+     "code": "S02_SYNTHESIS",
+     "label": "02 Synthesis",
+     "label_de": "02 Synthese",
+     "description": "Synthesis//Synthese"
+    },
+    {
+     "code": "S03_PURIFICATION",
+     "label": "03 Purification",
+     "label_de": "03 Aufreinigung",
+     "description": "Purification//Aufreinigung"
+    },
+    {
+     "code": "S04_DLS",
+     "label": "04 DLS measurement",
+     "label_de": "04 DLS-Messung",
+     "description": "DLS measurement//DLS-Messung"
+    },
+    {
+     "code": "S05_TEM",
+     "label": "05 TEM imaging",
+     "label_de": "05 TEM-Aufnahmen",
+     "description": "TEM imaging//TEM-Aufnahmen"
+    },
+    {
+     "code": "DONE",
+     "label": "Done",
+     "label_de": "Abgeschlossen",
+     "description": "All steps done//Alle Schritte abgeschlossen"
+    }
+   ]
+  }
+ ],
+ "extensions": [],
+ "object_types": [
+  {
+   "class": "NanoparticleBatch",
+   "parent": "Sample",
+   "code": "SAMPLE.NANOPARTICLE_BATCH",
+   "description": "Batch of nanoparticles from one synthesis//Charge von Nanopartikeln aus einer Synthese",
+   "generated_code_prefix": "SAM.NPB",
+   "properties": [
+    {
+     "code": "$NAME",
+     "data_type": "VARCHAR",
+     "label": "Name",
+     "label_de": null,
+     "description": "Name",
+     "section": "General Information",
+     "mandatory": true,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "ALIAS",
+     "data_type": "VARCHAR",
+     "label": "Alternative Name",
+     "label_de": null,
+     "description": "e.g. abbreviation or nickname//z.B. Abkürzung oder Spitzname",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "DESCRIPTION",
+     "data_type": "MULTILINE_VARCHAR",
+     "label": "Description",
+     "label_de": null,
+     "description": "Short description and/or purpose//Kurzbeschreibung und/oder Zweck",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "SAMPLE_ID_NUMBER",
+     "data_type": "INTEGER",
+     "label": "Sample Number",
+     "label_de": null,
+     "description": "Sample number//Probennummer",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "MANUFACTURER",
+     "data_type": "VARCHAR",
+     "label": "Manufacturer",
+     "label_de": null,
+     "description": "Manufacturer//Hersteller",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "BARCODE_EXTERNAL",
+     "data_type": "VARCHAR",
+     "label": "External Barcode",
+     "label_de": null,
+     "description": "External barcode (if availabe)//Externer Barcode (falls vorhanden)",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "SUPPLIER",
+     "data_type": "VARCHAR",
+     "label": "Supplier",
+     "label_de": null,
+     "description": "Supplier//Lieferant",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "PHYSICAL_STATE",
+     "data_type": "CONTROLLEDVOCABULARY",
+     "label": "Physical State",
+     "label_de": null,
+     "description": "Physical state of a material // Physikalischer Zustand eines Materials",
+     "section": "Properties",
+     "mandatory": false,
+     "vocabulary_code": "PHYSICAL_STATE",
+     "object_code": null
+    },
+    {
+     "code": "BAM_OE",
+     "data_type": "CONTROLLEDVOCABULARY",
+     "label": "BAM Organizational Entity",
+     "label_de": null,
+     "description": "BAM Organizational Entity//BAM Organisationseinheit (OE)",
+     "section": "BAM Information",
+     "mandatory": true,
+     "vocabulary_code": "BAM_OE",
+     "object_code": null
+    },
+    {
+     "code": "RESPONSIBLE_PERSON",
+     "data_type": "OBJECT",
+     "label": "Responsible person",
+     "label_de": null,
+     "description": "Responsible person//Verantwortliche Person",
+     "section": "BAM Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": "PERSON.BAM"
+    },
+    {
+     "code": "CO_RESPONSIBLE_PERSON",
+     "data_type": "OBJECT",
+     "label": "Co-responsible person",
+     "label_de": null,
+     "description": "Co-responsible person//Weitere verantwortliche Person",
+     "section": "BAM Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": "PERSON.BAM"
+    },
+    {
+     "code": "BAM_ROOM",
+     "data_type": "CONTROLLEDVOCABULARY",
+     "label": "BAM Room",
+     "label_de": null,
+     "description": "BAM Room//BAM Raum",
+     "section": "BAM Information",
+     "mandatory": false,
+     "vocabulary_code": "BAM_ROOM",
+     "object_code": null
+    },
+    {
+     "code": "BAM_FLOOR",
+     "data_type": "CONTROLLEDVOCABULARY",
+     "label": "BAM Floor",
+     "label_de": null,
+     "description": "BAM Floor//BAM Etage",
+     "section": "BAM Information",
+     "mandatory": false,
+     "vocabulary_code": "BAM_FLOOR",
+     "object_code": null
+    },
+    {
+     "code": "BAM_HOUSE",
+     "data_type": "CONTROLLEDVOCABULARY",
+     "label": "BAM House",
+     "label_de": null,
+     "description": "BAM House//BAM Haus",
+     "section": "BAM Information",
+     "mandatory": false,
+     "vocabulary_code": "BAM_HOUSE",
+     "object_code": null
+    },
+    {
+     "code": "BAM_LOCATION",
+     "data_type": "CONTROLLEDVOCABULARY",
+     "label": "BAM Location",
+     "label_de": null,
+     "description": "BAM Location//BAM Liegenschaft",
+     "section": "BAM Information",
+     "mandatory": false,
+     "vocabulary_code": "BAM_LOCATION",
+     "object_code": null
+    },
+    {
+     "code": "BAM_LOCATION_COMPLETE",
+     "data_type": "CONTROLLEDVOCABULARY",
+     "label": "Complete BAM Location",
+     "label_de": null,
+     "description": "Complete BAM location (up to room level)//Komplette BAM-Ortsangabe (bis Raumlevel)",
+     "section": "BAM Information",
+     "mandatory": false,
+     "vocabulary_code": "BAM_LOCATION_COMPLETE",
+     "object_code": null
+    },
+    {
+     "code": "NOTES",
+     "data_type": "MULTILINE_VARCHAR",
+     "label": "Notes",
+     "label_de": null,
+     "description": "Notes",
+     "section": "Additional Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "$XMLCOMMENTS",
+     "data_type": "XML",
+     "label": "Comments",
+     "label_de": null,
+     "description": "Comments log",
+     "section": "Comments",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "$ANNOTATIONS_STATE",
+     "data_type": "XML",
+     "label": "Annotations State",
+     "label_de": null,
+     "description": "Annotations State",
+     "section": "",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "NANO.NEXT_STEP",
+     "data_type": "CONTROLLEDVOCABULARY",
+     "label": "Next step",
+     "label_de": "Nächster Schritt",
+     "description": "Next workflow step of the batch//Nächster Ablaufschritt der Charge",
+     "section": "Workflow",
+     "mandatory": false,
+     "vocabulary_code": "NANO.WORKFLOW_STEP",
+     "object_code": null
+    },
+    {
+     "code": "NANO.YIELD",
+     "data_type": "REAL",
+     "label": "Yield [%]",
+     "label_de": "Ausbeute [%]",
+     "description": "Yield after purification [%]//Ausbeute nach der Aufreinigung [%]",
+     "section": "Purification",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "NANO.CENTRIFUGE",
+     "data_type": "OBJECT",
+     "label": "Centrifuge",
+     "label_de": "Zentrifuge",
+     "description": "Centrifuge used for purification (inventory object)//Für die Aufreinigung verwendete Zentrifuge (Inventar-Objekt)",
+     "section": "Purification",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": "INSTRUMENT.CENTRIFUGE"
+    },
+    {
+     "code": "NANO.TARGET_DIAMETER",
+     "data_type": "REAL",
+     "label": "Target diameter [nm]",
+     "label_de": "Zieldurchmesser [nm]",
+     "description": "Intended particle diameter [nm]//Angestrebter Partikeldurchmesser [nm]",
+     "section": "Particle Properties",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "NANO.PARTICLE_SHAPE",
+     "data_type": "CONTROLLEDVOCABULARY",
+     "label": "Particle shape",
+     "label_de": "Partikelform",
+     "description": "Particle shape seen in TEM//Partikelform im TEM",
+     "section": "Particle Properties",
+     "mandatory": false,
+     "vocabulary_code": "NANO.PARTICLE_SHAPE",
+     "object_code": null
+    }
+   ]
+  },
+  {
+   "class": "NanoparticleSynthesis",
+   "parent": "ExperimentalStep",
+   "code": "EXPERIMENTAL_STEP.NANOPARTICLE_SYNTHESIS",
+   "description": "Wet-chemical synthesis of a nanoparticle batch incl. weighing of reactants//Nasschemische Synthese einer Nanopartikel-Charge inkl. Einwaage der Edukte",
+   "generated_code_prefix": "EXP.NPS",
+   "properties": [
+    {
+     "code": "$NAME",
+     "data_type": "VARCHAR",
+     "label": "Name",
+     "label_de": null,
+     "description": "Name",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "$SHOW_IN_PROJECT_OVERVIEW",
+     "data_type": "BOOLEAN",
+     "label": "Show in project overview",
+     "label_de": null,
+     "description": "Show in project overview page",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "FINISHED_FLAG",
+     "data_type": "BOOLEAN",
+     "label": "Experiment completed",
+     "label_de": null,
+     "description": "Marks the experiment as finished//Markiert das Experiment als abgeschlossen",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "START_DATE",
+     "data_type": "TIMESTAMP",
+     "label": "Start date",
+     "label_de": null,
+     "description": "Start date//Startdatum",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "END_DATE",
+     "data_type": "TIMESTAMP",
+     "label": "End date",
+     "label_de": null,
+     "description": "End date//Enddatum",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "OPERATOR",
+     "data_type": "VARCHAR",
+     "label": "Operator",
+     "label_de": null,
+     "description": "Name of the person or user performing the measurement//Name der Person oder des Benutzers, der die Messung durchführt",
+     "section": "General Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "EXPERIMENTAL_STEP.EXPERIMENTAL_GOALS",
+     "data_type": "MULTILINE_VARCHAR",
+     "label": "Experimental goals",
+     "label_de": null,
+     "description": "Goals of the experiment//Ziele des Experiments",
+     "section": "Experimental Details",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "EXPERIMENTAL_STEP.EXPERIMENTAL_DESCRIPTION",
+     "data_type": "MULTILINE_VARCHAR",
+     "label": "Experimental description",
+     "label_de": null,
+     "description": "Description of the experiment//Beschreibung des Experiments",
+     "section": "Experimental Details",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "EXPERIMENTAL_STEP.EXPERIMENTAL_RESULTS",
+     "data_type": "MULTILINE_VARCHAR",
+     "label": "Experimental results",
+     "label_de": null,
+     "description": "Summary of experimental results//Zusammenfassung der Ergebnisse des Experiments",
+     "section": "Experimental Details",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "EXPERIMENTAL_STEP.SPREADSHEET",
+     "data_type": "XML",
+     "label": "Spreadsheet",
+     "label_de": null,
+     "description": "Multi-purpose Spreadsheet//Spreadsheet zur freien Verwendung",
+     "section": "Experimental Details",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "REFERENCE",
+     "data_type": "MULTILINE_VARCHAR",
+     "label": "References",
+     "label_de": null,
+     "description": "Useful refences",
+     "section": "References",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "PUBLICATION",
+     "data_type": "MULTILINE_VARCHAR",
+     "label": "Publication",
+     "label_de": null,
+     "description": "Own publication where this entity is referenced",
+     "section": "References",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "NOTES",
+     "data_type": "MULTILINE_VARCHAR",
+     "label": "Notes",
+     "label_de": null,
+     "description": "Notes",
+     "section": "Additional Information",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "$XMLCOMMENTS",
+     "data_type": "XML",
+     "label": "Comments",
+     "label_de": null,
+     "description": "Comments log",
+     "section": "Comments",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "NANO.MASS_SILVER_NITRATE",
+     "data_type": "REAL",
+     "label": "Mass of silver nitrate [mg]",
+     "label_de": "Masse Silbernitrat [mg]",
+     "description": "Weighed mass of silver nitrate [mg]//Eingewogene Masse Silbernitrat [mg]",
+     "section": "Weighing Of Reactants",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "NANO.MASS_SODIUM_CITRATE",
+     "data_type": "REAL",
+     "label": "Mass of sodium citrate [mg]",
+     "label_de": "Masse Natriumcitrat [mg]",
+     "description": "Weighed mass of trisodium citrate [mg]//Eingewogene Masse Trinatriumcitrat [mg]",
+     "section": "Weighing Of Reactants",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "NANO.BALANCE",
+     "data_type": "OBJECT",
+     "label": "Balance",
+     "label_de": "Waage",
+     "description": "Balance used for weighing (inventory object)//Für die Einwaage verwendete Waage (Inventar-Objekt)",
+     "section": "Weighing Of Reactants",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": "INSTRUMENT.SCALE"
+    },
+    {
+     "code": "NANO.REACTION_TEMPERATURE",
+     "data_type": "REAL",
+     "label": "Reaction temperature [°C]",
+     "label_de": "Reaktionstemperatur [°C]",
+     "description": "Reaction temperature [°C]//Reaktionstemperatur [°C]",
+     "section": "Synthesis Conditions",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "NANO.REACTION_TIME",
+     "data_type": "REAL",
+     "label": "Reaction time [min]",
+     "label_de": "Reaktionszeit [min]",
+     "description": "Reaction time [min]//Reaktionszeit [min]",
+     "section": "Synthesis Conditions",
+     "mandatory": true,
+     "vocabulary_code": null,
+     "object_code": null
+    },
+    {
+     "code": "INSTRUMENT",
+     "data_type": "OBJECT",
+     "label": "Testing Machine or Measurement Device",
+     "label_de": null,
+     "description": "Testing machine or measurement device//Prüfmaschine oder Messgerät",
+     "section": "Synthesis Conditions",
+     "mandatory": false,
+     "vocabulary_code": null,
+     "object_code": null
+    }
+   ]
+  }
+ ]
+}

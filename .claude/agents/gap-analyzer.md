@@ -1,149 +1,91 @@
 ---
 name: gap-analyzer
-description: Diff requirements.json against CATALOG.md to produce a gap report with three tables: REUSE (use as-is, cite file:line), EXTEND (existing type needs extra terms/properties, suggest PR), CREATE (genuinely new). Every REUSE/EXTEND entry must have a file:line citation.
+description: Classify every entity of a design (design.json, or legacy requirements.json) against TWO sources - bam-masterdata (CATALOG) and the live openBIS instance (live inventory). Four classes - REUSE, EXTEND, CREATE, LIVE-ONLY (exists on the instance but not in bam-masterdata). Every REUSE/EXTEND row cites file:line; every LIVE-ONLY row cites the live inventory.
 tools: Read, Write, Glob, Grep
 ---
 
 # Agent: gap-analyzer
 
-## Overview
+## Single responsibility
 
-Single responsibility: compare what the PRD requires (from `requirements.json`) against what already exists in bam-masterdata (from `CATALOG.md`). Output a structured gap report with three classifications for every entity.
-
----
+Decide, for every type, vocabulary and property the design needs, whether it already exists — in the
+**standard** (`bam-masterdata`) and/or on the **instance** — and what has to happen.
 
 ## Inputs
 
-- `generated/<prd-stem>/requirements.json`
-- `generated/CATALOG.md`
+| Input | Path | Required |
+|---|---|---|
+| Design | `generated/<prd-stem>/design.json` | if present (workflow PRDs) |
+| Requirements | `generated/<prd-stem>/requirements.json` | always (legacy PRDs: classify its entities directly) |
+| Catalog | `generated/CATALOG.md` + `generated/catalog.json` | yes |
+| Live inventory | `projects/<name>/inventory_<instance>.json` (bridge notebook) or legacy `generated/live/*_inventory.md` | if present |
 
-Derive `<prd-stem>` from `$ARGUMENTS` (the PRD path) or from the path of requirements.json if invoked by a command.
+## Output
 
----
+`generated/<prd-stem>/gap-report.md` (new layout: `projects/<name>/gap-report.md`)
 
-## Outputs
+Workflow names (`workflow/05_abgleich.md`): REUSE = NUTZEN, EXTEND = ERWEITERN, CREATE = NEU,
+LIVE-ONLY = ALTBESTAND, instance sync = NACHZIEHEN, equipment missing = GERÄT FEHLT.
 
-- `generated/<prd-stem>/gap-report.md`
+## Classes
 
----
+| Class | Meaning | Action |
+|---|---|---|
+| **REUSE** | in bam-masterdata, fits as-is | use; on the instance create only if missing (sync), never redefine |
+| **EXTEND** | in bam-masterdata, needs 1–3 terms/properties | PR to bam-masterdata; no new type |
+| **CREATE** | in neither source (or only a live-only look-alike that is being migrated) | emit Python (masterdata-extender) |
+| **LIVE-ONLY** | exists on the instance, not in bam-masterdata | do **not** reuse silently: either migrate (replaced by a CREATE/REUSE entity → record which) or propose for standardisation (PR) |
 
-## Classification rules
-
-**REUSE** — the entity exists in bam-masterdata and can be used without modification:
-- Exact class name match, OR
-- openBIS code match, OR
-- The CATALOG entry covers ≥90% of the required properties
-
-For every REUSE entry: cite the exact `file:line` from CATALOG.md.
-
-**EXTEND** — the entity exists but needs modification (e.g., a vocabulary needs new terms):
-- Class exists but is missing 1–3 terms/properties
-- Suggest a minimal PR to `bam-masterdata`
-
-For every EXTEND entry: cite the existing class's `file:line` and list the additions needed.
-
-**CREATE** — the entity is genuinely absent:
-- No class with matching name, code, or ≥50% property overlap exists in CATALOG.md
-
----
+Additionally report the **sync status** of every REUSE/EXTEND entity on the instance: `present`,
+`missing on instance`, `outdated on instance` (e.g. fewer properties than the catalog).
 
 ## Step-by-step
 
-### Step 1 — Read inputs
+1. Read inputs; record catalog SHA and live inventory date.
+2. **Types** — for each object type in design.json: look up by code and class name in catalog.json;
+   for reused types (`reused_types`) confirm they exist (cite file:line) and check presence on the instance.
+3. **Vocabularies** — catalog match by code → compare terms → REUSE / EXTEND (list missing terms) /
+   CREATE. Check for semantically equivalent vocabularies with other codes (e.g. a creep-test end
+   criterion vs. a fatigue stop reason) and state why they do or do not fit.
+4. **Properties** — for each property: if `reuse_property` is set, verify code + data type in the
+   catalog property index (cite the defining class file:line). For new codes, check they do not collide
+   with an existing catalog code **or a live code of a different data type**.
+5. **Live-only legacy** — list every live-only type/vocabulary/dataset type related to this workflow
+   (from the live inventory) and map it to its replacement in the design (`→ migrated to …`) or `no
+   replacement` (with reason).
+6. **Inventory types** — instruments/materials: map each to a catalog type (e.g. `INSTRUMENT.CAMERA`,
+   `AUXILIARY_MATERIAL` + `AUXILIARY_MATERIAL_TYPE` term). Missing vocabulary terms → EXTEND.
+7. **Consistency** — every CONTROLLEDVOCABULARY property points to a REUSE/EXTEND/CREATE vocabulary;
+   every OBJECT property points to an existing type.
 
-Read `generated/<prd-stem>/requirements.json` and `generated/CATALOG.md`. Record the SHA from CATALOG.md's header line.
-
-### Step 2 — Match vocabularies
-
-For each vocabulary in requirements.json:
-- Check if CATALOG.md has a vocabulary with matching code or name
-- If yes and all terms exist → REUSE
-- If yes but terms are missing → EXTEND (list missing terms)
-- If no → CREATE
-
-### Step 3 — Match ObjectTypes and ExperimentalSteps
-
-For each type in requirements.json:
-- Check CATALOG.md for matching class name or openBIS code
-- If found: compare property list → REUSE or EXTEND
-- If not found: CREATE
-
-### Step 4 — Check vocabulary references
-
-For each CONTROLLEDVOCABULARY property in a CREATE object type:
-- Verify the referenced vocabulary is either REUSE or in the CREATE list
-- Flag inconsistencies (e.g., property references a vocabulary that's neither in CATALOG nor in requirements)
-
-### Step 5 — Write gap-report.md
-
-Structure:
+## Report structure
 
 ```markdown
 # Gap Report: <prd-stem>
+PRD · design.json · catalog SHA · live inventory (instance, date)
 
-Generated: <ISO timestamp>
-PRD: <prd_path>
-bam-masterdata CATALOG SHA: <sha from CATALOG.md header>
-
----
-
-## REUSE — use existing types as-is
-
-| Entity | Type | Citation | Notes |
-|---|---|---|---|
-| TestingMachine | ObjectType | bam_masterdata/datamodel/object_types.py:1488 | Use for Prüfmaschinen |
-| WELDING.WELD_TYPE | VocabularyType | bam_masterdata/datamodel/welding/vocabularies.py:NN | 6 terms present; see EXTEND for missing terms |
-
-## EXTEND — existing types needing modification (PR to bam-masterdata)
-
-| Entity | Type | Citation | Additions needed | PR action |
-|---|---|---|---|---|
-| WELDING.WELD_TYPE | VocabularyType | bam_masterdata/datamodel/welding/vocabularies.py:NN | Add BUTT_WELD, CRUCIFORM_WELD | Add 2 terms to vocabulary class |
-
-## CREATE — genuinely new (emit Python)
-
-| Entity | Type | Why it can't be reused | PRD section |
-|---|---|---|---|
-| WeldedFatigueSpecimen | ObjectType | No specimen type for welded S-N fatigue; closest peer Fcg has FCG-specific properties incompatible with this workflow | §5.2 |
-| ISO_5817_FAT_CLASS | VocabularyType | No fatigue class vocabulary exists | §5.1 |
-| LOAD_LEVEL | VocabularyType | No load level vocabulary exists | §5.1 |
-| FATIGUE_STOP_REASON | VocabularyType | No fatigue stop reason vocabulary exists | §5.1 |
-| PreQualityCheckWeld | ExperimentalStep | No weld pre-check step exists; FcgStep covers crack growth not weld quality | §5.3.1 |
-[... all CREATE ExperimentalSteps ...]
-
----
-
-## Summary
-
-- REUSE: N entities
-- EXTEND: N entities
-- CREATE: N entities
-- Vocabulary references: all consistent ✓
+## REUSE           | Entity | Kind | Citation (file:line) | On instance | Role in design |
+## EXTEND          | Entity | Kind | Citation | Additions | On instance | PR action |
+## CREATE          | Entity | Kind | Why not reusable (closest peer + citation) | Replaces live-only |
+## LIVE-ONLY       | Live entity | Kind | Replacement in design / proposal |
+## Property types  | Code | Data type | Status (reuse: citation / new) | Collision check |
+## Instance sync   | Entity | Status on instance | Needed action |
+## Equipment       | Device (design) | Type | Found in inventory (identifier) or MISSING | Action |
+## Summary         counts per class + new-vs-legacy metrics from design.json
 ```
 
----
+Equipment: every instrument/material the design links as a parent is looked up in the inventory
+objects (`objects` of the read equipment projects). Missing ones are not an admin matter: the person
+registers them (workflow step 8). If no inventory was read, write `UNCONFIRMED`.
 
 ## Citation rule (MANDATORY)
 
-Every REUSE and EXTEND row must include a real `file:line` citation sourced from CATALOG.md. Do not invent line numbers. If CATALOG.md shows `UNCONFIRMED` for a line, propagate that to the gap report with a note: `UNCONFIRMED — verify against live bam-masterdata`.
-
----
+REUSE/EXTEND rows cite `file:line` from catalog.json/CATALOG.md. LIVE-ONLY rows cite the live inventory
+file. Never invent line numbers — write `UNCONFIRMED` if unsure.
 
 ## Anti-patterns (FORBIDDEN)
 
-- Do NOT emit Python code
-- Do NOT classify a type as CREATE if it appears in CATALOG.md (even partial match → REUSE or EXTEND)
-- Do NOT classify a type as REUSE if properties are substantially different (→ EXTEND or CREATE)
-- Do NOT call pyBIS APIs
-- Never fabricate a `file:line` citation — write `UNCONFIRMED` instead
-
----
-
-## Hard constraints
-
-| Constraint | Reason |
-|---|---|
-| REUSE/EXTEND must have file:line | masterdata-extender uses this to refuse emitting code for these |
-| CREATE must have "why it can't be reused" explanation | PRD verification checklist §4.3 requires it |
-| CATALOG.md SHA recorded in output | Reproducibility — re-running at different SHA may change classifications |
-| All 12 FB7.2 ExperimentalSteps must appear as CREATE | They are confirmed absent; false REUSE would suppress code generation |
+- Do NOT emit Python, do NOT call openBIS/pyBIS.
+- Do NOT classify a live-only type as REUSE — the standard is bam-masterdata.
+- Do NOT classify as CREATE what exists in the catalog (partial match → REUSE or EXTEND with reason).
+- Do NOT change the design; if you disagree, add a "Design remarks" section.

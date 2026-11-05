@@ -1,6 +1,6 @@
 ---
 name: prd-requirements-extractor
-description: Parse a Markdown PRD into a normalized requirements.json. Extracts vocabularies, ObjectTypes, ExperimentalSteps, and PropertyTypeAssignments. Never invents types not explicitly stated in the PRD.
+description: Parse a Markdown PRD into a normalized requirements.json. For workflow-style PRDs (v2) it extracts workflow steps, data items, equipment, files, structural principles and explicit domain decisions. For type-style PRDs (v1) it extracts declared vocabularies/ObjectTypes/ExperimentalSteps. Never invents data items or types not stated in the PRD.
 tools: Read, Write, Glob
 ---
 
@@ -8,128 +8,78 @@ tools: Read, Write, Glob
 
 ## Overview
 
-Single responsibility: read a PRD `.md` file and produce a normalized `generated/<prd-stem>/requirements.json` that lists every entity the PRD requires. This feeds into the gap-analyzer.
+Single responsibility: read a PRD `.md` file and write `generated/<prd-stem>/requirements.json`.
+This agent **only transcribes** the PRD into a normalized form. It does not design types
+(that is `structure-designer`) and does not classify REUSE/EXTEND/CREATE (that is `gap-analyzer`).
 
----
+## Inputs / Outputs
 
-## Inputs
+- Input: `$ARGUMENTS` — PRD path. Optional second argument: `<prd-stem>`.
+- Output: `generated/<prd-stem>/requirements.json`
+- `<prd-stem>`: use the stem given by the calling command; otherwise slugify the PRD file name.
 
-- `$ARGUMENTS` — path to the PRD markdown file (e.g., `BAM_PRD_Workflow_FB72.md`)
+## Detect PRD style
 
----
+- **workflow** (v2): the PRD contains a workflow table (numbered steps with data / equipment / files) and
+  structural principles. → `"prd_style": "workflow"`
+- **types** (v1): the PRD declares classes / codes / property tables. → `"prd_style": "types"`, use the
+  legacy schema (`vocabularies`, `object_types`, `experimental_steps`) exactly as declared.
 
-## Outputs
+## Schema for workflow PRDs
 
-- `generated/<prd-stem>/requirements.json`
-
-Derive `<prd-stem>` from the PRD filename: snake_case the stem. `BAM_PRD_Workflow_FB72.md` → `welded_fatigue` (use the prd-stem already established in any existing `generated/` directory, or slugify the PRD name if fresh).
-
----
-
-## Step-by-step
-
-### Step 1 — Read PRD
-
-Read the full PRD file at the provided path.
-
-### Step 2 — Extract vocabularies
-
-Find all vocabulary definitions (sections named "Vokabulare", "VocabularyTypeAssignment", "Neue Vokabulare", "CREATE", or similar). For each:
-- Name/code
-- Terms list (each with bilingual description if present)
-- Section reference in the PRD
-
-### Step 3 — Extract ObjectTypes
-
-Find all `ObjectType` definitions. For each:
-- Class name
-- openBIS code
-- Parent class
-- Properties list (name, data_type, vocabulary reference if CONTROLLEDVOCABULARY, section, mandatory flag, bilingual description)
-
-### Step 4 — Extract ExperimentalSteps
-
-Find all `ExperimentalStep` definitions. For each:
-- Class name
-- openBIS code
-- Properties list (same schema as ObjectType properties)
-- Object links (OBJECT data_type referencing other types)
-
-### Step 5 — Write requirements.json
-
-Schema:
 ```json
 {
-  "prd_path": "BAM_PRD_Workflow_FB72.md",
-  "prd_stem": "welded_fatigue",
-  "extracted_at": "<ISO timestamp>",
-  "vocabularies": [
+  "prd_path": "BAM_PRD_Workflow_FB72_v2.md",
+  "prd_stem": "welded_fatigue_v2",
+  "prd_style": "workflow",
+  "extracted_at": "<ISO 8601>",
+  "goals": ["…"],
+  "principles": [{"id": "P1", "name": "…", "rule": "…"}],
+  "subject": {
+    "name": "Welded fatigue specimen//Geschweißte Ermüdungsprobe",
+    "data_items": [ <data_item> ],
+    "prd_section": "§4"
+  },
+  "workflow_steps": [
     {
-      "name": "ISO_5817_FAT_CLASS",
-      "code": "ISO_5817_FAT_CLASS",
-      "terms": [
-        {"code": "C56", "description": "FAT Class C56//FAT Klasse C56"},
-        {"code": "B90", "description": "FAT Class B90//FAT Klasse B90"},
-        {"code": "B125", "description": "FAT Class B125//FAT Klasse B125"}
-      ],
-      "prd_section": "§5.1"
+      "no": "01",
+      "name": "Pre-quality check of the weld//Vorqualitätsprüfung der Schweißnaht",
+      "data_items": [ <data_item> ],
+      "equipment": ["…"],
+      "files": [{"name": "Specimen photos//Probenfotos", "format": "JPG/PNG"}],
+      "prd_section": "§3"
     }
   ],
-  "object_types": [
-    {
-      "class_name": "WeldedFatigueSpecimen",
-      "code": "SPECIMEN.WELDED_FATIGUE",
-      "parent": "ObjectType",
-      "generated_code_prefix": "SPEC.WELD",
-      "properties": [
-        {
-          "name": "weld_geometry",
-          "data_type": "CONTROLLEDVOCABULARY",
-          "vocabulary": "WELDING.WELD_TYPE",
-          "section": "Weld Details",
-          "mandatory": true,
-          "description": "Weld geometry//Schweißnahtgeometrie"
-        }
-      ],
-      "prd_section": "§5.2"
-    }
-  ],
-  "experimental_steps": [
-    {
-      "class_name": "PreQualityCheckWeld",
-      "code": "EXPERIMENTAL_STEP.PRE_QUALITY_CHECK_WELD",
-      "parent": "ExperimentalStep",
-      "generated_code_prefix": "EXP.PRE_QC",
-      "properties": [],
-      "object_links": [],
-      "prd_section": "§5.3.1"
-    }
+  "inventory": [{"name": "ZEISS GOM ATOS 5", "kind": "instrument|testing_machine|auxiliary_material", "used_in_steps": ["03"]}],
+  "series": {"definition": "…", "table_columns": ["…"]},
+  "domain_decisions": [
+    {"topic": "weld geometry vocabulary", "decision": "extend WELDING.WELD_TYPE with BUTT_WELD, CRUCIFORM_WELD", "prd_section": "§4"}
   ]
 }
 ```
 
----
+`<data_item>`:
+
+```json
+{"label": "Initial angular distortion [°]//Winkelverzug initial [°]",
+ "kind": "real|integer|boolean|text|multiline_text|timestamp|choice|object_link",
+ "unit": "°", "choices": ["…"], "repeat": 1, "notes": "…"}
+```
+
+- `choice` items list their options verbatim in `choices`.
+- "an je 3 Positionen" → `"repeat": 3` (one item per measured quantity, not three items).
+- Labels: English//Deutsch. If the PRD only gives German, translate the English part faithfully and keep
+  the German verbatim. Format `"English//Deutsch"` — no spaces around `//`.
 
 ## Rules
 
-- NEVER invent types not explicitly named in the PRD. If a type is mentioned only in passing (e.g., "linked to a Camera"), record it as an `object_link` reference, not a new type definition.
-- For the FB7.2 PRD, the **§5 CREATE section** of the rewritten PRD is authoritative. If both old §3 and new §5 are present, use §5.
-- Preserve bilingual descriptions exactly as written (`"English//Deutsch"` — no spaces around `//`).
-- If a property's vocabulary references an existing bam-masterdata vocabulary (e.g., `WELDING.WELD_TYPE`), record it as-is — the gap-analyzer decides REUSE vs CREATE.
-
----
-
-## Anti-patterns
-
-- Do NOT classify types as REUSE/EXTEND/CREATE — that is the gap-analyzer's job.
-- Do NOT read or reference `CATALOG.md` — this agent is PRD-only.
+- NEVER invent data items, equipment, files or decisions not in the PRD.
+- Do NOT read `CATALOG.md` or the live inventory — PRD only.
+- Do NOT propose object types, codes, sections or classifications.
 - Do NOT emit Python code.
-- Do NOT invent properties not in the PRD.
+- Create `generated/<prd-stem>/` if missing.
 
----
+## Final response
 
-## Notes
-
-- If the `generated/<prd-stem>/` directory does not yet exist, create it before writing `requirements.json`.
-- In your final response, always share the absolute path to the written file and a short summary of what was extracted (counts of vocabularies, object_types, experimental_steps).
-- The `extracted_at` field must be a valid ISO 8601 timestamp.
+Absolute path of the written file + counts: workflow_steps, data_items (total), inventory items, files,
+domain_decisions.

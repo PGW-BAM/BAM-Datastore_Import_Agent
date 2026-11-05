@@ -1,72 +1,72 @@
-# BAM openBIS PRD-to-Provisioning Agent Architecture
+# BAM Data Store: vom Laborablauf zur openBIS-Struktur
 
-A reusable Claude Code agent + command architecture for BAM FB 7.2 and other BAM groups.
+Ein Agenten-Workflow für BAM-Fachbereiche: Aus einem Ablaufschema oder einer Erzählung wird im Interview ein PRD,
+daraus eine übersichtliche openBIS-Struktur (mehrere Varianten zur Wahl), ein geprüfter Masterdaten-Antrag an den Admin und am Ende ein Notebook-Lauf,
+der die Struktur in deinem Space anlegt.
 
-## What it does
+**Für Agenten:** [AGENTS.md](AGENTS.md) (gilt für jeden Agenten; Claude liest es über `CLAUDE.md`).
+**Für Menschen:** [workflow/README.md](workflow/README.md) zeigt alle Schritte, Prüfpunkte und Zugänge auf einer Seite.
 
-Drop a Markdown PRD into this folder. The pipeline:
-1. Catalogs all existing types in `bam-masterdata` (ObjectTypes, Vocabularies, ExperimentalSteps)
-2. Extracts required entities from the PRD
-3. Produces a **gap report**: what to REUSE, what to EXTEND, what to CREATE (new)
-4. Generates Python extension modules (PR-ready for `BAMresearch/bam-masterdata`) only for genuine gaps
-5. Emits a Jupyter notebook that provisions your Collection + child Objects + Datasets in openBIS 20.10.12.5
+## Kurz
 
-## Prerequisites
+| Phase | Schritte | Wer | openBIS |
+|---|---|---|---|
+| Verstehen | 1 Standard laden · 2 Interview → PRD (◆ A) | Agent + du | – |
+| Entwerfen | 3 Ist-Stand · 4 Struktur (◆ B) · 5 Abgleich (◆ C) | Agent, du liest die Instanz | lesen |
+| Beantragen | 6 Issue + Mail an datastore@bam.de (◆ D) · 7 Lieferung prüfen | Agent baut, du sendest, Admin legt Typen an | Admin, lesen |
+| Anlegen | 8 Trockenlauf (◆ E) · Anlegen | Agent baut `structure.json`, du führst aus | schreiben |
 
-- [Claude Code](https://claude.ai/code) with claude-sonnet-4-6 or better
-- `pybis==1.37.4` (`pip install pybis==1.37.4`)
-- `nbformat` (`pip install nbformat`)
-- Access to a BAM openBIS 20.10.12.5 instance
-- `bam-masterdata` cloned at `C:/Users/<you>/repos/bam-masterdata` (or run `/bam-sync` first)
+Der Agent arbeitet in der Cloud nur mit Dateien und hat keinen Zugang zu openBIS. Was die Instanz berührt, läuft
+im BAM-Netz über einen Befehl, `python tools/bruecke.py <projekt> lesen|pruefen|trockenlauf|anlegen` (mit git pull/push),
+oder dasselbe als Notebook [`notebooks/openbis_bruecke.ipynb`](notebooks/openbis_bruecke.ipynb). Test-Instanz:
+`https://playground.datastore.bam.de`.
 
-## Quick start
+**Was du selbst tust:** [workflow/MENSCH.md](workflow/MENSCH.md). Kurz: Fragen beantworten und freigeben im Chat; wenn
+der Agent etwas im BAM-Netz oder nach außen braucht, steht es fertig in `projects/<name>/AUFGABE.md`.
 
-```bash
-# 1. Sync bam-masterdata (first time or to update)
-/bam-sync
+**Plattformen:** Claude Code (Web) und Mistral Vibe (Browser) lesen `AGENTS.md` bzw. den Skill `bam-weiter`; andere
+Agenten `AGENTS.md`. Details: [CLOUD.md](CLOUD.md).
 
-# 2. Analyze your PRD (produces CATALOG.md + gap-report.md)
-/bam-analyze-prd BAM_PRD_Workflow_FB72.md
-
-# 3. Review generated/BAM_PRD_Workflow_FB72.gap-report.md
-
-# 4. Generate Python extension modules (for CREATE items only)
-/bam-generate-types BAM_PRD_Workflow_FB72.md
-
-# 5. Generate the provisioning notebook
-/bam-generate-notebook BAM_PRD_Workflow_FB72.md
-
-# 6. Open notebooks/welded_fatigue_provisioning.ipynb
-#    Fill in OPENBIS_URL, SPACE, PROJECT_CODE, COLLECTION_CODE
-#    Run all cells
-```
-
-## Improving agents (Karpathy self-improvement loop)
+## Loslegen
 
 ```bash
-/bam-improve bam-masterdata-explorer
+cp -r templates projects/<name>     # neues Projekt; dann project.yaml ausfüllen
 ```
 
-See `.claude/skills/karpathy-self-improvement/SKILL.md` for the 7-step loop.
+Dann einem Agenten sagen: „weiter mit `<name>`“ (Claude: `/bam-weiter <name>`). Er liest `STATUS.md` und macht beim
+nächsten Schritt weiter.
 
-## Directory layout
+Laufendes Projekt: [`projects/fb72_welded_fatigue/`](projects/fb72_welded_fatigue/) (Wöhlerversuche FB 7.2, Test
+auf dem Playground). Die Ergebnisse des ersten Laufs gegen dev1 liegen unter `generated/welded_fatigue_v2/`.
+
+## Voraussetzungen
+
+- **Cloud-Session:** nichts. `tools/cloud_setup.sh` legt beim Start `../bam-masterdata` (gepinnt auf `v0.17.0`) an und
+  installiert `bam-masterdata`, `pybis==1.37.4`, `nbformat`, `pyyaml`. Andere Agenten rufen `bash tools/cloud_setup.sh` selbst auf.
+- **BAM-Netz:** Python mit `pybis==1.37.4` und `pyyaml`, ein Klon dieses Repos, VPN (Einrichtung: `workflow/MENSCH.md`).
+- Tests: `python -m pytest tools/tests -q`
+
+## Verzeichnisse
 
 ```
-.claude/
-  agents/      # Domain agents (bam-masterdata-explorer, gap-analyzer, ...)
-  commands/    # Slash commands (/bam-sync, /bam-analyze-prd, ...)
-  skills/      # karpathy-self-improvement skill
-runs/          # Karpathy improvement run logs
-evals/
-  regressions/ # Golden regression task files
-notebooks/     # Generated Jupyter notebooks
-generated/     # Generated masterdata extension modules (PR candidates)
+AGENTS.md, CLAUDE.md     Regeln und Einstieg für Agenten
+workflow/                eine Karte pro Schritt, Interview-Fragen
+templates/               Kopiervorlage für ein neues Projekt
+projects/<name>/         ein Projekt: project.yaml, STATUS.md, alle Zwischenstände
+notebooks/               openbis_bruecke.ipynb (BAM-Netz); ältere projektspezifische Notebooks
+tools/                   build_catalog.py, export_spec.py, openbis_bridge.py, cloud_setup.sh, JS-Fallbacks
+generated/               Katalog des Standards; Ergebnisse früherer Läufe (welded_fatigue, welded_fatigue_v2)
+.claude/                 Claude-Agenten und Befehle (/bam-*) als Abkürzungen für einzelne Schritte
+presentation/, shipping/ Vortrag, Poster, Lieferpaket des ersten Laufs
 ```
 
-## openBIS version
+## Selbstverbesserung (Claude)
 
-Targeting **openBIS 20.10.12.5** with `pybis==1.37.4`.
+`/bam-improve <agent>` bewertet einen Agenten-Lauf und schlägt Änderungen an seiner Anleitung vor
+(`.claude/skills/karpathy-self-improvement/SKILL.md`).
 
-## License
+## Versionen
 
-Internal BAM tooling. Not for public distribution without explicit approval.
+openBIS 20.10.12.5 · pyBIS 1.37.4 · bam-masterdata v0.17.0 (nur `datamodel/v0`)
+
+Interne BAM-Werkzeuge. Nicht ohne Freigabe veröffentlichen.

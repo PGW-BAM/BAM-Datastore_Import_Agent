@@ -1,0 +1,713 @@
+{
+  "prd_stem": "synthese",
+  "designed_at": "2026-11-04T12:00:00+00:00",
+  "object_types": [
+    {
+      "code": "SAMPLE.NANOPARTICLE_BATCH",
+      "parent_class": "Sample",
+      "name_de": "Nanopartikel-Charge",
+      "name_en": "Nanoparticle batch",
+      "description": "Batch of nanoparticles from one synthesis//Charge von Nanopartikeln aus einer Synthese",
+      "covers_steps": [
+        "03",
+        "05"
+      ],
+      "section_order": [
+        "General Information",
+        "Purification",
+        "Particle Properties",
+        "Workflow"
+      ],
+      "properties": [
+        {
+          "code": "NANO.NEXT_STEP",
+          "data_type": "CONTROLLEDVOCABULARY",
+          "property_label": "Next step",
+          "description": "Next workflow step of the batch//Nächster Ablaufschritt der Charge",
+          "section": "Workflow",
+          "mandatory": false,
+          "vocabulary_code": "NANO.WORKFLOW_STEP",
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3",
+          "property_label_de": "Nächster Schritt"
+        },
+        {
+          "code": "NANO.YIELD",
+          "data_type": "REAL",
+          "property_label": "Yield [%]",
+          "description": "Yield after purification [%]//Ausbeute nach der Aufreinigung [%]",
+          "section": "Purification",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3",
+          "property_label_de": "Ausbeute [%]"
+        },
+        {
+          "code": "NANO.CENTRIFUGE",
+          "data_type": "OBJECT",
+          "property_label": "Centrifuge",
+          "description": "Centrifuge used for purification (inventory object)//Für die Aufreinigung verwendete Zentrifuge (Inventar-Objekt)",
+          "section": "Purification",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": "INSTRUMENT.CENTRIFUGE",
+          "reuse_property": null,
+          "source": "PRD §3",
+          "property_label_de": "Zentrifuge"
+        },
+        {
+          "code": "NANO.TARGET_DIAMETER",
+          "data_type": "REAL",
+          "property_label": "Target diameter [nm]",
+          "description": "Intended particle diameter [nm]//Angestrebter Partikeldurchmesser [nm]",
+          "section": "Particle Properties",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3",
+          "property_label_de": "Zieldurchmesser [nm]"
+        },
+        {
+          "code": "NANO.PARTICLE_SHAPE",
+          "data_type": "CONTROLLEDVOCABULARY",
+          "property_label": "Particle shape",
+          "description": "Particle shape seen in TEM//Partikelform im TEM",
+          "section": "Particle Properties",
+          "mandatory": false,
+          "vocabulary_code": "NANO.PARTICLE_SHAPE",
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3",
+          "property_label_de": "Partikelform"
+        }
+      ]
+    },
+    {
+      "code": "EXPERIMENTAL_STEP.NANOPARTICLE_SYNTHESIS",
+      "parent_class": "ExperimentalStep",
+      "name_de": "Nanopartikel-Synthese",
+      "name_en": "Nanoparticle synthesis",
+      "description": "Wet-chemical synthesis of a nanoparticle batch incl. weighing of reactants//Nasschemische Synthese einer Nanopartikel-Charge inkl. Einwaage der Edukte",
+      "covers_steps": [
+        "01",
+        "02"
+      ],
+      "section_order": [
+        "General Information",
+        "Weighing Of Reactants",
+        "Synthesis Conditions"
+      ],
+      "properties": [
+        {
+          "code": "NANO.MASS_SILVER_NITRATE",
+          "data_type": "REAL",
+          "property_label": "Mass of silver nitrate [mg]",
+          "description": "Weighed mass of silver nitrate [mg]//Eingewogene Masse Silbernitrat [mg]",
+          "section": "Weighing Of Reactants",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3",
+          "property_label_de": "Masse Silbernitrat [mg]"
+        },
+        {
+          "code": "NANO.MASS_SODIUM_CITRATE",
+          "data_type": "REAL",
+          "property_label": "Mass of sodium citrate [mg]",
+          "description": "Weighed mass of trisodium citrate [mg]//Eingewogene Masse Trinatriumcitrat [mg]",
+          "section": "Weighing Of Reactants",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3",
+          "property_label_de": "Masse Natriumcitrat [mg]"
+        },
+        {
+          "code": "NANO.BALANCE",
+          "data_type": "OBJECT",
+          "property_label": "Balance",
+          "description": "Balance used for weighing (inventory object)//Für die Einwaage verwendete Waage (Inventar-Objekt)",
+          "section": "Weighing Of Reactants",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": "INSTRUMENT.SCALE",
+          "reuse_property": null,
+          "source": "PRD §3",
+          "property_label_de": "Waage"
+        },
+        {
+          "code": "NANO.REACTION_TEMPERATURE",
+          "data_type": "REAL",
+          "property_label": "Reaction temperature [°C]",
+          "description": "Reaction temperature [°C]//Reaktionstemperatur [°C]",
+          "section": "Synthesis Conditions",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3",
+          "property_label_de": "Reaktionstemperatur [°C]"
+        },
+        {
+          "code": "NANO.REACTION_TIME",
+          "data_type": "REAL",
+          "property_label": "Reaction time [min]",
+          "description": "Reaction time [min]//Reaktionszeit [min]",
+          "section": "Synthesis Conditions",
+          "mandatory": true,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": null,
+          "source": "PRD §3",
+          "property_label_de": "Reaktionszeit [min]"
+        },
+        {
+          "code": "INSTRUMENT",
+          "data_type": "OBJECT",
+          "property_label": "Testing Machine or Measurement Device",
+          "description": "Testing machine or measurement device//Prüfmaschine oder Messgerät",
+          "section": "Synthesis Conditions",
+          "mandatory": false,
+          "vocabulary_code": null,
+          "object_code": null,
+          "reuse_property": "INSTRUMENT (Calibration, bam_masterdata/datamodel/v0/object_types.py:1119)",
+          "source": "PRD §3"
+        }
+      ]
+    }
+  ],
+  "vocabularies": [
+    {
+      "code": "NANO.PARTICLE_SHAPE",
+      "description": "Shape of nanoparticles//Form von Nanopartikeln",
+      "terms": [
+        {
+          "code": "SPHERE",
+          "label": "Sphere",
+          "label_de": "Kugel",
+          "description": "Spherical particles//Kugelförmige Partikel"
+        },
+        {
+          "code": "ROD",
+          "label": "Rod",
+          "label_de": "Stäbchen",
+          "description": "Rod-shaped particles//Stäbchenförmige Partikel"
+        },
+        {
+          "code": "PLATE",
+          "label": "Plate",
+          "label_de": "Plättchen",
+          "description": "Plate-shaped particles//Plättchenförmige Partikel"
+        }
+      ]
+    },
+    {
+      "code": "NANO.WORKFLOW_STEP",
+      "description": "Ordered workflow steps of the nanoparticle synthesis//Geordnete Ablaufschritte der Nanopartikel-Synthese",
+      "terms": [
+        {
+          "code": "S01_WEIGHING",
+          "label": "01 Weighing of reactants",
+          "label_de": "01 Einwaage der Edukte",
+          "description": "Weighing of reactants//Einwaage der Edukte"
+        },
+        {
+          "code": "S02_SYNTHESIS",
+          "label": "02 Synthesis",
+          "label_de": "02 Synthese",
+          "description": "Synthesis//Synthese"
+        },
+        {
+          "code": "S03_PURIFICATION",
+          "label": "03 Purification",
+          "label_de": "03 Aufreinigung",
+          "description": "Purification//Aufreinigung"
+        },
+        {
+          "code": "S04_DLS",
+          "label": "04 DLS measurement",
+          "label_de": "04 DLS-Messung",
+          "description": "DLS measurement//DLS-Messung"
+        },
+        {
+          "code": "S05_TEM",
+          "label": "05 TEM imaging",
+          "label_de": "05 TEM-Aufnahmen",
+          "description": "TEM imaging//TEM-Aufnahmen"
+        },
+        {
+          "code": "DONE",
+          "label": "Done",
+          "label_de": "Abgeschlossen",
+          "description": "All steps done//Alle Schritte abgeschlossen"
+        }
+      ]
+    }
+  ],
+  "section_names_de": {
+    "Purification": "Aufreinigung",
+    "Particle Properties": "Partikeleigenschaften",
+    "Workflow": "Ablauf",
+    "Weighing Of Reactants": "Einwaage der Edukte",
+    "Synthesis Conditions": "Synthesebedingungen",
+    "Measurement Parameters": "Messparameter",
+    "Measurement Results": "Messergebnisse"
+  },
+  "reused_types": [
+    {
+      "code": "EXPERIMENTAL_STEP.DLS",
+      "ref": "bam_masterdata/datamodel/v0/activities.py:1262",
+      "used_as": "AG-01-DLS",
+      "role": "DLS measurement (step 04): Z-Average, PDI and raw data in the standard step"
+    },
+    {
+      "code": "EXPERIMENTAL_STEP.TEM",
+      "ref": "bam_masterdata/datamodel/v0/activities.py:1092",
+      "used_as": "AG-01-TEM",
+      "role": "TEM imaging (step 05): images in the standard step; particle shape is stored on the batch"
+    },
+    {
+      "code": "CHEMICAL",
+      "ref": "bam_masterdata/datamodel/v0/object_types.py:3790",
+      "role": "Reactants in the inventory"
+    }
+  ],
+  "inventory_links": [
+    {
+      "inventory": "Silver nitrate//Silbernitrat",
+      "type_code": "CHEMICAL",
+      "parent_of": "SYN step",
+      "used_in_steps": [
+        "01"
+      ]
+    },
+    {
+      "inventory": "Trisodium citrate//Trinatriumcitrat",
+      "type_code": "CHEMICAL",
+      "parent_of": "SYN step",
+      "used_in_steps": [
+        "01"
+      ]
+    },
+    {
+      "inventory": "Analytical balance//Analysenwaage",
+      "type_code": "INSTRUMENT.SCALE",
+      "linked_by": "NANO.BALANCE",
+      "used_in_steps": [
+        "01"
+      ]
+    },
+    {
+      "inventory": "Heating stirrer//Heizrührer",
+      "type_code": "INSTRUMENT",
+      "linked_by": "INSTRUMENT",
+      "used_in_steps": [
+        "02"
+      ]
+    },
+    {
+      "inventory": "Centrifuge//Zentrifuge",
+      "type_code": "INSTRUMENT.CENTRIFUGE",
+      "linked_by": "NANO.CENTRIFUGE",
+      "used_in_steps": [
+        "03"
+      ]
+    },
+    {
+      "inventory": "DLS instrument//DLS-Gerät",
+      "type_code": "INSTRUMENT",
+      "parent_of": "DLS step",
+      "used_in_steps": [
+        "04"
+      ]
+    },
+    {
+      "inventory": "Transmission electron microscope//Transmissionselektronenmikroskop",
+      "type_code": "INSTRUMENT",
+      "parent_of": "TEM step",
+      "used_in_steps": [
+        "05"
+      ]
+    }
+  ],
+  "layout": {
+    "space": "/TEST_SPACE",
+    "project": "/TEST_SPACE/AG_NANO",
+    "collections": [
+      {
+        "code": "SERIES_CITRATE",
+        "$NAME": "Citrat-Route / Citrate route"
+      }
+    ],
+    "project_objects": [
+      {
+        "code": "WORKFLOW_PLAN",
+        "$NAME": "Ablaufplan / Workflow plan"
+      }
+    ],
+    "per_specimen": [
+      {
+        "code_pattern": "AG-01",
+        "type": "SAMPLE.NANOPARTICLE_BATCH",
+        "name_de": "Charge",
+        "name_en": "Batch",
+        "parents": [
+          "AG-01-SYN (step)"
+        ],
+        "links": [
+          "Centrifuge"
+        ],
+        "covers_steps": [
+          "03",
+          "05"
+        ]
+      },
+      {
+        "code_pattern": "AG-01-SYN",
+        "type": "EXPERIMENTAL_STEP.NANOPARTICLE_SYNTHESIS",
+        "name_de": "Synthese",
+        "name_en": "Synthesis",
+        "parents": [
+          "Silver nitrate",
+          "Trisodium citrate"
+        ],
+        "links": [
+          "Analytical balance",
+          "Heating stirrer"
+        ],
+        "covers_steps": [
+          "01",
+          "02"
+        ]
+      },
+      {
+        "code_pattern": "AG-01-DLS",
+        "type": "EXPERIMENTAL_STEP.DLS",
+        "name_de": "DLS-Messung",
+        "name_en": "DLS measurement",
+        "parents": [
+          "AG-01 (specimen)",
+          "DLS instrument"
+        ],
+        "covers_steps": [
+          "04"
+        ]
+      },
+      {
+        "code_pattern": "AG-01-TEM",
+        "type": "EXPERIMENTAL_STEP.TEM",
+        "name_de": "TEM-Aufnahmen",
+        "name_en": "TEM imaging",
+        "parents": [
+          "AG-01 (specimen)",
+          "Transmission electron microscope"
+        ],
+        "covers_steps": [
+          "05"
+        ]
+      }
+    ],
+    "series_table": [
+      {
+        "column": "Name//Name",
+        "source": "main $NAME"
+      },
+      {
+        "column": "Target diameter//Zieldurchmesser",
+        "source": "main NANO.TARGET_DIAMETER"
+      },
+      {
+        "column": "Yield//Ausbeute",
+        "source": "main NANO.YIELD"
+      },
+      {
+        "column": "Particle shape//Partikelform",
+        "source": "main NANO.PARTICLE_SHAPE"
+      },
+      {
+        "column": "Z-Average//Z-Mittelwert",
+        "source": "DLS DLS.ZAVG"
+      },
+      {
+        "column": "Next step//Nächster Schritt",
+        "source": "main NANO.NEXT_STEP"
+      }
+    ]
+  },
+  "dataset_mapping": [
+    {
+      "file": "Temperature log//Temperaturverlauf",
+      "attach_to": "SYN step",
+      "dataset_type": "RAW_DATA"
+    },
+    {
+      "file": "DLS raw data//DLS-Rohdaten",
+      "attach_to": "DLS step",
+      "dataset_type": "RAW_DATA"
+    },
+    {
+      "file": "TEM images//TEM-Bilder",
+      "attach_to": "TEM step",
+      "dataset_type": "RAW_DATA"
+    }
+  ],
+  "step_location_map": [
+    {
+      "no": "01",
+      "step": "Weighing of reactants",
+      "step_de": "Einwaage der Edukte",
+      "object": "AG-01-SYN",
+      "section": "Weighing Of Reactants",
+      "data_items": [
+        "NANO.MASS_SILVER_NITRATE",
+        "NANO.MASS_SODIUM_CITRATE"
+      ],
+      "equipment": [
+        "Silver nitrate",
+        "Trisodium citrate",
+        "Analytical balance"
+      ],
+      "files": []
+    },
+    {
+      "no": "02",
+      "step": "Synthesis",
+      "step_de": "Synthese",
+      "object": "AG-01-SYN",
+      "section": "Synthesis Conditions",
+      "data_items": [
+        "NANO.REACTION_TEMPERATURE",
+        "NANO.REACTION_TIME"
+      ],
+      "equipment": [
+        "Heating stirrer"
+      ],
+      "files": [
+        "Temperature log"
+      ]
+    },
+    {
+      "no": "03",
+      "step": "Purification",
+      "step_de": "Aufreinigung",
+      "object": "main",
+      "section": "Purification",
+      "data_items": [
+        "NANO.YIELD"
+      ],
+      "equipment": [
+        "Centrifuge"
+      ],
+      "files": []
+    },
+    {
+      "no": "04",
+      "step": "DLS measurement",
+      "step_de": "DLS-Messung",
+      "object": "AG-01-DLS",
+      "section": "Measurement Results",
+      "data_items": [
+        "DLS.ZAVG",
+        "DLS.PDI"
+      ],
+      "equipment": [
+        "DLS instrument"
+      ],
+      "files": [
+        "DLS raw data"
+      ]
+    },
+    {
+      "no": "05",
+      "step": "TEM imaging",
+      "step_de": "TEM-Aufnahmen",
+      "object": "AG-01-TEM",
+      "section": "-",
+      "data_items": [
+        "NANO.PARTICLE_SHAPE (on the batch)"
+      ],
+      "equipment": [
+        "Transmission electron microscope"
+      ],
+      "files": [
+        "TEM images"
+      ]
+    }
+  ],
+  "metrics": {
+    "new": {
+      "new_object_types": 2,
+      "new_vocabularies": 2,
+      "objects_per_specimen": 4,
+      "max_link_depth": 1,
+      "shared_parents": 4
+    }
+  },
+  "variant": "A",
+  "variants": [
+    {
+      "id": "A",
+      "recommended": true,
+      "shape": "flat",
+      "source": "Vorschlag (Testprojekt) nach workflow/strukturmuster.md (M3, M2, M4, M5)",
+      "name_de": "Charge aus der Synthese, Messungen an der Charge",
+      "name_en": "Batch from the synthesis, measurements on the batch",
+      "summary_de": "Die Edukte sind Eltern der Synthese, die Synthese ist Elternteil der Charge (M3). DLS und TEM hängen als Standard-Schritte an der Charge (M2). Waage, Heizrührer und Zentrifuge sind Link-Felder (M4).",
+      "summary_en": "The reactants are parents of the synthesis, the synthesis is the parent of the batch (M3). DLS and TEM hang on the batch as standard steps (M2). Balance, heating stirrer and centrifuge are link fields (M4).",
+      "objects": [
+        {
+          "name_de": "Charge",
+          "name_en": "Batch",
+          "steps": [
+            "03"
+          ]
+        },
+        {
+          "name_de": "Synthese",
+          "name_en": "Synthesis",
+          "steps": [
+            "01",
+            "02"
+          ],
+          "before": true
+        },
+        {
+          "name_de": "DLS-Messung",
+          "name_en": "DLS measurement",
+          "steps": [
+            "04"
+          ]
+        },
+        {
+          "name_de": "TEM-Aufnahmen",
+          "name_en": "TEM imaging",
+          "steps": [
+            "05"
+          ]
+        }
+      ],
+      "objects_per_specimen": 4,
+      "max_link_depth": 1,
+      "new_object_types": 2,
+      "new_dataset_types": 0,
+      "shared_parents": 4,
+      "pros": [
+        {
+          "de": "Man sieht, woraus jede Charge entstanden ist",
+          "en": "You can see what each batch was made from"
+        },
+        {
+          "de": "DLS und TEM nutzen die Standard-Schritte",
+          "en": "DLS and TEM use the standard steps"
+        }
+      ],
+      "cons": [
+        {
+          "de": "Edukte und Messgeräte sind geteilte Knoten im Graphen (4)",
+          "en": "Reactants and measuring instruments are shared nodes in the graph (4)"
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "shape": "chain",
+      "source": "Vorschlag (Testprojekt), Muster M1",
+      "name_de": "Prozesslinie",
+      "name_en": "Process line",
+      "summary_de": "Synthese → Charge → DLS → TEM als eine Linie (M1).",
+      "summary_en": "Synthesis → batch → DLS → TEM as one line (M1).",
+      "objects": [
+        {
+          "name_de": "Charge",
+          "name_en": "Batch",
+          "steps": [
+            "03"
+          ]
+        },
+        {
+          "name_de": "Synthese",
+          "name_en": "Synthesis",
+          "steps": [
+            "01",
+            "02"
+          ],
+          "before": true
+        },
+        {
+          "name_de": "DLS-Messung",
+          "name_en": "DLS measurement",
+          "steps": [
+            "04"
+          ]
+        },
+        {
+          "name_de": "TEM-Aufnahmen",
+          "name_en": "TEM imaging",
+          "steps": [
+            "05"
+          ]
+        }
+      ],
+      "objects_per_specimen": 4,
+      "max_link_depth": 2,
+      "new_object_types": 2,
+      "shared_parents": 4,
+      "pros": [
+        {
+          "de": "Reihenfolge im Graphen sichtbar",
+          "en": "Order visible in the graph"
+        }
+      ],
+      "cons": [
+        {
+          "de": "DLS und TEM sind unabhängige Messungen; die Linie täuscht eine Abhängigkeit vor",
+          "en": "DLS and TEM are independent measurements; the line suggests a dependency"
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "shape": "single",
+      "source": "Vorschlag (Testprojekt), Muster M5 bis zum Ende",
+      "name_de": "Alles an der Charge",
+      "name_en": "Everything on the batch",
+      "summary_de": "Nur die Charge, alle Werte und Dateien daran.",
+      "summary_en": "Only the batch, all values and files on it.",
+      "objects": [
+        {
+          "name_de": "Charge",
+          "name_en": "Batch",
+          "steps": [
+            "01",
+            "02",
+            "03",
+            "04",
+            "05"
+          ]
+        }
+      ],
+      "objects_per_specimen": 1,
+      "max_link_depth": 0,
+      "new_object_types": 1,
+      "shared_parents": 0,
+      "pros": [
+        {
+          "de": "Ein Objekt je Charge",
+          "en": "One object per batch"
+        }
+      ],
+      "cons": [
+        {
+          "de": "Standard-Schritte für DLS und TEM bleiben ungenutzt (widerspricht PRD §8 und P6)",
+          "en": "Standard steps for DLS and TEM stay unused (contradicts PRD §8 and P6)"
+        }
+      ]
+    }
+  ]
+}

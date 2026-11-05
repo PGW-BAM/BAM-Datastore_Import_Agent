@@ -125,7 +125,7 @@ from bam_masterdata.parsing import AbstractParser
 from bam_masterdata.metadata.entities import CollectionType
 
 # Import only the ObjectType classes actually used in this cluster
-from bam_masterdata.datamodel.object_types import ExperimentalStep
+from bam_masterdata.datamodel.v0.object_types import ExperimentalStep
 # from ..datamodel.object_types import <YourCustomType>  # if generated locally
 
 if TYPE_CHECKING:

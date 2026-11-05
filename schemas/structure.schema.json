@@ -1,0 +1,73 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "structure.schema.json",
+ "title": "structure.json: what tools/bruecke.py creates (workflow step 8)",
+ "description": "Format details: header of tools/openbis_bridge.py. Consistency (keys, parents, cycles) is checked by openbis_bridge.validate_structure.",
+ "type": "object",
+ "required": [
+  "space",
+  "project",
+  "collections",
+  "objects"
+ ],
+ "properties": {
+  "space": {
+   "type": "string",
+   "minLength": 1
+  },
+  "project": {
+   "type": "object",
+   "required": [
+    "code"
+   ]
+  },
+  "collections": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "code"
+    ],
+    "properties": {
+     "props": {
+      "type": "object",
+      "properties": {
+       "$NAME": {
+        "type": "string",
+        "pattern": " / "
+       }
+      }
+     }
+    }
+   }
+  },
+  "objects": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "key",
+     "code",
+     "type"
+    ],
+    "properties": {
+     "collection": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "parents": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "props": {
+      "type": "object"
+     }
+    }
+   }
+  }
+ }
+}

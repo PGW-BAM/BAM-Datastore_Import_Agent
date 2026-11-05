@@ -1,0 +1,22 @@
+2026-11-04T14:29:07.606151Z [info     ] Loading current data model from: /home/user/bam-masterdata/bam_masterdata/datamodel/v0
+2026-11-04T14:29:08.471866Z [info     ] Loading new entities from: /home/user/BAM-Datastore_Import_Agent/generated/welded_fatigue_v2/datamodel
+2026-11-04T14:29:08.472066Z [info     ] Source type: python           
+2026-11-04T14:29:08.482271Z [info     ] Validation rules successfully loaded.
+2026-11-04T14:29:08.482358Z [debug    ] Starting validation process... mode=individual
+2026-11-04T14:29:08.482403Z [debug    ] Validating new entities and comparing them with current model...
+2026-11-04T14:29:08.482430Z [info     ] Validating object_types -> EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST
+2026-11-04T14:29:08.483512Z [info     ] Validating object_types -> EXPERIMENTAL_STEP.MECHANICAL_TEST
+2026-11-04T14:29:08.483855Z [info     ] Validating object_types -> SAMPLE
+2026-11-04T14:29:08.484223Z [warning  ] Property $ANNOTATIONS_STATE is deprecated from openBIS 20.10.7.3. Assigned to entity 'SAMPLE' at row None.
+2026-11-04T14:29:08.484296Z [info     ] Validating object_types -> SAMPLE.WELDED_FATIGUE_SPECIMEN
+2026-11-04T14:29:08.484674Z [warning  ] Property $ANNOTATIONS_STATE is deprecated from openBIS 20.10.7.3. Assigned to entity 'SAMPLE.WELDED_FATIGUE_SPECIMEN' at row None.
+2026-11-04T14:29:08.485112Z [info     ] Validating vocabularies -> FATIGUE.LOAD_LEVEL
+2026-11-04T14:29:08.485164Z [info     ] Validating vocabularies -> FATIGUE.RECORDING_MODE
+2026-11-04T14:29:08.485200Z [info     ] Validating vocabularies -> FATIGUE.TERMINATION_REASON
+2026-11-04T14:29:08.485229Z [info     ] Validating vocabularies -> WELDING.ISO_5817_ANNEX_C_RATING
+2026-11-04T14:29:08.485273Z [info     ] Validating vocabularies -> WELDING.ISO_5817_QUALITY_LEVEL
+2026-11-04T14:29:08.485325Z [info     ] Validating vocabularies -> WELDED_FATIGUE_WORKFLOW_STEP
+2026-11-04T14:29:08.485391Z [debug    ] Starting comparison with the current model...
+2026-11-04T14:29:08.495985Z [warning  ] Entity will not be imported in openBIS. The entity EXPERIMENTAL_STEP.MECHANICAL_TEST at row None has the same properties defined as EXPERIMENTAL_STEP. Maybe they are representing the same entity?
+2026-11-04T14:29:08.496163Z [info     ] No critical conflicts found between new entities compared to the current model.
+There are problems in the individual repositories when comparing them with respect to bam-masterdata for entity object_types that need to be solved

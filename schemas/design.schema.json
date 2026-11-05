@@ -1,0 +1,502 @@
+{
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "$id": "design.schema.json",
+ "title": "design.json: openBIS structure (workflow step 4)",
+ "description": "Written by the agent in step 4. Read by tools/render_review.py (review page B) and the later steps. Extra keys are allowed.",
+ "type": "object",
+ "required": [
+  "object_types",
+  "vocabularies",
+  "layout",
+  "step_location_map",
+  "section_names_de",
+  "variants"
+ ],
+ "properties": {
+  "object_types": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "code",
+     "description",
+     "name_de",
+     "name_en",
+     "properties"
+    ],
+    "properties": {
+     "code": {
+      "type": "string",
+      "minLength": 1
+     },
+     "description": {
+      "type": "string",
+      "pattern": "//",
+      "description": "English//Deutsch"
+     },
+     "name_de": {
+      "type": "string",
+      "minLength": 1
+     },
+     "name_en": {
+      "type": "string",
+      "minLength": 1
+     },
+     "parent_class": {
+      "type": "string"
+     },
+     "covers_steps": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "section_order": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "properties": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "code",
+        "data_type",
+        "property_label",
+        "section",
+        "mandatory"
+       ],
+       "properties": {
+        "code": {
+         "type": "string",
+         "minLength": 1
+        },
+        "data_type": {
+         "type": "string",
+         "minLength": 1
+        },
+        "property_label": {
+         "type": "string",
+         "minLength": 1
+        },
+        "property_label_de": {
+         "type": "string",
+         "minLength": 1
+        },
+        "section": {
+         "type": "string",
+         "pattern": "^([A-Z][a-z]*|[A-Z]+)( (([A-Z][a-z]*|[A-Z]+)|\\(([A-Z][a-z]*|[A-Z]+)( ([A-Z][a-z]*|[A-Z]+))*\\)))*$",
+         "description": "Title Case, letters only (bam-masterdata checker rule)"
+        },
+        "mandatory": {
+         "type": "boolean"
+        },
+        "vocabulary_code": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "reuse_property": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "source": {
+         "type": "string"
+        }
+       },
+       "if": {
+        "properties": {
+         "reuse_property": {
+          "type": "null"
+         }
+        }
+       },
+       "then": {
+        "required": [
+         "property_label_de"
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  "vocabularies": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "code",
+     "description",
+     "terms"
+    ],
+    "properties": {
+     "code": {
+      "type": "string",
+      "minLength": 1
+     },
+     "description": {
+      "type": "string",
+      "pattern": "//"
+     },
+     "terms": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "code",
+        "label"
+       ],
+       "properties": {
+        "code": {
+         "type": "string",
+         "minLength": 1
+        },
+        "label": {
+         "type": "string",
+         "minLength": 1
+        },
+        "label_de": {
+         "type": "string",
+         "minLength": 1
+        },
+        "description": {
+         "type": "string"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "section_names_de": {
+   "type": "object",
+   "additionalProperties": {
+    "type": "string",
+    "minLength": 1
+   },
+   "description": "English section name -> German name"
+  },
+  "layout": {
+   "type": "object",
+   "required": [
+    "project",
+    "collections",
+    "per_specimen",
+    "series_table"
+   ],
+   "properties": {
+    "project": {
+     "type": "string",
+     "minLength": 1
+    },
+    "collections": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "object",
+      "required": [
+       "code",
+       "$NAME"
+      ],
+      "properties": {
+       "code": {
+        "type": "string",
+        "minLength": 1
+       },
+       "$NAME": {
+        "type": "string",
+        "pattern": " / ",
+        "description": "Deutsch / Englisch"
+       }
+      }
+     }
+    },
+    "project_objects": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "code",
+       "$NAME"
+      ]
+     }
+    },
+    "per_specimen": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "object",
+      "required": [
+       "code_pattern",
+       "type",
+       "name_de",
+       "name_en"
+      ],
+      "properties": {
+       "parents": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "covers_steps": {
+        "type": "array"
+       }
+      }
+     },
+     "description": "Objects per main object (specimen, batch, component, simulation …). The FIRST entry is the main object; its name_de/name_en names it on the review pages. parents: '<code> (specimen)' or a code_pattern of another entry (process line), plus inventory parents; links: inventory objects linked by OBJECT fields."
+    },
+    "series_table": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "column",
+       "source"
+      ],
+      "properties": {
+       "column": {
+        "type": "string",
+        "pattern": "//",
+        "description": "English//Deutsch"
+       },
+       "source": {
+        "type": "string",
+        "description": "'main <PROPERTY>' (or 'specimen <PROPERTY>') for the main object, '<ENDING> <PROPERTY>' for another object per main object (ENDING = end of its code_pattern, e.g. TEST for S1-01-TEST)"
+       }
+      }
+     }
+    }
+   }
+  },
+  "step_location_map": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "type": "object",
+    "required": [
+     "no",
+     "step",
+     "step_de",
+     "object",
+     "section",
+     "data_items",
+     "equipment",
+     "files"
+    ],
+    "properties": {
+     "data_items": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "equipment": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "files": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    }
+   }
+  },
+  "inventory_links": {
+   "type": "array"
+  },
+  "dataset_mapping": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "file"
+    ],
+    "properties": {
+     "file": {
+      "type": "string",
+      "pattern": "//"
+     }
+    }
+   }
+  },
+  "reused_types": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "code"
+    ]
+   }
+  },
+  "metrics": {
+   "type": "object"
+  },
+  "variant": {
+   "type": "string",
+   "description": "id of the variant this design.json works out in detail (default: the recommended one)"
+  },
+  "variants": {
+   "type": "array",
+   "minItems": 2,
+   "maxItems": 4,
+   "description": "2-4 possible data structures for the same workflow, shown side by side on review page B. Exactly one has recommended: true (checked by tools/check_files.py). The rest of design.json works out the one named in 'variant'.",
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "name_de",
+     "name_en",
+     "summary_de",
+     "summary_en",
+     "shape",
+     "objects",
+     "pros",
+     "cons"
+    ],
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[A-Z]$"
+     },
+     "recommended": {
+      "type": "boolean"
+     },
+     "name_de": {
+      "type": "string",
+      "minLength": 1
+     },
+     "name_en": {
+      "type": "string",
+      "minLength": 1
+     },
+     "summary_de": {
+      "type": "string",
+      "minLength": 1
+     },
+     "summary_en": {
+      "type": "string",
+      "minLength": 1
+     },
+     "shape": {
+      "enum": [
+       "flat",
+       "chain",
+       "single"
+      ],
+      "description": "flat: steps hang on the main object (hub); chain: process line main object -> step -> step; single: everything on one object"
+     },
+     "objects": {
+      "type": "array",
+      "minItems": 1,
+      "description": "first = main object (usually the specimen)",
+      "items": {
+       "type": "object",
+       "required": [
+        "name_de",
+        "name_en"
+       ],
+       "properties": {
+        "name_de": {
+         "type": "string",
+         "minLength": 1
+        },
+        "name_en": {
+         "type": "string",
+         "minLength": 1
+        },
+        "steps": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "before": {
+         "type": "boolean",
+         "description": "the main object is made from this object (pattern M3); drawn above it"
+        }
+       }
+      }
+     },
+     "objects_per_specimen": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "max_link_depth": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "new_object_types": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "new_dataset_types": {
+      "type": "integer",
+      "minimum": 0
+     },
+     "pros": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "object",
+       "required": [
+        "de",
+        "en"
+       ],
+       "properties": {
+        "de": {
+         "type": "string",
+         "minLength": 1
+        },
+        "en": {
+         "type": "string",
+         "minLength": 1
+        }
+       }
+      }
+     },
+     "cons": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+       "type": "object",
+       "required": [
+        "de",
+        "en"
+       ],
+       "properties": {
+        "de": {
+         "type": "string",
+         "minLength": 1
+        },
+        "en": {
+         "type": "string",
+         "minLength": 1
+        }
+       }
+      }
+     },
+     "source": {
+      "type": "string",
+      "description": "where the variant comes from, e.g. 'Vorschlag des Agenten', 'bisheriges Modell auf dev1'"
+     },
+     "shared_parents": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "inventory objects linked as parents of every specimen's objects (shared nodes in the hierarchy graph)"
+     }
+    }
+   }
+  }
+ }
+}

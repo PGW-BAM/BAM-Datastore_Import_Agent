@@ -1,0 +1,32 @@
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'15px'}}}%%
+flowchart LR
+    subgraph PROBE["Probe S1x-NN (Sektionen)"]
+        direction TB
+        s01["01 Vorqualitätsprüfung"]
+        s02["02 Anfasen / Schleifen"]
+        s04["04 Nahtanalyse (Ergebnis)"]
+        s05["05 Serienzuordnung"]
+        s06["06 Geometrie"]
+    end
+    subgraph SCAN["Kind: SCAN"]
+        s03["03 3D-Scan + 04 Dateien"]
+    end
+    subgraph TEST["Kind: TEST (Prüfstand)"]
+        direction TB
+        s07["07 DMS-Applikation"]
+        s08["08 Messkette"]
+        s09["09 Einbauspannung"]
+        s10["10 Ermüdungsversuch"]
+        s11["11 Auswertung"]
+    end
+    subgraph FRAC["Kind: FRACTURE"]
+        s12["12 Bruchfläche"]
+    end
+
+    s01 --> s02 --> s03 --> s04 --> s05 --> s06 --> s07 --> s08 --> s09 --> s10 --> s11 --> s12
+
+    NEXT{{"Feld 'Next step' an der Probe<br/>= Position im Ablauf"}}
+    NEXT -.-> PROBE
+
+    classDef p fill:#d4edda,stroke:#2a7,color:#111;
+    class s01,s02,s04,s05,s06 p;

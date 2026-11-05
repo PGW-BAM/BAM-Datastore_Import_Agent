@@ -1,0 +1,19 @@
+vocab_code,vocab_classification,term_code,label_en,label_de
+ISO_5817_FAT_CLASS,CREATE,C56,FAT Class C56,FAT Klasse C56
+ISO_5817_FAT_CLASS,CREATE,B90,FAT Class B90,FAT Klasse B90
+ISO_5817_FAT_CLASS,CREATE,B125,FAT Class B125,FAT Klasse B125
+LOAD_LEVEL,CREATE,HIGH,High Load,Hohes Lastniveau
+LOAD_LEVEL,CREATE,MEDIUM,Medium Load,Mittleres Lastniveau
+LOAD_LEVEL,CREATE,LOW,Low Load,Niedriges Lastniveau
+FATIGUE_STOP_REASON,CREATE,FRACTURE,Total Fracture,Totalbruch
+FATIGUE_STOP_REASON,CREATE,RUN_OUT,Target Cycles Reached (Run Out),Zyklenzahl erreicht (Durchlaeufer)
+FATIGUE_STOP_REASON,CREATE,CRACK,Crack Detected,Riss detektiert
+STRAIN_GAUGE_TYPE,CREATE,LINEAR,Linear strain gauge (uniaxial),Linearer DMS (einachsig)
+STRAIN_GAUGE_TYPE,CREATE,ROSETTE,Strain gauge rosette,DMS-Rosette
+STRAIN_GAUGE_TYPE,CREATE,CHAIN,Strain gauge chain (linear array),DMS-Kette
+CONSUMABLE_TYPE,CREATE,ADHESIVE,Adhesive (e.g. cyanoacrylate),Klebstoff (z.B. Cyanacrylat)
+CONSUMABLE_TYPE,CREATE,SOLDER,Solder for cable connection,Loetzinn fuer Kabelanschluss
+CONSUMABLE_TYPE,CREATE,COATING,Protective coating,Schutzbeschichtung
+CONSUMABLE_TYPE,CREATE,CABLE,Cable/wire,Kabel/Draht
+WELDING.WELD_TYPE,EXTEND,BUTT_WELD,Butt weld,Stumpfstoß
+WELDING.WELD_TYPE,EXTEND,CRUCIFORM_WELD,Cruciform weld,Kreuzstoß

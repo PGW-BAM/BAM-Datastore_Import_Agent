@@ -1,86 +1,55 @@
 # /bam-analyze-prd
 
-Run the full PRD analysis pipeline: catalog → requirements → gap report.
+Run the full PRD analysis pipeline: catalog → (live inventory) → requirements → structure design → gap report.
 
 ## Usage
 
 ```
-/bam-analyze-prd <prd-path>
+/bam-analyze-prd <prd-path> [prd-stem]
 ```
 
 Examples:
 ```
-/bam-analyze-prd BAM_PRD_Workflow_FB72.md
-/bam-analyze-prd evals/regressions/BAM_PRD_Workflow_FB72_original.md
+/bam-analyze-prd BAM_PRD_Workflow_FB72_v2.md welded_fatigue_v2     # workflow-style PRD (current)
+/bam-analyze-prd BAM_PRD_Workflow_FB72.md welded_fatigue           # legacy type-style PRD
 ```
-
-## What this command does
-
-Runs three agents in sequence:
-
-1. **`bam-masterdata-explorer`** (skipped if `generated/CATALOG.md` SHA matches current `../bam-masterdata` HEAD)
-   → `generated/CATALOG.md`
-
-2. **`prd-requirements-extractor`**
-   → `generated/<prd-stem>/requirements.json`
-
-3. **`gap-analyzer`**
-   → `generated/<prd-stem>/gap-report.md`
-
-Then **stops for human review** of the gap report. Do NOT auto-proceed to `/bam-generate-types` without reviewing the gap report first.
-
-## Pre-requisites
-
-- [ ] `../bam-masterdata/` exists (run `/bam-sync` if not).
-- [ ] PRD file exists at the provided path.
 
 ## Pipeline
 
-### Step 1 — Sync check
-Run `/bam-sync` first (or confirm `../bam-masterdata` is current). Record the resolved commit SHA — the catalog will be tagged with it.
+| # | Step | Agent / tool | Output |
+|---|---|---|---|
+| 1 | Sync standard | `/bam-sync` (pinned release) | `../bam-masterdata` at `BMD_REF` (`tools/cloud_setup.sh`) |
+| 2 | Catalog the standard | `bam-masterdata-explorer` → `python tools/build_catalog.py` | `generated/CATALOG.md`, `generated/catalog.json` |
+| 3 | Inventory the instance (optional, recommended) | from a committed `generated/live/<instance>_inventory.json` (`tools/openbis_inventory.js`, run by a human in the ELN tab — the only way in cloud sessions, see `CLOUD.md`); otherwise a browser session on the target instance, **read-only** V3 `search*` calls | `generated/live/<instance>_inventory.md` |
+| 4 | Transcribe the PRD | `prd-requirements-extractor` | `generated/<stem>/requirements.json` |
+| 5 | Design the structure with 2–4 variants (workflow PRDs only) | `structure-designer` | `generated/<stem>/design.json`, `design.md` |
+| 6 | Classify | `gap-analyzer` (REUSE / EXTEND / CREATE / LIVE-ONLY) | `generated/<stem>/gap-report.md` |
+| 7 | **Human review** | — | stop |
 
-### Step 2 — Build/refresh CATALOG
-Invoke the `bam-masterdata-explorer` agent:
-- Input: `../bam-masterdata/` working tree
-- Output: `generated/CATALOG.md`
-- Skip if CATALOG.md SHA matches current `git -C ../bam-masterdata rev-parse HEAD`
+Step 2 is skipped if the CATALOG SHA equals `git -C ../bam-masterdata rev-parse HEAD`.
+Step 3 must never write to the instance. Credentials are never typed by an agent — the user signs in
+in the browser and the agent reuses that session, or the user runs a script with their own token.
+If the inventory JSON is older than the instance's last known change (or missing in a cloud session),
+say so in the inventory MD header and ask for a fresh export instead of guessing.
 
-### Step 3 — Extract requirements
-Invoke the `prd-requirements-extractor` agent:
-- Input: `$ARGUMENTS` (the PRD path)
-- Output: `generated/<prd-stem>/requirements.json`
-
-Derive `<prd-stem>` from the PRD filename (snake_case stem). For `BAM_PRD_Workflow_FB72.md` use `welded_fatigue` (consistent with existing `generated/` directories).
-
-### Step 4 — Gap analysis
-Invoke the `gap-analyzer` agent:
-- Input: `generated/<prd-stem>/requirements.json` + `generated/CATALOG.md`
-- Output: `generated/<prd-stem>/gap-report.md`
-
-### Step 5 — Human review checkpoint
-
-Print:
+## Human review checkpoint
 
 ```
 ════════════════════════════════════════════════════════
-  Gap report ready: generated/<prd-stem>/gap-report.md
+  Design:     generated/<stem>/design.md
+  Gap report: generated/<stem>/gap-report.md
 ════════════════════════════════════════════════════════
+Check:
+  [ ] Every workflow step has exactly one location (design.md step→location table)
+  [ ] The graph of one specimen is readable (workflow/strukturmuster.md); variants with one recommendation
+  [ ] REUSE/EXTEND rows cite file:line; LIVE-ONLY rows name their replacement
+  [ ] No new dataset types; no live-only legacy type reused
+  [ ] Domain decisions from the PRD are reflected verbatim
 
-Review the gap report, especially:
-  [ ] All REUSE entries have valid file:line citations
-  [ ] EXTEND entries list only realistic additions (PR-grade, not rewrites)
-  [ ] CREATE entries are genuinely absent from bam-masterdata
-  [ ] WELDING.WELD_TYPE appears as EXTEND (not CREATE)
-  [ ] TestingMachine appears as REUSE (not CREATE)
-  [ ] All 12 ExperimentalSteps appear as CREATE
-
-When satisfied, run:
-  /bam-generate-types <prd-path>
-  /bam-generate-notebook <prd-path>
-  /bam-generate-parser <prd-path>
+Then: /bam-generate-types <prd> <stem> → provisioning (/bam-generate-notebook) → /bam-generate-parser
 ```
 
 ## Anti-patterns
-- Do NOT auto-run `/bam-generate-types` after this command — human review is mandatory.
-- Do NOT re-run `bam-masterdata-explorer` if CATALOG SHA is current (idempotency).
-- Do NOT skip the catalog refresh check — stale CATALOG.md leads to wrong REUSE/CREATE classifications.
+- Do NOT auto-run `/bam-generate-types` — human review is mandatory.
+- Do NOT skip the catalog refresh check — a stale catalog causes false CREATE classifications.
+- Do NOT treat the live instance as the standard: live-only types are migrated or proposed for PR, not reused.

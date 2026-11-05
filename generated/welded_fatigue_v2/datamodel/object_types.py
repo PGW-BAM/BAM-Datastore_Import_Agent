@@ -1,0 +1,452 @@
+"""CREATE object types for the welded fatigue workflow (prd-stem: welded_fatigue_v2).
+
+Generated 2026-10-06 by masterdata-extender from generated/welded_fatigue_v2/design.json
+(gap report: generated/welded_fatigue_v2/gap-report.md, CREATE section).
+
+Only own properties are declared; inherited properties come from the base class
+(Sample / MechanicalTest). Reused property types (EXPERIMENTAL_STEP.WELDMENT_TYPE,
+DEFECT_DESCRIPTION) are assigned with their existing code, data type and vocabulary.
+
+PR target: bam_masterdata/datamodel/fatigue/object_types.py (new subpackage).
+"""
+
+from bam_masterdata.datamodel.v0.activities import MechanicalTest
+from bam_masterdata.datamodel.v0.object_types import Sample
+from bam_masterdata.metadata.definitions import ObjectTypeDef, PropertyTypeAssignment
+
+
+class WeldedFatigueSpecimen(Sample):
+    defs = ObjectTypeDef(
+        code="SAMPLE.WELDED_FATIGUE_SPECIMEN",
+        description="""Welded specimen for cyclic fatigue testing (butt or cruciform weld)//Geschweißte Probe für zyklische Ermüdungsversuche (Stumpf- oder Kreuzstoß)""",
+        generated_code_prefix="SAM.WFS",
+    )
+
+    next_step = PropertyTypeAssignment(
+        code="FATIGUE.NEXT_STEP",
+        data_type="CONTROLLEDVOCABULARY",
+        vocabulary_code="WELDED_FATIGUE_WORKFLOW_STEP",
+        property_label="Next step",
+        property_label_de="Nächster Schritt",
+        description="""Next workflow step to be carried out on this specimen//Nächster durchzuführender Ablaufschritt an dieser Probe""",
+        mandatory=False,
+        section="Workflow Status",
+    )
+
+    manufacturer_designation = PropertyTypeAssignment(
+        code="FATIGUE.MANUFACTURER_DESIGNATION",
+        data_type="VARCHAR",
+        property_label="Manufacturer designation (original ID)",
+        property_label_de="Herstellerbezeichnung (Original-ID)",
+        description="""Original specimen identifier assigned by the manufacturer//Originale Probenkennung des Herstellers""",
+        mandatory=False,
+        section="Specimen Identification",
+    )
+
+    source_sheet = PropertyTypeAssignment(
+        code="FATIGUE.SOURCE_SHEET",
+        data_type="VARCHAR",
+        property_label="Source sheet",
+        property_label_de="Herkunftsblech",
+        description="""Plate/sheet the specimen was cut from; used to avoid bias in the series randomisation//Blech, aus dem die Probe entnommen wurde; dient der Bias-Vermeidung bei der Randomisierung""",
+        mandatory=False,
+        section="Specimen Identification",
+    )
+
+    # REUSE existing PropertyType: EXPERIMENTAL_STEP.WELDMENT_TYPE (Weldment, bam_masterdata/datamodel/welding/object_types.py:409)
+    weld_type = PropertyTypeAssignment(
+        code="EXPERIMENTAL_STEP.WELDMENT_TYPE",
+        data_type="CONTROLLEDVOCABULARY",
+        vocabulary_code="WELDING.WELD_TYPE",
+        property_label="Type of weld",
+        description="""Type of weldment made//Art der Schweißverbindung""",
+        mandatory=False,
+        section="Specimen Identification",
+    )
+
+    target_quality_level = PropertyTypeAssignment(
+        code="FATIGUE.TARGET_QUALITY_LEVEL",
+        data_type="CONTROLLEDVOCABULARY",
+        vocabulary_code="WELDING.ISO_5817_QUALITY_LEVEL",
+        property_label="Target quality level (ISO 5817)",
+        property_label_de="Angestrebte Bewertungsgruppe (ISO 5817)",
+        description="""Quality level according to ISO 5817 the specimen was manufactured for//Angestrebte Bewertungsgruppe nach ISO 5817, für die die Probe gefertigt wurde""",
+        mandatory=False,
+        section="Specimen Identification",
+    )
+
+    initial_angular_distortion = PropertyTypeAssignment(
+        code="FATIGUE.INITIAL_ANGULAR_DISTORTION",
+        data_type="REAL",
+        property_label="Initial angular distortion [°]",
+        property_label_de="Winkelverzug initial [°]",
+        description="""Angular distortion measured at incoming inspection [°]//Winkelverzug bei der Eingangsprüfung [°]""",
+        mandatory=False,
+        section="Initial Quality Check",
+    )
+
+    initial_edge_misalignment = PropertyTypeAssignment(
+        code="FATIGUE.INITIAL_EDGE_MISALIGNMENT",
+        data_type="REAL",
+        property_label="Initial edge misalignment [mm]",
+        property_label_de="Kantenversatz initial [mm]",
+        description="""Edge misalignment measured at incoming inspection [mm]//Kantenversatz bei der Eingangsprüfung [mm]""",
+        mandatory=False,
+        section="Initial Quality Check",
+    )
+
+    was_straightened = PropertyTypeAssignment(
+        code="FATIGUE.WAS_STRAIGHTENED",
+        data_type="BOOLEAN",
+        property_label="Was straightened",
+        property_label_de="Wurde gerichtet",
+        description="""Specimen was straightened after the pre-quality check//Probe wurde nach der Vorqualitätsprüfung gerichtet""",
+        mandatory=False,
+        section="Initial Quality Check",
+    )
+
+    angular_distortion_after_straightening = PropertyTypeAssignment(
+        code="FATIGUE.ANGULAR_DISTORTION_AFTER_STRAIGHTENING",
+        data_type="REAL",
+        property_label="Angular distortion after straightening [°]",
+        property_label_de="Winkelverzug nach dem Richten [°]",
+        description="""Angular distortion after straightening [°]//Winkelverzug nach dem Richten [°]""",
+        mandatory=False,
+        section="Initial Quality Check",
+    )
+
+    edge_misalignment_after_straightening = PropertyTypeAssignment(
+        code="FATIGUE.EDGE_MISALIGNMENT_AFTER_STRAIGHTENING",
+        data_type="REAL",
+        property_label="Edge misalignment after straightening [mm]",
+        property_label_de="Kantenversatz nach dem Richten [mm]",
+        description="""Edge misalignment after straightening [mm]//Kantenversatz nach dem Richten [mm]""",
+        mandatory=False,
+        section="Initial Quality Check",
+    )
+
+    # REUSE existing PropertyType: DEFECT_DESCRIPTION (Named, bam_masterdata/datamodel/object_types.py:7429)
+    defect_description = PropertyTypeAssignment(
+        code="DEFECT_DESCRIPTION",
+        data_type="MULTILINE_VARCHAR",
+        property_label="Defect description",
+        description="""Defect Description//Beschreibung der Defekte""",
+        mandatory=False,
+        section="Initial Quality Check",
+    )
+
+    weld_post_treatment_notes = PropertyTypeAssignment(
+        code="FATIGUE.WELD_POST_TREATMENT_NOTES",
+        data_type="MULTILINE_VARCHAR",
+        property_label="Weld reinforcement treatment / grinding notes",
+        property_label_de="Nahtüberhöhungs-Bearbeitung / Schleifhinweise",
+        description="""Documentation of weld reinforcement treatment and grinding//Dokumentation der Nahtüberhöhungs-Bearbeitung und Schleifhinweise""",
+        mandatory=False,
+        section="Chamfering And Grinding",
+    )
+
+    iso_5817_annex_c_rating = PropertyTypeAssignment(
+        code="FATIGUE.ISO_5817_ANNEX_C_RATING",
+        data_type="CONTROLLEDVOCABULARY",
+        vocabulary_code="WELDING.ISO_5817_ANNEX_C_RATING",
+        property_label="Quality level ISO 5817 Annex C",
+        property_label_de="Bewertungsgruppe ISO 5817 Anhang C",
+        description="""Quality level determined by the GOM weld analysis according to ISO 5817 Annex C//Mit der GOM-Nahtanalyse ermittelte Bewertungsgruppe nach ISO 5817 Anhang C""",
+        mandatory=False,
+        section="Weld Analysis",
+    )
+
+    load_level = PropertyTypeAssignment(
+        code="FATIGUE.LOAD_LEVEL",
+        data_type="CONTROLLEDVOCABULARY",
+        vocabulary_code="FATIGUE.LOAD_LEVEL",
+        property_label="Load level",
+        property_label_de="Lastniveau",
+        description="""Load level the specimen is assigned to within the series//Lastniveau, dem die Probe in der Serie zugeordnet ist""",
+        mandatory=False,
+        section="Series Assignment",
+    )
+
+    test_order = PropertyTypeAssignment(
+        code="FATIGUE.TEST_ORDER",
+        data_type="INTEGER",
+        property_label="Test order",
+        property_label_de="Prüfreihenfolge",
+        description="""Position of the specimen in the randomised test sequence//Position der Probe in der randomisierten Prüfreihenfolge""",
+        mandatory=False,
+        section="Series Assignment",
+    )
+
+    thickness_pos_1 = PropertyTypeAssignment(
+        code="FATIGUE.THICKNESS_POS_1",
+        data_type="REAL",
+        property_label="Thickness position 1 [mm]",
+        property_label_de="Dicke Position 1 [mm]",
+        description="""Thickness measured at position 1 before installation [mm]//Dicke an Position 1 vor Einbau [mm]""",
+        mandatory=False,
+        section="Geometry Before Installation",
+    )
+
+    thickness_pos_2 = PropertyTypeAssignment(
+        code="FATIGUE.THICKNESS_POS_2",
+        data_type="REAL",
+        property_label="Thickness position 2 [mm]",
+        property_label_de="Dicke Position 2 [mm]",
+        description="""Thickness measured at position 2 before installation [mm]//Dicke an Position 2 vor Einbau [mm]""",
+        mandatory=False,
+        section="Geometry Before Installation",
+    )
+
+    thickness_pos_3 = PropertyTypeAssignment(
+        code="FATIGUE.THICKNESS_POS_3",
+        data_type="REAL",
+        property_label="Thickness position 3 [mm]",
+        property_label_de="Dicke Position 3 [mm]",
+        description="""Thickness measured at position 3 before installation [mm]//Dicke an Position 3 vor Einbau [mm]""",
+        mandatory=False,
+        section="Geometry Before Installation",
+    )
+
+    width_pos_1 = PropertyTypeAssignment(
+        code="FATIGUE.WIDTH_POS_1",
+        data_type="REAL",
+        property_label="Width position 1 [mm]",
+        property_label_de="Breite Position 1 [mm]",
+        description="""Width measured at position 1 before installation [mm]//Breite an Position 1 vor Einbau [mm]""",
+        mandatory=False,
+        section="Geometry Before Installation",
+    )
+
+    width_pos_2 = PropertyTypeAssignment(
+        code="FATIGUE.WIDTH_POS_2",
+        data_type="REAL",
+        property_label="Width position 2 [mm]",
+        property_label_de="Breite Position 2 [mm]",
+        description="""Width measured at position 2 before installation [mm]//Breite an Position 2 vor Einbau [mm]""",
+        mandatory=False,
+        section="Geometry Before Installation",
+    )
+
+    width_pos_3 = PropertyTypeAssignment(
+        code="FATIGUE.WIDTH_POS_3",
+        data_type="REAL",
+        property_label="Width position 3 [mm]",
+        property_label_de="Breite Position 3 [mm]",
+        description="""Width measured at position 3 before installation [mm]//Breite an Position 3 vor Einbau [mm]""",
+        mandatory=False,
+        section="Geometry Before Installation",
+    )
+
+    mean_thickness = PropertyTypeAssignment(
+        code="FATIGUE.MEAN_THICKNESS",
+        data_type="REAL",
+        property_label="Mean thickness [mm]",
+        property_label_de="Mittlere Dicke [mm]",
+        description="""Mean of the three thickness measurements [mm]//Mittelwert der drei Dickenmessungen [mm]""",
+        mandatory=False,
+        section="Geometry Before Installation",
+    )
+
+    mean_width = PropertyTypeAssignment(
+        code="FATIGUE.MEAN_WIDTH",
+        data_type="REAL",
+        property_label="Mean width [mm]",
+        property_label_de="Mittlere Breite [mm]",
+        description="""Mean of the three width measurements [mm]//Mittelwert der drei Breitenmessungen [mm]""",
+        mandatory=False,
+        section="Geometry Before Installation",
+    )
+
+
+class CyclicFatigueTest(MechanicalTest):
+    defs = ObjectTypeDef(
+        code="EXPERIMENTAL_STEP.MECHANICAL_TEST.CYCLIC_FATIGUE_TEST",
+        description="""Cyclic fatigue test of a welded specimen incl. strain gauge application, measurement chain, installation and evaluation//Zyklischer Ermüdungsversuch an einer geschweißten Probe inkl. DMS-Applikation, Messkette, Einbau und Auswertung""",
+        generated_code_prefix="EXP.MECH.CYC_FAT",
+    )
+
+    strain_gauge_distance_to_weld_toe = PropertyTypeAssignment(
+        code="FATIGUE.STRAIN_GAUGE_DISTANCE_TO_WELD_TOE",
+        data_type="REAL",
+        property_label="Strain gauge distance to weld toe [mm]",
+        property_label_de="DMS-Abstand zum Nahtübergang [mm]",
+        description="""Distance between strain gauge and weld toe [mm]//Abstand des DMS zum Nahtübergang [mm]""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    strain_gauge_distance_to_edge = PropertyTypeAssignment(
+        code="FATIGUE.STRAIN_GAUGE_DISTANCE_TO_EDGE",
+        data_type="REAL",
+        property_label="Strain gauge distance to edge [mm]",
+        property_label_de="DMS-Abstand zum Probenrand [mm]",
+        description="""Distance between strain gauge and specimen edge [mm]//Abstand des DMS zum Probenrand [mm]""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    strain_gauge_application_time = PropertyTypeAssignment(
+        code="FATIGUE.STRAIN_GAUGE_APPLICATION_TIME",
+        data_type="TIMESTAMP",
+        property_label="Time of strain gauge application",
+        property_label_de="Zeitpunkt der DMS-Applikation",
+        description="""Date and time the strain gauges were applied//Zeitpunkt der DMS-Applikation""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    strain_gauge = PropertyTypeAssignment(
+        code="FATIGUE.STRAIN_GAUGE",
+        data_type="OBJECT",
+        object_code="AUXILIARY_MATERIAL",
+        property_label="Strain gauge",
+        property_label_de="Dehnungsmessstreifen (DMS)",
+        description="""Strain gauge used (inventory object)//Verwendeter Dehnungsmessstreifen (Inventar-Objekt)""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    strain_gauge_adhesive = PropertyTypeAssignment(
+        code="FATIGUE.STRAIN_GAUGE_ADHESIVE",
+        data_type="OBJECT",
+        object_code="AUXILIARY_MATERIAL",
+        property_label="Strain gauge adhesive",
+        property_label_de="DMS-Klebstoff",
+        description="""Adhesive used for the strain gauges (inventory object)//Verwendeter DMS-Klebstoff (Inventar-Objekt)""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    crack_detection_agent = PropertyTypeAssignment(
+        code="FATIGUE.CRACK_DETECTION_AGENT",
+        data_type="OBJECT",
+        object_code="AUXILIARY_MATERIAL",
+        property_label="Crack detection agent",
+        property_label_de="Rissprüfmittel",
+        description="""Crack detection agent used, e.g. crack luminescence set (inventory object)//Verwendetes Rissprüfmittel, z. B. Risslumineszenz-Set (Inventar-Objekt)""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    monitoring_camera = PropertyTypeAssignment(
+        code="FATIGUE.MONITORING_CAMERA",
+        data_type="OBJECT",
+        object_code="INSTRUMENT.CAMERA",
+        property_label="Monitoring camera",
+        property_label_de="Überwachungskamera",
+        description="""Camera system monitoring the test (inventory object)//Kamerasystem zur Versuchsüberwachung (Inventar-Objekt)""",
+        mandatory=False,
+        section="Strain Gauge Application",
+    )
+
+    measuring_amplifier = PropertyTypeAssignment(
+        code="FATIGUE.MEASURING_AMPLIFIER",
+        data_type="OBJECT",
+        object_code="INSTRUMENT.MEASURING_AMPLIFIER",
+        property_label="Measuring amplifier",
+        property_label_de="Messverstärker",
+        description="""Measuring amplifier used (inventory object)//Verwendeter Messverstärker (Inventar-Objekt)""",
+        mandatory=False,
+        section="Measuring Amplifier And Test Rig",
+    )
+
+    instrument = PropertyTypeAssignment(
+        code="INSTRUMENT",
+        data_type="OBJECT",  # any target, like "(ALL)" in the standard; the checker accepts only an empty object_code
+        property_label="Testing Machine or Measurement Device",
+        description="""Testing machine or measurement device//Prüfmaschine oder Messgerät""",
+        mandatory=False,
+        section="Measuring Amplifier And Test Rig",
+    )
+
+    sampling_frequency = PropertyTypeAssignment(
+        code="FATIGUE.SAMPLING_FREQUENCY",
+        data_type="INTEGER",
+        property_label="Sampling frequency [Hz]",
+        property_label_de="Abtastfrequenz [Hz]",
+        description="""Sampling frequency of the measuring amplifier [Hz]//Abtastfrequenz des Messverstärkers [Hz]""",
+        mandatory=False,
+        section="Measuring Amplifier And Test Rig",
+    )
+
+    recording_mode = PropertyTypeAssignment(
+        code="FATIGUE.RECORDING_MODE",
+        data_type="CONTROLLEDVOCABULARY",
+        vocabulary_code="FATIGUE.RECORDING_MODE",
+        property_label="Recording mode",
+        property_label_de="Aufzeichnungsmodus",
+        description="""Data recording mode of the measuring amplifier//Aufzeichnungsmodus des Messverstärkers""",
+        mandatory=False,
+        section="Measuring Amplifier And Test Rig",
+    )
+
+    recorded_channels = PropertyTypeAssignment(
+        code="FATIGUE.RECORDED_CHANNELS",
+        data_type="VARCHAR",
+        property_label="Recorded channels",
+        property_label_de="Erfasste Kanäle",
+        description="""Channels recorded by the measuring amplifier//Vom Messverstärker erfasste Kanäle""",
+        mandatory=False,
+        section="Measuring Amplifier And Test Rig",
+    )
+
+    preload_force = PropertyTypeAssignment(
+        code="FATIGUE.PRELOAD_FORCE",
+        data_type="REAL",
+        property_label="Preload force [kN]",
+        property_label_de="Vorspannkraft [kN]",
+        description="""Preload force during installation (bending moment at 0.0 kN) [kN]//Vorspannkraft beim Einbau (Biegemoment bei 0,0 kN) [kN]""",
+        mandatory=False,
+        section="Installation Stress",
+    )
+
+    beach_marks_active = PropertyTypeAssignment(
+        code="FATIGUE.BEACH_MARKS_ACTIVE",
+        data_type="BOOLEAN",
+        property_label="Beach marks (marker loads) active",
+        property_label_de="Rastlinien (Markerlasten) aktiv",
+        description="""Marker loads for beach marks were applied during the test//Markerlasten für Rastlinien waren während des Versuchs aktiv""",
+        mandatory=False,
+        section="Cyclic Fatigue Test",
+    )
+
+    termination_reason = PropertyTypeAssignment(
+        code="FATIGUE.TERMINATION_REASON",
+        data_type="CONTROLLEDVOCABULARY",
+        vocabulary_code="FATIGUE.TERMINATION_REASON",
+        property_label="Termination reason",
+        property_label_de="Abbruchgrund",
+        description="""Reason the cyclic fatigue test was terminated//Grund für den Abbruch des zyklischen Ermüdungsversuchs""",
+        mandatory=False,
+        section="Cyclic Fatigue Test",
+    )
+
+    cycles_gross = PropertyTypeAssignment(
+        code="FATIGUE.CYCLES_GROSS",
+        data_type="INTEGER",
+        property_label="Gross number of cycles",
+        property_label_de="Bruttoschwingspielzahl",
+        description="""Gross number of load cycles including marker loads//Bruttoschwingspielzahl inklusive Markerlasten""",
+        mandatory=False,
+        section="Evaluation",
+    )
+
+    cycles_net = PropertyTypeAssignment(
+        code="FATIGUE.CYCLES_NET",
+        data_type="INTEGER",
+        property_label="Net number of cycles",
+        property_label_de="Nettoschwingspielzahl",
+        description="""Net number of load cycles//Nettoschwingspielzahl""",
+        mandatory=False,
+        section="Evaluation",
+    )
+
+    cycles_to_10_percent_strain_gauge_drop = PropertyTypeAssignment(
+        code="FATIGUE.CYCLES_TO_10_PERCENT_STRAIN_GAUGE_DROP",
+        data_type="MULTILINE_VARCHAR",
+        property_label="Cycles to 10 % strain gauge drop per strain gauge",
+        property_label_de="Zyklen bis 10 % DMS-Abfall je DMS",
+        description="""Number of cycles until a 10 % signal drop, listed per strain gauge//Zyklen bis 10 % DMS-Abfall, je DMS aufgelistet""",
+        mandatory=False,
+        section="Evaluation",
+    )

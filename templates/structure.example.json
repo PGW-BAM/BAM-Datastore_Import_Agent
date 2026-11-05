@@ -1,0 +1,18 @@
+{
+ "_note": "Beispiel für structure.json (Schritt 8). Kopieren nach structure.json und anpassen. Format: Kopf von tools/openbis_bridge.py.",
+ "space": "<SPACE>",
+ "project": {"code": "<PROJECT_CODE>", "description": "<what this project documents>//<was das Projekt dokumentiert>"},
+ "collections": [
+  {"code": "SERIES_1", "type": "COLLECTION",
+   "props": {"$NAME": "Series 1", "$DEFAULT_OBJECT_TYPE": "SAMPLE", "$DEFAULT_COLLECTION_VIEW": "LIST_VIEW"}}
+ ],
+ "objects": [
+  {"key": "PLAN", "code": "WORKFLOW_PLAN", "type": "GENERAL_PROTOCOL", "collection": null,
+   "props": {"$NAME": "Workflow plan", "PROCEDURE": "@file:sop_workflow_plan.txt"}},
+  {"key": "S1-01", "code": "S1-01", "type": "SAMPLE", "collection": "SERIES_1",
+   "props": {"$NAME": "S1-01"}},
+  {"key": "S1-01-TEST", "code": "S1-01-TEST", "type": "EXPERIMENTAL_STEP", "collection": "SERIES_1",
+   "props": {"$NAME": "S1-01 · test", "START_DATE": "2026-11-04 09:00:00", "FINISHED_FLAG": false},
+   "parents": ["S1-01", "/<EQUIPMENT_SPACE>/<FB>_EQUIPMENT_OPEN/<DEVICE_CODE>"]}
+ ]
+}

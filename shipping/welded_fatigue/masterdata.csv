@@ -1,0 +1,29 @@
+object_code,object_classification,parent,property_code,data_type,label_en,label_de,mandatory,section,vocabulary_ref,property_classification,needs_manual_edit
+SPECIMEN.WELDED_FATIGUE,CREATE,ObjectType,ORIGINAL_ID,VARCHAR,Manufacturer ID,Herstellerbezeichnung,false,Material Details//Materialdetails,,CREATE,true
+SPECIMEN.WELDED_FATIGUE,CREATE,ObjectType,SHEET_ORIGIN,VARCHAR,Sheet origin,Herkunftsblech,false,Material Details//Materialdetails,,CREATE,true
+SPECIMEN.WELDED_FATIGUE,CREATE,ObjectType,WELDING.WELD_TYPE,CONTROLLEDVOCABULARY,Weld geometry,Schweissnahtgeometrie,true,Weld Details//Schweissnahtdetails,WELDING.WELD_TYPE,EXTEND,false
+SPECIMEN.WELDED_FATIGUE,CREATE,ObjectType,ISO_5817_FAT_CLASS,CONTROLLEDVOCABULARY,FAT class (IIW),FAT-Klasse (IIW),false,Weld Details//Schweissnahtdetails,ISO_5817_FAT_CLASS,CREATE,false
+SPECIMEN.WELDED_FATIGUE,CREATE,ObjectType,LOAD_LEVEL,CONTROLLEDVOCABULARY,Load level for S-N curve,Lastniveau fuer Woehlerlinie,false,Test Planning//Versuchsplanung,LOAD_LEVEL,CREATE,false
+EXPERIMENTAL_STEP.PRE_QUALITY_CHECK_WELD,CREATE,ExperimentalStep,INITIAL_ANGULAR_DISTORTION,REAL,Initial angular distortion [deg],Anfangswinkelverzug [Grad],false,Geometry Checks//Geometriepruefung,,CREATE,false
+EXPERIMENTAL_STEP.PRE_QUALITY_CHECK_WELD,CREATE,ExperimentalStep,INITIAL_EDGE_MISALIGNMENT,REAL,Initial edge misalignment [mm],Anfangskantenversatz [mm],false,Geometry Checks//Geometriepruefung,,CREATE,false
+EXPERIMENTAL_STEP.PRE_QUALITY_CHECK_WELD,CREATE,ExperimentalStep,WAS_STRAIGHTENED,BOOLEAN,Was straightened,Wurde gerichtet,false,Geometry Checks//Geometriepruefung,,CREATE,false
+EXPERIMENTAL_STEP.CHAMFERING_GRINDING,CREATE,ExperimentalStep,WELD_MODIFICATIONS,MULTILINE_VARCHAR,Weld reinforcement modifications,Schweissnahtverstaerkungen,false,Processing Notes//Bearbeitungsnotizen,,CREATE,true
+EXPERIMENTAL_STEP.SPECIMEN_RECORDING,CREATE,ExperimentalStep,GOM_SCANNER_REF,OBJECT,GOM 3D-scanner instance,GOM 3D-Scanner Instanz,false,Instrument Links//Geraeteverknuepfungen,,CREATE,true
+EXPERIMENTAL_STEP.WELD_ANALYSIS,CREATE,ExperimentalStep,ISO_5817_FAT_CLASS,CONTROLLEDVOCABULARY,Determined FAT class,Ermittelte FAT-Klasse,false,Weld Quality//Schweissnahtqualitaet,ISO_5817_FAT_CLASS,CREATE,false
+EXPERIMENTAL_STEP.TEST_SETUP_GEOMETRY,CREATE,ExperimentalStep,AVG_THICKNESS,REAL,Average thickness [mm],Durchschnittliche Dicke [mm],false,Specimen Dimensions//Probenabmessungen,,CREATE,false
+EXPERIMENTAL_STEP.TEST_SETUP_GEOMETRY,CREATE,ExperimentalStep,AVG_WIDTH,REAL,Average width [mm],Durchschnittliche Breite [mm],false,Specimen Dimensions//Probenabmessungen,,CREATE,false
+EXPERIMENTAL_STEP.MONITORING_APPLICATION,CREATE,ExperimentalStep,STRAIN_GAUGE_TYPE,CONTROLLEDVOCABULARY,Strain gauge type,DMS-Typ,false,Instrumentation//Instrumentierung,STRAIN_GAUGE_TYPE,CREATE,false
+EXPERIMENTAL_STEP.MONITORING_APPLICATION,CREATE,ExperimentalStep,CONSUMABLE_TYPE,CONTROLLEDVOCABULARY,Consumable type,Verbrauchsmaterial-Typ,false,Instrumentation//Instrumentierung,CONSUMABLE_TYPE,CREATE,false
+EXPERIMENTAL_STEP.MONITORING_APPLICATION,CREATE,ExperimentalStep,MEASURED_DMS_DISTANCE_WELD,REAL,DMS distance to weld toe [mm],DMS-Abstand zur Schweissnahtuebergang [mm],false,Instrumentation//Instrumentierung,,CREATE,false
+EXPERIMENTAL_STEP.MONITORING_APPLICATION,CREATE,ExperimentalStep,MEASURED_DMS_DISTANCE_EDGE,REAL,DMS distance to specimen edge [mm],DMS-Abstand zur Probenachse [mm],false,Instrumentation//Instrumentierung,,CREATE,false
+EXPERIMENTAL_STEP.AMPLIFIER_SETTINGS,CREATE,ExperimentalStep,SAMPLING_FREQUENCY,INTEGER,Sampling frequency [Hz],Abtastfrequenz [Hz],false,Acquisition Settings//Aufzeichnungseinstellungen,,CREATE,false
+EXPERIMENTAL_STEP.AMPLIFIER_SETTINGS,CREATE,ExperimentalStep,RECORDING_MODE,VARCHAR,Recording mode,Aufzeichnungsmodus,false,Acquisition Settings//Aufzeichnungseinstellungen,,CREATE,true
+EXPERIMENTAL_STEP.AMPLIFIER_SETTINGS,CREATE,ExperimentalStep,TESTING_MACHINE_REF,OBJECT,Testing machine,Pruefmaschine,false,Instrument Links//Geraeteverknuepfungen,,CREATE,true
+EXPERIMENTAL_STEP.AMPLIFIER_SETTINGS,CREATE,ExperimentalStep,MEASURING_AMPLIFIER_REF,OBJECT,Measuring amplifier,Messverstaerker,false,Instrument Links//Geraeteverknuepfungen,,CREATE,true
+EXPERIMENTAL_STEP.CYCLIC_FATIGUE_TEST,CREATE,ExperimentalStep,MARKER_LOADS_ACTIVE,BOOLEAN,Marker loads active,Rastlinien aktiv,false,Test Configuration//Versuchskonfiguration,,CREATE,false
+EXPERIMENTAL_STEP.CYCLIC_FATIGUE_TEST,CREATE,ExperimentalStep,FATIGUE_STOP_REASON,CONTROLLEDVOCABULARY,Stop reason,Abbruchgrund,false,Test Outcome//Versuchsergebnis,FATIGUE_STOP_REASON,CREATE,false
+EXPERIMENTAL_STEP.FATIGUE_DATA_EVALUATION,CREATE,ExperimentalStep,CYCLES_GROSS_FINAL,INTEGER,Final gross cycle count,Bruttoschwingspielzahl,false,Cycle Counts//Schwingspielzahlen,,CREATE,false
+EXPERIMENTAL_STEP.FATIGUE_DATA_EVALUATION,CREATE,ExperimentalStep,CYCLES_NET_FINAL,INTEGER,Final net cycle count,Nettoschwingspielzahl,false,Cycle Counts//Schwingspielzahlen,,CREATE,false
+EXPERIMENTAL_STEP.FATIGUE_DATA_EVALUATION,CREATE,ExperimentalStep,CYCLES_DMS_DEVIATION_10,MULTILINE_VARCHAR,Cycles to 10% DMS deviation per gauge,Zyklen bis 10% Abfall je DMS,false,Cycle Counts//Schwingspielzahlen,,CREATE,true
+EXPERIMENTAL_STEP.FRACTURE_SURFACE_ANALYSIS,CREATE,ExperimentalStep,CAMERA_REF,OBJECT,Camera,Kamera,false,Instrument Links//Geraeteverknuepfungen,,CREATE,true
+EXPERIMENTAL_STEP.FRACTURE_SURFACE_ANALYSIS,CREATE,ExperimentalStep,DIGITAL_MICROSCOPE_REF,OBJECT,Digital microscope,Digitalmikroskop,false,Instrument Links//Geraeteverknuepfungen,,CREATE,true
