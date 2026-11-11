@@ -26,3 +26,19 @@ Quelle: Person · Schema · Vorschlag bestätigt · Vorschlag abgelehnt
 
 **Verstanden:** 11 Schritte (01 Sichtprüfung inkl. Eingang, 02 GOM-Scan am ATOS, 03 Nahtbewertung GOM-Software, 04 Anschleifen/Anfasen nur Dokumentation, 05 Serienaufteilung, 06 Geometrie, 07 DMS, 08 Einbau, 09 Ermüdungsversuch, 10 Auswertung, 11 Bruchflächenanalyse mit Durchläufer-Regel).
 **Offen:** Details je Schritt (Runde 3 ff.), Position von 04 im Ablauf, Reihenfolge 05 zu 02–04, Space/Projekt-Code/Equipment-Projekt nachsehen.
+
+## Runde 3: Schritt 01 + Ordnungsfragen (2026-11-11)
+
+| Frage | Antwort | Quelle |
+|---|---|---|
+| Schritt 04 (Anfasen/Anschleifen): wo im Ablauf? | Direkt nach der Sichtprüfung, vor dem Scan – sonst würde eine Naht gescannt, die es so nicht mehr gibt | Person |
+| Schritt 05: vor oder nach dem Scannen aufgeteilt? | Erst, wenn alle Proben gescannt und bewertet sind | Person |
+| 01: Was wird gemessen (Verzug)? | Winkelverzug in Grad, Versatz an der Naht in mm. Messmittel unbekannt/nicht wichtig. Nach dem Richten wird nochmal gemessen. Bei Kreuzstößen ist der Versatz anders, da zwei Bleche | Person |
+| 01: Naht ok? als Auswahl? | Nein, wenn was Grobes auffällt, freier Text dazu. Keine feste Auswahl | Person |
+| 01: Richten wie? | Nur ob gerichtet wurde, nicht wie | Person |
+| 01: Probekennung? | Hersteller hat eigene Nummern; intern wird eine vergeben; wenn Serien feststehen, heißen Proben S1-01, S1-02 usw.; Blech steht auf der Probe drauf (eingeschlagen) | Person |
+| 01: Dateien? | Fotos von jeder Probe | Person |
+| Instanz bestätigt? | dev1.datastore.bam.de klingt richtig; Space noch nicht nachgeguckt | Person |
+
+**Verstanden:** Reihenfolge 01 → 04 → 02 → 03 → 05; Messwerte Winkelverzug [°], Versatz [mm] (+ Wiederholungsmessung nach Richten), Befund freier Text, gerichtet ja/nein, Kennungen: Herstellernummer, interne Nummer, Serienname S1-01 …, Blech eingeschlagen; Fotos je Probe.
+**Offen:** Details 02/03 (Scan, Bewertung); Kreuzstoß: wie genau ist der Versatz dort anders (zwei Bleche)? Englische Namen der Begriffe; Details 06–11.
