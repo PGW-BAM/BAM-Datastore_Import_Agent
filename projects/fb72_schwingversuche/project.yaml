@@ -6,7 +6,7 @@ title: "Schwingversuche an geschweißten Proben"
 title_en: "Fatigue testing of welded specimens"
 division: "FB 7.2"
 summary_en: "Documentation of fatigue tests on welded specimens: incoming inspection, GOM scanning and weld assessment, random assignment to test series, fatigue testing in a servo-hydraulic rig with IMC measurement equipment, and fracture surface analysis."
-instance: https://playground.datastore.bam.de   # zum Testen; später die Hauptinstanz
+instance: https://dev1.datastore.bam.de         # Testinstanz des FB 7.2 (bestätigt als „dev1 oder so ähnlich“)
 space: "FB_72"                       # offen: im ELN nachsehen
 project: "FB72_SCHWINGVERSCHE"       # offen: Projekt-Code bestätigen
 inventory_projects:                 # offen: Equipment-Projekt(e) im ELN nachsehen
