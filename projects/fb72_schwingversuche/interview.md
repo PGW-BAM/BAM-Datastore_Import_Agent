@@ -57,3 +57,17 @@ Quelle: Person · Schema · Vorschlag bestätigt · Vorschlag abgelehnt
 
 **Verstanden:** Neue Reihenfolge 01 Sichtprüfung, 02 Anfasen/Anschleifen, 03 GOM-Scan, 04 Nahtbewertung (ISO 5817 Anhang C, Bewertungsgruppe, bestellt B), 05 Serienaufteilung (eigene Serien je Stoßart), 06–11 wie gehabt. Bearbeiter*in/Datum je Schritt.
 **Offen:** Namensschema GOM-Rohdaten (Kollege); Seriennamen/-anzahl; Details 06–11; Stoßart-Vokabular NEU vormerken.
+
+## Runde 5: Nahtart, Serien, Geometrie (2026-11-11)
+
+| Frage | Antwort | Quelle |
+|---|---|---|
+| Neue Liste für Nahttypen nötig? | Nein: Kreuzstoß hat Kehlnaht, Stumpfstoß Stumpfnaht; bestehende BAM-Liste (WELDING.WELD_TYPE) reicht | Person |
+| Serie = Lastniveau? | Nein, eine Serie enthält alle Lastniveaus (hoch, mittel, niedrig), sonst keine Wöhlerlinie. Aktuell Serie 1 Stumpfstoß und Serie 1 Kreuzstoß; spätere Serien möglich | Person |
+| Zufallsverfahren? | Python-Skript eines Kollegen; liefert auch die Prüf-Reihenfolge | Person |
+| 06: Welche Maße? | Dicke und Breite, je an drei Stellen, Messschieber; daraus Mittelwert | Person |
+| 06 aus GOM-Daten? | Nein, eigene Messung | Person |
+| 10: Eigenes Auswertungsobjekt je Serie? | Nein, eine Tabelle mit allen Proben einer Serie genügt; Regression in Python | Person |
+
+**Verstanden:** Kein NEU für Nahtart (Standard-Liste reicht; Stoßart bleibt eigene Angabe, Zuordnung klärt der Entwurf). Serie = Stoßart-Gruppe mit allen Lastniveaus; Randomisierung per Python-Skript inkl. Prüf-Reihenfolge; Geometrie: Dicke/Breite je 3 Stellen [mm] + Mittelwerte, Messschieber; Auswertung: Tabelle je Serie genügt, Regression extern in Python.
+**Offen:** Lastniveau je Probe – wo erfasst (vermutlich bei 09)? Details 07–09 (DMS, Einbau, Versuchsparameter), 11 (Bruchflächen); Dateiformate.
