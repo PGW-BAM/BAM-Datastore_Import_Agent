@@ -1,0 +1,14 @@
+# Projekt-Einstellungen. Gelesen vom Agenten (Cloud) und vom Brücken-Notebook (BAM-Netz).
+# Keine Zugangsdaten hier eintragen.
+
+name: "fb72_schwingversuche"
+title: "Schwingversuche an geschweißten Proben"
+title_en: "Fatigue testing of welded specimens"
+division: "FB 7.2"
+summary_en: "Documentation of fatigue tests on welded specimens: incoming inspection, GOM scanning and weld assessment, random assignment to test series, fatigue testing in a servo-hydraulic rig with IMC measurement equipment, and fracture surface analysis."
+instance: https://playground.datastore.bam.de   # zum Testen; später die Hauptinstanz
+space: "FB_72"                       # offen: im ELN nachsehen
+project: "FB72_SCHWINGVERSCHE"       # offen: Projekt-Code bestätigen
+inventory_projects:                 # offen: Equipment-Projekt(e) im ELN nachsehen
+  - "/FB_72/FB72_EQUIPMENT_OPEN"
+bam_masterdata: v0.17.0           # muss zu BMD_REF in tools/cloud_setup.sh passen
