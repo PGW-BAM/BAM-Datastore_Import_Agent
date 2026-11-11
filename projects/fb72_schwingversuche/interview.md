@@ -42,3 +42,18 @@ Quelle: Person · Schema · Vorschlag bestätigt · Vorschlag abgelehnt
 
 **Verstanden:** Reihenfolge 01 → 04 → 02 → 03 → 05; Messwerte Winkelverzug [°], Versatz [mm] (+ Wiederholungsmessung nach Richten), Befund freier Text, gerichtet ja/nein, Kennungen: Herstellernummer, interne Nummer, Serienname S1-01 …, Blech eingeschlagen; Fotos je Probe.
 **Offen:** Details 02/03 (Scan, Bewertung); Kreuzstoß: wie genau ist der Versatz dort anders (zwei Bleche)? Englische Namen der Begriffe; Details 06–11.
+
+## Runde 4: Schritte 02/03 (jetzt 03/04) + Kreuzstoß (2026-11-11)
+
+| Frage | Antwort | Quelle |
+|---|---|---|
+| Kreuzstoß: Versatz? | Ein Versatz, der ungünstigere. Beide Stoßarten (Stumpfstoß, Kreuzstoß) im Projekt; eigene Serien je Nahttyp; andere Nahttypen aktuell nicht | Person |
+| Gibt es im Standard schon eine Liste für Nahttypen? | Standard hat WELDING.WELD_TYPE (Kehlnaht, Nutnaht, Punktnaht, …), aber keine Stoßarten (Stumpfstoß/Kreuzstoß) → als NEU im Abgleich vorgemerkt | Katalog / Vorschlag |
+| 03: Was kommt vom ATOS zurück? | Rohdaten, GOM-Projektordner; Namensschema kennt der Kollege (Person fragt) | Person |
+| 04: Nach welcher Norm, was ist das Ergebnis? | ISO 5817, Anhang C; Bewertungsgruppe (C63, B90, B125); Proben beim Hersteller mit B bestellt; aus der GOM-Software wird ein Bericht exportiert | Person |
+| 04: Bewerten Sie jede Probe einzeln? | Ja, jede Probe einzeln | Person |
+| Bearbeiter*in und Datum je Schritt sichtbar? | Ja, wäre gut | Person |
+| Nummern in Ausführungsreihenfolge? | Ja, gewünscht (steht so auch an der Tafel im Labor) → ablauf.md neu nummeriert 01–11 | Person |
+
+**Verstanden:** Neue Reihenfolge 01 Sichtprüfung, 02 Anfasen/Anschleifen, 03 GOM-Scan, 04 Nahtbewertung (ISO 5817 Anhang C, Bewertungsgruppe, bestellt B), 05 Serienaufteilung (eigene Serien je Stoßart), 06–11 wie gehabt. Bearbeiter*in/Datum je Schritt.
+**Offen:** Namensschema GOM-Rohdaten (Kollege); Seriennamen/-anzahl; Details 06–11; Stoßart-Vokabular NEU vormerken.
